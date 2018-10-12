@@ -1,0 +1,11 @@
+.auth-logged-in {
+    display: none;
+}
+
+.logged-in .auth-logged-in {
+    display: block;
+}
+
+.logged-in .auth-not-logged-in {
+    display: none;
+}

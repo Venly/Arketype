@@ -1,0 +1,49 @@
+
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Next generation blockchain wallet provider - Arkane</title>
+    <meta name="description" content="Arkane.Network : Next generation blockchain wallet provider">
+    <meta name="keywords" content="arkane, wallet, ico, kyc, blockchain, wallet provider">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="/assets/css/auth.css" />
+    <script src="/node_modules/keycloak-js/dist/keycloak.min.js"></script>
+</head>
+
+<body>
+<!--[if lte IE 9]>
+<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+<![endif]-->
+<!-- Add your site or application content here -->
+<div class="auth-logged-in">
+    <div><span id="auth-username">Anoniem</span></div>
+    <a id="auth-logout" href="#"><span>Logout</span></a>
+    <a id="auth-requestaccess" href="#"><span>Get access</span></a>
+
+    <a id="arkane-sign-eth" href="#"><span>Sign eth transaction</span></a>
+    <a id="arkane-sign-vechain" href="#"><span>Sign vechain transaction</span></a>
+    <a id="get-wallets" href="#"><span>Get Wallets</span></a>
+    <a id="get-profile" href="#"><span>Get Profile</span></a>
+</div>
+<div class="auth-not-logged-in">
+    <a id="auth-loginlink" href="#">Login in</a>
+</div>
+
+<script src="/node_modules/jquery/dist/jquery.min.js"></script>
+<script src="/assets/js/authorization.js"></script>
+<script src="/assets/js/vendor/modernizr-custom.js"></script>
+<!--<script src="/assets/js/vendor/jquery/jquery.min.js"></script>-->
+<script src="/assets/js/plugins.js"></script>
+<script src="/assets/js/main.js"></script>
+
+<script src="/node_modules/@arkane-network/arkane-connect/connect.js"></script>
+</body>
+
+</html>
+
+

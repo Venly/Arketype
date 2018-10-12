@@ -1,0 +1,9 @@
+{
+  "clientId": "ThorBlock",
+  "realm": "Arkane",
+  "realm-public-key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkvmUbtB+jez2GkHNleiudf0LIRgDQNbHdeBn787GQsM7k2s65k22cZnMSeHXzgzRiQAM1geiAfs00QvU10VWauUpOM8CcEI6ID7QrS5fv0GZN1mjzk+ymUk6u/rNJeQUsxh9EN0tW46IaFnlvHRbVeoUyRLO+JHiFNnH3ekj2deMCmlMNGVJY4n0G8kVRHV5UrFaUdZYBfF73gOHgOQJ8SMpRDRj4PAkz8PHWhSRvf/GXTauoJiCYe61DXtoj7gZ75m4nLbBHz9e1v879ndA0I6MgxC7F7MwgGx42hjyV7zwsQg2TP9EDcxiXDVaVZeasni1Q67Odi6iIK6RNLml2QIDAQAB",
+  "auth-server-url": "https://login-tst1.arkane.network/auth",
+  "ssl-required": "external",
+  "resource": "ThorBlock",
+  "public-client": true
+}
