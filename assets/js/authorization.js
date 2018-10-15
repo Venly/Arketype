@@ -1,7 +1,7 @@
 /* global Keycloak, console */
 
 var app = app || {};
-app.auth = Keycloak();
+app.auth = Keycloak("arkane.json");
 app.auth.init({
   onLoad: 'check-sso'
 }).then(function (authenticated) {

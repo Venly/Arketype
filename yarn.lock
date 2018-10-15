@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@arkane-network/arkane-connect@0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@arkane-network/arkane-connect/-/arkane-connect-0.0.10.tgz#feec8f6ee49c98901a2bc66a461a8c037fc8a492"
-  integrity sha512-2W3a94DLv3HHAYwSIhhoqnZDJs8l2BW0XtihNMG+TtpAYn0VmIpzO6luQY4rXFDbgUDy1uW/y1/fS73jqU6Bqw==
+"@arkane-network/arkane-connect@0.0.18":
+  version "0.0.18"
+  resolved "https://registry.yarnpkg.com/@arkane-network/arkane-connect/-/arkane-connect-0.0.18.tgz#0b81b7be8ac4ad5f8cd91cdc7e83852c90ea9069"
+  integrity sha512-O90i/4hKPE/TIPI0rCaMTbhA+5P/RCmGrdnHDzh9UmEu4uK6E9rQMajDCh0XvTKNR0Hwr5pR5zQeCCvjO0Ua5w==
   dependencies:
     axios "^0.18.0"
     jsrsasign "^8.0.12"

@@ -9,3 +9,16 @@
 .logged-in .auth-not-logged-in {
     display: none;
 }
+
+#sign {
+    display: none;
+}
+
+#auth-logout {
+    font-size: 0.5em;
+}
+
+#auth-token {
+    width: 80%;
+    height: 75px;
+}
