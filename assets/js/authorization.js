@@ -10,5 +10,6 @@ app.auth.init({
     app.initAuthenticatedApp(authenticated, app.auth);
   }
 }).catch(function (e) {
-    console.error('Authentication failed');
+  console.error('Authentication failed');
 });
+

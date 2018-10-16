@@ -1,5 +1,17 @@
 var app = app || {};
 
+setInterval(() => {
+  app.auth.updateToken(20).then(function (refreshed) {
+    if (refreshed) {
+      console.log('Token was successfully refreshed');
+    } else {
+      console.log('Token is still valid');
+    }
+  }).catch(function () {
+    console.log('Failed to refresh the token, or the session has expired');
+  });
+}, 15000);
+
 app.addAuthEvents = function (authenticated, auth) {
   document.body.classList.add(authenticated ? 'logged-in' : 'not-logged-in');
   $('#auth-username').text(auth.subject);
