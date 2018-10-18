@@ -1,29 +1,41 @@
 var app = app || {};
 
-setInterval(() => {
-    app.auth.updateToken(20).then(function (refreshed) {
-        if (refreshed) {
-            console.log('Token was successfully refreshed');
-        } else {
-            console.log('Token is still valid');
-        }
-    }).catch(function () {
-        console.log('Failed to refresh the token, or the session has expired');
-    });
-}, 15000);
+app.initApp = function () {
+    window.arkaneConnect = new ArkaneConnect('ThorBlock', ['VeChain'],'local');
+    window.arkaneConnect
+          .checkAuthenticated()
+          .then((result) => result.authenticated(app.handleAuthenticated)
+                                  .notAuthenticated((auth) => {
+                                      document.body.classList.add('not-logged-in');
+                                  })
+          )
+          .catch(reason => app.log(reason));
+    this.attachLinkEvents();
+};
 
-app.addAuthEvents = function (authenticated, auth) {
-    document.body.classList.add(authenticated ? 'logged-in' : 'not-logged-in');
-    $('#auth-username').text(auth.subject);
-    $('#auth-token').val(auth.token);
+app.attachLinkEvents = function () {
     document.getElementById('auth-loginlink').addEventListener('click', function (e) {
         e.preventDefault();
-        auth.login({redirectUri: ''});
+        window.arkaneConnect.authenticate();
     });
+
     document.getElementById('auth-logout').addEventListener('click', function (e) {
         e.preventDefault();
-        auth.logout();
+        window.arkaneConnect.logout();
     });
+};
+
+app.handleAuthenticated = (auth) => {
+    document.body.classList.add('logged-in');
+    $('#auth-username').text(auth.subject);
+    app.updateToken(auth.token);
+    window.arkaneConnect.addOnTokenRefreshCallback(app.updateToken);
+    app.addConnectEvents();
+    app.getWallets();
+};
+
+app.updateToken = (token) => {
+    $('#auth-token').val(token);
 };
 
 app.addConnectEvents = function () {
@@ -87,7 +99,7 @@ app.addConnectEvents = function () {
                                                  gasPriceCoef: 0,
                                                  clauses: [{
                                                      to: '0xdc71b72db51e227e65a45004ab2798d31e8934c9',
-                                                     amount: "10000",
+                                                     amount: "10000000000000000000",
                                                      data: '0x0'
                                                  }]
                                              }).then(function (result) {
@@ -100,22 +112,6 @@ app.addConnectEvents = function () {
     document.getElementById('close-popup').addEventListener('click', function () {
         window.arkaneConnect.closePopup();
     });
-};
-
-app.initApp = function (authenticated, auth) {
-    app.addAuthEvents(authenticated, auth);
-};
-
-app.initAuthenticatedApp = function (authenticated, auth) {
-    window.arkaneConnect = new ArkaneConnect('ThorBlock', ['VeChain'], 'local');
-    window.arkaneConnect
-          .init(function () {
-              return auth.token;
-          })
-          .then(function () {
-              app.addConnectEvents();
-              app.getWallets();
-          });
 };
 
 app.getWallets = function () {
@@ -138,3 +134,5 @@ app.log = function (txt) {
 function isObject(obj) {
     return obj === Object(obj);
 }
+
+app.initApp();
