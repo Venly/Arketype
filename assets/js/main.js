@@ -80,6 +80,10 @@ app.addConnectEvents = function () {
         });
     });
 
+    document.getElementById('manage-wallets').addEventListener('click', function () {
+        window.arkaneConnect.manageWallets();
+    });
+
     document.getElementById('get-profile').addEventListener('click', function () {
         window.arkaneConnect.getProfile().then(function (e) {
             app.log(e);
