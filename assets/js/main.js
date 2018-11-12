@@ -1,7 +1,7 @@
 var app = app || {};
 
 app.initApp = function () {
-    window.arkaneConnect = new ArkaneConnect('ThorBlock', ['VeChain'], 'staging');
+    window.arkaneConnect = new ArkaneConnect('Arketype', ['VeChain'], 'staging');
     window.arkaneConnect
           .checkAuthenticated()
           .then((result) => result.authenticated(app.handleAuthenticated)
