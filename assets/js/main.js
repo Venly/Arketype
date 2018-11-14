@@ -39,48 +39,6 @@ app.updateToken = (token) => {
 };
 
 app.addConnectEvents = function() {
-    document.getElementById('arkane-sign-eth').addEventListener('click', function() {
-        //if you want to do custom logic between the user pressing a button and signing a transaction, please initialize the popup first as shown below
-        // otherwise the browser might block the popup
-        window.arkaneConnect.initPopup();
-        //custom logic
-        window.arkaneConnect.signTransaction({
-            type: 'ETHEREUM_TRANSACTION',
-            walletId: $("#sign-select-ETHEREUM").val(),
-            submit: false,
-            nonce: 0,
-            value: 1000000000000000000,
-            data: '0x',
-            to: '0x9d10dC3c5eFA3c0Ec3cA06B99B8451aB2ECb4401'
-        }).then(function(result) {
-            app.log(result);
-        }).catch(function(error) {
-            app.log(error);
-        });
-    });
-
-    document.getElementById('arkane-execute-eth').addEventListener('click', function() {
-        //if you want to do custom logic between the user pressing a button and signing a transaction, please initialize the popup first as shown below
-        // otherwise the browser might block the popup
-        window.arkaneConnect.initPopup();
-        //custom logic
-        window.arkaneConnect.buildTransactionRequest({
-            walletId: $("#execute-select-ETHEREUM").val(),
-            secretType: 'ETHEREUM',
-            to: "0xf147cA0b981C0CD0955D1323DB9980F4B43e9FED",
-            value: 3.14
-        }).then(transaction => {
-                window.arkaneConnect
-                      .executeTransaction(transaction)
-                      .then(function(result) {
-                          app.log(result);
-                      })
-                      .catch(function(error) {
-                          app.log(error);
-                      });
-            }
-        );
-    });
 
     document.getElementById('get-wallets').addEventListener('click', function() {
         window.arkaneConnect.getWallets().then(function(e) {
@@ -121,51 +79,137 @@ app.addConnectEvents = function() {
     document.getElementById('arkane-sign-vechain').addEventListener('click', function() {
         //if you want to do custom logic between the user pressing a button and signing a transaction, please initialize the popup first as shown below
         // otherwise the browser might block the popup
-        window.arkaneConnect.initPopup();
-        //custom logic
-        window.arkaneConnect.signTransaction({
-            type: 'VECHAIN_TRANSACTION',
-            walletId: $("#sign-select-VECHAIN").val(),
-            submit: false,
-            clauses: [{
-                to: '0xF29C73DA25795469ABa28277f831E85D49806b3F',
-                amount: "1000000000000000000000",
-            }]
-        }).then(function(result) {
-            app.log(result);
-        }).catch(function(error) {
+        const signer = window.arkaneConnect.createSigner();
+
+        // Start - Custom logic (e.g. build the transaction request)
+        let transactionRequest;
+        try {
+            transactionRequest = {
+                type: 'VECHAIN_TRANSACTION',
+                walletId: $("#sign-select-VECHAIN").val(),
+                submit: false,
+                clauses: [{
+                    to: '0xF29C73DA25795469ABa28277f831E85D49806b3F',
+                    amount: "1000000000000000000000",
+                }]
+            };
+        }
+        catch (error) {
+            // Always catch errors, otherwise the initialising popup appears to be hanging if something goes wrong
+            signer.close();
             app.log(error);
-        });
+        }
+        // End - Custom logic
+
+        signer.signTransaction()
+              .then(function(result) {
+                  app.log(result);
+              })
+              .catch(function(error) {
+                  app.log(error);
+              });
     });
 
-    document.getElementById('arkane-execute-vechain').addEventListener('click', function() {
+    document.getElementById('arkane-sign-eth').addEventListener('click', function() {
         //if you want to do custom logic between the user pressing a button and signing a transaction, please initialize the popup first as shown below
         // otherwise the browser might block the popup
-        window.arkaneConnect.initPopup();
-        //custom logic
-        window.arkaneConnect.buildTransactionRequest({
-            walletId: $("#execute-select-VECHAIN").val(),
-            secretType: 'VECHAIN',
-            to: "0x47F40Baf2dc0ccf065c44F44c0B0F49a0c690cd0",
-            value: 700.13
-        }).then(transaction => {
-                window.arkaneConnect
-                      .executeTransaction(transaction)
-                      .then(function(result) {
-                          app.log(result);
-                      })
-                      .catch(function(error) {
-                          app.log(error);
-                      });
-                // tokenAddress: "0x9c6e62b3334294d70c8e410941f52d482557955b"
-            }
-        );
+        const signer = window.arkaneConnect.createSigner();
+
+        // Start - Custom logic (e.g. build the transaction request)
+        let transactionRequest;
+        try {
+            transactionRequest = {
+                type: "ETHEREUM_TRANSACTION",
+                walletId: $("#sign-select-ETHEREUM").val(),
+                to: "0xf147cA0b981C0CD0955D1323DB9980F4B43e9FED",
+                value: 3140000000000000000,
+            };
+        }
+        catch (error) {
+            // Always catch errors, otherwise the initialising popup appears to be hanging if something goes wrong
+            signer.close();
+            app.log(error);
+        }
+        // End - Custom logic
+
+        signer.signTransaction(transactionRequest)
+              .then(function(result) {
+                  app.log(result);
+              })
+              .catch(function(error) {
+                  app.log(error);
+              });
     });
 
-    document.getElementById('close-popup').addEventListener('click', function() {
-        window.arkaneConnect.closePopup();
+    document.getElementById('arkane-execute-eth').addEventListener('click', async function() {
+            // If you want to do custom logic between the user pressing a button and sgning a transaction, please initialize the popup first as shown below
+            // otherwise the browser might block the popup
+            const signer = window.arkaneConnect.createSigner();
+
+            // Start - Custom logic (e.g. build the transaction request)
+            window.arkaneConnect
+                  .buildTransactionRequest({
+                      walletId: $("#execute-select-ETHEREUM").val(),
+                      secretType: 'ETHEREUM',
+                      to: "0x680800Dd4913021821A9C08D569eF4338dB8E9f6",
+                      value: 0.0314
+                  })
+                  .then((transactionRequest) => {
+                      signer.executeTransaction(transactionRequest)
+                            .then(function(result) {
+                                app.log(result);
+                            })
+                            .catch(function(error) {
+                                app.log(error);
+                            });
+                  })
+                  .catch((error) => {
+                      // Always catch errors and close the signer, otherwise it looks like the initialising popup is hanging when something goes wrong
+                      signer.close();
+                      app.log(error);
+                  });
+        }
+    );
+
+    document.getElementById('arkane-execute-vechain').addEventListener('click', function() {
+        // If you want to do custom logic between the user pressing a button and sgning a transaction, please initialize the popup first as shown below
+        // otherwise the browser might block the popup
+        let signer = window.arkaneConnect.createSigner();
+
+        // Start - Custom logic (e.g. build the transaction request)
+        let transactionRequest;
+        try {
+            transactionRequest = {
+                type: 'VET_TRANSACTION',
+                walletId: $("#execute-select-VECHAIN").val(),
+                to: "0x47F40Baf2dc0ccf065c44F44c0B0F49a0c690cd0",
+                value: 700.13
+            };
+        }
+        catch (error) {
+            // Always catch errors, otherwise the initialising popup appears to be hanging if something goes wrong
+            signer.close();
+            app.log(error);
+        }
+        // End - Custom logic
+
+        // Execute the transaction
+        signer.executeTransaction(transactionRequest)
+              .then(function(result) {
+                  app.log(result);
+              })
+              .catch(function(error) {
+                  app.log(error);
+              });
+
+
     });
-};
+
+    document.getElementById('close-signer').addEventListener('click', function() {
+        window.arkaneConnect.destroySigner();
+    });
+}
+;
 
 app.getWallets = function() {
     window.arkaneConnect.getWallets().then(function(result) {
