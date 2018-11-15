@@ -177,32 +177,27 @@ app.addConnectEvents = function() {
         let signer = window.arkaneConnect.createSigner();
 
         // Start - Custom logic (e.g. build the transaction request)
-        let transactionRequest;
-        try {
-            transactionRequest = {
-                type: 'VET_TRANSACTION',
-                walletId: $("#execute-select-VECHAIN").val(),
-                to: "0x47F40Baf2dc0ccf065c44F44c0B0F49a0c690cd0",
-                value: 700.13
-            };
-        }
-        catch (error) {
-            // Always catch errors, otherwise the initialising popup appears to be hanging if something goes wrong
-            signer.close();
-            app.log(error);
-        }
-        // End - Custom logic
-
-        // Execute the transaction
-        signer.executeTransaction(transactionRequest)
-              .then(function(result) {
-                  app.log(result);
+        window.arkaneConnect
+              .buildTransactionRequest({
+                  walletId: $("#execute-select-VECHAIN").val(),
+                  secretType: 'VECHAIN',
+                  to: "0x47F40Baf2dc0ccf065c44F44c0B0F49a0c690cd0",
+                  value: 700.13
               })
-              .catch(function(error) {
+              .then((transactionRequest) => {
+                  signer.executeTransaction(transactionRequest)
+                        .then(function(result) {
+                            app.log(result);
+                        })
+                        .catch(function(error) {
+                            app.log(error);
+                        });
+              })
+              .catch((error) => {
+                  // Always catch errors and close the signer, otherwise it looks like the initialising popup is hanging when something goes wrong
+                  signer.close();
                   app.log(error);
               });
-
-
     });
 
     document.getElementById('close-signer').addEventListener('click', function() {
