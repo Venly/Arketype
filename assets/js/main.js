@@ -70,6 +70,10 @@ app.addConnectEvents = function() {
         window.arkaneConnect.manageWallets();
     });
 
+    document.getElementById('link-wallets').addEventListener('click', function() {
+        window.arkaneConnect.linkWallets();
+    });
+
     document.getElementById('get-profile').addEventListener('click', function() {
         window.arkaneConnect.getProfile().then(function(e) {
             app.log(e);
@@ -90,7 +94,7 @@ app.addConnectEvents = function() {
                 submit: false,
                 clauses: [{
                     to: '0xF29C73DA25795469ABa28277f831E85D49806b3F',
-                    amount: "1000000000000000000000",
+                    amount: '1000000000000000000000',
                 }]
             };
         }
@@ -101,7 +105,7 @@ app.addConnectEvents = function() {
         }
         // End - Custom logic
 
-        signer.signTransaction()
+        signer.signTransaction(transactionRequest)
               .then(function(result) {
                   app.log(result);
               })
