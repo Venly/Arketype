@@ -10,7 +10,7 @@ app.initApp = function () {
                                   })
           )
           .catch(reason => app.log(reason));
-    this.attachLinkEvents();
+    // this.attachLinkEvents();
 };
 
 app.attachLinkEvents = function() {
@@ -39,7 +39,6 @@ app.updateToken = (token) => {
 };
 
 app.addConnectEvents = function() {
-
     document.getElementById('get-wallets').addEventListener('click', function() {
         window.arkaneConnect.getWallets().then(function(e) {
             app.log(e);
@@ -218,13 +217,11 @@ app.getWallets = function() {
 
 app.log = function(txt) {
     if (isObject(txt)) {
-        txt = JSON.stringify(txt);
+        txt = JSON.stringify(txt, null, 2);
     }
     var date = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
     txt = '---' + date + '---\n' + txt;
-    $('#appLog').val(function(index, old) {
-        return txt + "\n\n" + old;
-    });
+    $('#appLog').html(txt + "\n\n" + $('#appLog').html());
 };
 
 function isObject(obj) {
