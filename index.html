@@ -11,71 +11,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link rel="stylesheet" href="/assets/css/auth.css"/>
+    <link rel="stylesheet" href="/assets/css/arketype.css"/>
     <script src="/node_modules/@arkane-network/arkane-connect/connect.js?ts=7737"></script>
-
-    <style>
-        *, *::after, *::before {
-            box-sizing: border-box;
-        }
-
-        .flex {
-            display: flex;
-            flex-wrap: wrap;
-        }
-
-        .flex > * {
-            margin: 0 20px 20px 0;
-        }
-
-        form {
-            display: block;
-            width: 320px;
-            font-family: arial, sans-serif;
-        }
-
-        form a,
-        form input,
-        form textarea,
-        form select {
-            display: block;
-            width: 100%;
-            text-decoration: none;
-            color: #444;
-            background-color: #fff;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            line-height: 24px;
-            padding: 0 5px;
-            margin-bottom: 5px;
-        }
-
-        form select {
-            height: 26px;
-        }
-
-        form a,
-        form input[type=submit] {
-            font-size: 11px;
-            text-align: center;
-            cursor: pointer;
-            background-color: #f5f5f5;
-        }
-
-        form a:hover,
-        form input[type=submit]:hover {
-            background-color: #f0f0f0;
-        }
-
-        #appLog {
-            width: 100%;
-            height: 500px;
-            white-space: pre-wrap;
-            font-family: monospace;
-            background-color: #f5f5f5;
-            border: 1px solid #ccc;
-            overflow: scroll;
-        }
-    </style>
 </head>
 
 <body>
@@ -85,6 +22,8 @@
 <![endif]-->
 <!-- Add your site or application content here -->
 <div class="auth-logged-in">
+    <div class="left">
+
     <div id="user">
         <h1>User <a id="auth-logout" href="javascript:void(0)"><span>Logout</span></a></h1>
         <div>
@@ -100,7 +39,7 @@
             <div>
                 <h2>Manage Wallets</h2>
                 <form id="manage-wallets-ETHEREUM-form" action="http://localhost:8181/wallets/manage" method="post">
-                    <input type="text" id="bearer" placeholder="bearer" name="bearer"/>
+                    <input type="text" placeholder="bearer" name="bearer"/>
                     <input type="text" name="chain" placeholder="chain" value="ETHEREUM"/>
                     <input type="text" name="redirect" placeholder="redirect" value=""/>
                     <input id="manage-wallets" type="submit" value="Manage Wallets"/>
@@ -126,7 +65,7 @@
             <div>
                 <h2>Ethereum</h2>
                 <form id="sign-ETHEREUM-form" action="http://localhost:8181/transaction/sign/ethereum_transaction" method="post">
-                    <input type="text" id="bearer" placeholder="bearer" name="bearer"/>
+                    <input type="text" placeholder="bearer" name="bearer"/>
                     <input type="hidden" name="type" placeholder="type" value="ETHEREUM_TRANSACTION"/>
                     <select id="sign-select-ETHEREUM" name="walletId"></select>
                     <input type="text" name="to" placeholder="to" value="0xf147cA0b981C0CD0955D1323DB9980F4B43e9FED"/>
@@ -163,15 +102,17 @@
             </div>
         </div>
     </div>
+    </div>
+    <div class="right">
+        <div id="utilities">
+            <h1>Utilities</h1>
+            <a id="close-popup" href="javascript:void(0)"><span>Close popup</span></a>
 
-    <div id="utilities">
-        <h1>Utilities</h1>
-        <a id="close-popup" href="javascript:void(0)"><span>Close popup</span></a>
-
-        <br/>
-        <br/>
-        <h2>Log</h2>
-        <div id="appLog"></div>
+            <br/>
+            <br/>
+            <h2>Log</h2>
+            <div id="appLog"></div>
+        </div>
     </div>
 </div>
 <div class="auth-not-logged-in">
