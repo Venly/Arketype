@@ -1,14 +1,17 @@
 var app = app || {};
 app.auth = {};
 
-app.initApp = function () {
+app.initApp = function() {
     window.arkaneConnect = new ArkaneConnect('Arketype', {chains: ['Ethereum'], environment: 'tst1'});
     window.arkaneConnect
           .checkAuthenticated()
-          .then((result) => result.authenticated(app.handleAuthenticated)
-                                  .notAuthenticated((auth) => {
-                                      document.body.classList.add('not-logged-in');
-                                  })
+          .then((result) => {
+              $('input[name=redirect]').val(window.location.href);
+                  return result.authenticated(app.handleAuthenticated)
+                               .notAuthenticated((auth) => {
+                                   document.body.classList.add('not-logged-in');
+                               });
+              }
           )
           .catch(reason => app.log(reason));
     app.attachLinkEvents();
@@ -45,7 +48,7 @@ app.addConnectEvents = function() {
     document.getElementById('get-wallets').addEventListener('click', function() {
         window.arkaneConnect.getWallets().then(function(e) {
             app.log(e);
-            var secretTypes = ["ETHEREUM", "VECHAIN"];
+            var secretTypes = ['ETHEREUM', 'VECHAIN'];
             for (s of secretTypes) {
 
             }
@@ -155,9 +158,9 @@ app.addConnectEvents = function() {
             // Start - Custom logic (e.g. build the transaction request)
             window.arkaneConnect
                   .buildTransactionRequest({
-                      walletId: $("#execute-select-ETHEREUM").val(),
+                      walletId: $('#execute-select-ETHEREUM').val(),
                       secretType: 'ETHEREUM',
-                      to: "0x680800Dd4913021821A9C08D569eF4338dB8E9f6",
+                      to: '0x680800Dd4913021821A9C08D569eF4338dB8E9f6',
                       value: 0.0314
                   })
                   .then((transactionRequest) => {
@@ -185,9 +188,9 @@ app.addConnectEvents = function() {
         // Start - Custom logic (e.g. build the transaction request)
         window.arkaneConnect
               .buildTransactionRequest({
-                  walletId: $("#execute-select-VECHAIN").val(),
+                  walletId: $('#execute-select-VECHAIN').val(),
                   secretType: 'VECHAIN',
-                  to: "0x47F40Baf2dc0ccf065c44F44c0B0F49a0c690cd0",
+                  to: '0x47F40Baf2dc0ccf065c44F44c0B0F49a0c690cd0',
                   value: 700.13
               })
               .then((transactionRequest) => {
@@ -224,7 +227,7 @@ app.log = function(txt) {
     }
     var date = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
     txt = '---' + date + '---\n' + txt;
-    $('#appLog').html(txt + "\n\n" + $('#appLog').html());
+    $('#appLog').html(txt + '\n\n' + $('#appLog').html());
 };
 
 function isObject(obj) {

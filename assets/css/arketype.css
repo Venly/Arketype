@@ -12,20 +12,22 @@
 }
 
 .auth-logged-in {
-    display: flex;
     flex-wrap: wrap;
 }
+
 .auth-logged-in > * {
     flex-grow: 1;
     flex-shrink: 0;
     overflow-y: scroll;
     max-height: calc(100vh - 16px);
 }
+
 .auth-logged-in > :first-child {
     width: 940px;
     max-width: 100%;
     margin-right: 40px;
 }
+
 .auth-logged-in > :last-child {
     width: 400px;
     max-width: 100%;
