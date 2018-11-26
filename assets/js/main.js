@@ -1,4 +1,5 @@
 var app = app || {};
+app.auth = {};
 
 app.initApp = function () {
     window.arkaneConnect = new ArkaneConnect('Arketype', {chains: ['Ethereum'], environment: 'tst1'});
@@ -26,16 +27,17 @@ app.attachLinkEvents = function() {
 };
 
 app.handleAuthenticated = (auth) => {
+    app.auth = auth;
     document.body.classList.add('logged-in');
-    $('#auth-username').text(auth.subject);
-    $('#bearer').val(auth.token);
-    app.updateToken(auth.token);
+    $('#auth-username').text(app.auth.subject);
+    app.updateToken(app.auth.token);
     window.arkaneConnect.addOnTokenRefreshCallback(app.updateToken);
     app.addConnectEvents();
     app.getWallets();
 };
 
 app.updateToken = (token) => {
+    $('input[name="bearer"]').val(app.auth.token);
     $('#auth-token').val(token);
 };
 

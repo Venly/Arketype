@@ -50,7 +50,7 @@
         }
 
         form select {
-            height: 24px;
+            height: 26px;
         }
 
         form a,
@@ -100,9 +100,9 @@
             <div>
                 <h2>Manage Wallets</h2>
                 <form id="manage-wallets-ETHEREUM-form" action="http://localhost:8181/wallets/manage" method="post">
-                    <input type="hidden" id="bearer" name="bearer"/>
-                    <input type="text" name="chain" value="ETHEREUM"/>
-                    <input type="text" name="redirect" value=""/>
+                    <input type="text" id="bearer" placeholder="bearer" name="bearer"/>
+                    <input type="text" name="chain" placeholder="chain" value="ETHEREUM"/>
+                    <input type="text" name="redirect" placeholder="redirect" value=""/>
                     <input id="manage-wallets" type="submit" value="Manage Wallets"/>
                 </form>
             </div>
@@ -126,11 +126,11 @@
             <div>
                 <h2>Ethereum</h2>
                 <form id="sign-ETHEREUM-form" action="http://localhost:8181/transaction/sign/ethereum_transaction" method="post">
-                    <input type="hidden" id="bearer" name="bearer"/>
-                    <input type="hidden" name="type" value="ETHEREUM_TRANSACTION"/>
+                    <input type="text" id="bearer" placeholder="bearer" name="bearer"/>
+                    <input type="hidden" name="type" placeholder="type" value="ETHEREUM_TRANSACTION"/>
                     <select id="sign-select-ETHEREUM" name="walletId"></select>
-                    <input type="text" name="to" value="0xf147cA0b981C0CD0955D1323DB9980F4B43e9FED"/>
-                    <input type="text" name="value" value="3140000000000000000"/>
+                    <input type="text" name="to" placeholder="to" value="0xf147cA0b981C0CD0955D1323DB9980F4B43e9FED"/>
+                    <input type="text" name="value" placeholder="value" value="3140000000000000000"/>
                     <input type="submit" value="Sign ETHEREUM transaction"/>
                 </form>
             </div>
