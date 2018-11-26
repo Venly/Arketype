@@ -10,7 +10,7 @@ app.initApp = function () {
                                   })
           )
           .catch(reason => app.log(reason));
-    // this.attachLinkEvents();
+    this.attachLinkEvents();
 };
 
 app.attachLinkEvents = function() {
