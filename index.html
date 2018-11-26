@@ -57,8 +57,27 @@
   <div id="sign">
     <h1>Sign</h1>
     <h2>Ethereum</h2>
-    <select id="sign-select-ETHEREUM"></select>
-    <a id="arkane-sign-eth" href="#"><span>Sign eth transaction</span></a>
+    <div>
+      <form id="sign-ETHEREUM-form" action="http://localhost:8181/transaction/sign/ethereum_transaction" method="post">
+        <input type="hidden" id="bearer" name="bearer"/>
+        <input type="hidden" name="type" value="ETHEREUM_TRANSACTION"/>
+
+        <div>
+          <select id="sign-select-ETHEREUM" name="walletId"  style="width: 320px"></select>
+        </div>
+        <br/>
+        <div>
+          <input type="text" name="to" value="0xf147cA0b981C0CD0955D1323DB9980F4B43e9FED" style="width: 320px"/>
+        </div>
+        <br/>
+        <div>
+          <input type="text" name="value" value="3140000000000000000" style="width: 320px"/>
+        </div>
+        <br/>
+        <input type="submit" value="Sign ETHEREUM transaction"/>
+      </form>
+    </div>
+
     <h2>Vechain</h2>
     <select id="sign-select-VECHAIN"></select>
     <a id="arkane-sign-vechain" href="#"><span>Sign vechain transaction</span></a>
