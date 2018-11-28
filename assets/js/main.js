@@ -6,7 +6,7 @@ app.initApp = function() {
     window.arkaneConnect
           .checkAuthenticated()
           .then((result) => {
-              $('input[name=redirect]').val(window.location.href);
+                  $('input[name=redirect]').val(window.location.href);
                   return result.authenticated(app.handleAuthenticated)
                                .notAuthenticated((auth) => {
                                    document.body.classList.add('not-logged-in');
@@ -15,6 +15,34 @@ app.initApp = function() {
           )
           .catch(reason => app.log(reason));
     app.attachLinkEvents();
+    app.makeFormUsingOptionGet();
+};
+
+app.makeFormUsingOptionGet = function() {
+    document.querySelectorAll('form[data-getable]').forEach(form => {
+        var div = document.createElement('div');
+        div.className = "form-method-selector";
+        div.appendChild($('<label><input name="methodName" type="radio" value="post" checked /><span>POST</span></label>')[0]);
+        div.appendChild($('<label><input name="methodName" type="radio" value="get" /><span>GET</span></label>')[0]);
+        div.appendChild($('<label><input name="methodName" type="radio" value="connect" /><span>Connect</span></label>')[0]);
+        form.insertBefore(div, form.firstChild);
+
+        form.addEventListener('submit', function(e) {
+            var form = e.target;
+            var method = form.methodName.value;
+            form.method = 'post';
+
+            if (method === 'connect') {
+                e.preventDefault();
+                return false;
+            }
+
+            if (method === 'get') {
+                form.method = 'get';
+            }
+
+        })
+    });
 };
 
 app.attachLinkEvents = function() {

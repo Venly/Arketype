@@ -81,3 +81,19 @@ form input[type=submit]:hover {
     border: 1px solid #ccc;
     overflow: scroll;
 }
+
+.form-method-selector {
+    display: flex;
+    justify-content: center;
+}
+
+.form-method-selector label {
+    display: flex;
+    flex-direction: column;
+    font-size: 10px;
+    margin: 0 5px;
+    align-items: center;
+}
+.form-method-selector label input {
+    width: auto;
+}

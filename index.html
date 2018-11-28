@@ -38,11 +38,11 @@
         <div class="flex">
             <div>
                 <h2>Manage Wallets</h2>
-                <form id="manage-wallets-ETHEREUM-form" action="http://localhost:8181/wallets/manage" method="post">
-                    <input type="text" placeholder="bearer" name="bearer"/>
-                    <input type="text" name="chain" placeholder="chain" value="ETHEREUM"/>
-                    <input type="text" name="redirect" placeholder="redirect" value=""/>
-                    <input id="manage-wallets" type="submit" value="Manage Wallets"/>
+                <form id="manage-wallets-ETHEREUM-form" action="http://localhost:8181/wallets/manage" data-getable="true" method="post">
+                    <input type="text" name="bearer" placeholder="bearer" />
+                    <input type="text" name="chain" placeholder="chain" value="ETHEREUM" />
+                    <input type="text" name="redirect" placeholder="redirect" value="" />
+                    <input id="manage-wallets" type="submit" value="Manage Wallets" />
                 </form>
             </div>
 
@@ -64,7 +64,7 @@
         <div class="flex">
             <div>
                 <h2>Ethereum</h2>
-                <form id="sign-ETHEREUM-form" action="http://localhost:8181/transaction/sign/ethereum_transaction" method="post">
+                <form id="sign-ETHEREUM-form" action="http://localhost:8181/transaction/sign/ethereum_transaction" data-getable="true" method="post">
                     <input type="text" placeholder="bearer" name="bearer"/>
                     <input type="hidden" name="type" placeholder="type" value="ETHEREUM_TRANSACTION"/>
                     <select id="sign-select-ETHEREUM" name="walletId"></select>
