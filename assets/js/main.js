@@ -117,15 +117,42 @@ app.addConnectEvents = function() {
 
     document.getElementById('execute-ETHEREUM-form').addEventListener('submit', function(e) {
         e.preventDefault();
-        window.arkaneConnect.executeNativeTransaction(
+
+        // Generic ETH transaction
+        // window.arkaneConnect.executeTransaction(
+        //     {
+        //         walletId: $("#execute-ETHEREUM-form select[name='walletId']").val(),
+        //         to: $("#execute-ETHEREUM-form input[name='to']").val(),
+        //         value: ($("#execute-ETHEREUM-form input[name='value']").val() / Math.pow(10, 18)),
+        //         secretType: 'ETHEREUM',
+        //     },
+        //     'http://localhost:4000'
+        // );
+
+        // Generic ERC20 transaction
+        window.arkaneConnect.executeTransaction(
             {
-                type: 'ETH_TRANSACTION',
                 walletId: $("#execute-ETHEREUM-form select[name='walletId']").val(),
                 to: $("#execute-ETHEREUM-form input[name='to']").val(),
-                value: $("#execute-ETHEREUM-form input[name='value']").val(),
+                value: ($("#execute-ETHEREUM-form input[name='value']").val() / Math.pow(10, 18)),
+                secretType: 'ETHEREUM',
+                tokenAddress: '0x02f96ef85cad6639500ca1cc8356f0b5ca5bf1d2',
             },
             'http://localhost:4000'
         );
+
+        // Native ETH transaction
+        // window.arkaneConnect.executeNativeTransaction(
+        //     {
+        //         type: 'ETH_TRANSACTION',
+        //         walletId: $("#execute-ETHEREUM-form select[name='walletId']").val(),
+        //         to: $("#execute-ETHEREUM-form input[name='to']").val(),
+        //         value: $("#execute-ETHEREUM-form input[name='value']").val(),
+        //     },
+        //     'http://localhost:4000'
+        // );
+
+        // Native ERC20 transaction
         // window.arkaneConnect.executeNativeTransaction(
         //     {
         //         type: 'ETHEREUM_ERC20_TRANSACTION',
@@ -140,17 +167,44 @@ app.addConnectEvents = function() {
 
     document.getElementById('execute-VECHAIN-form').addEventListener('submit', function(e) {
         e.preventDefault();
-        window.arkaneConnect.executeNativeTransaction(
+
+        // Generic VET transaction
+        // window.arkaneConnect.executeTransaction(
+        //     {
+        //         walletId: $("#execute-VECHAIN-form select[name='walletId']").val(),
+        //         to: $("#execute-VECHAIN-form input[name='to']").val(),
+        //         value: ($("#execute-VECHAIN-form input[name='value']").val() / Math.pow(10, 18)),
+        //         secretType: 'VECHAIN',
+        //     },
+        //     'http://localhost:4000'
+        // );
+
+        // Generic VIP180 transaction
+        window.arkaneConnect.executeTransaction(
             {
-                type: 'VET_TRANSACTION',
                 walletId: $("#execute-VECHAIN-form select[name='walletId']").val(),
-                clauses: [{
-                    to: $("#execute-VECHAIN-form input[name='to']").val(),
-                    amount: $("#execute-VECHAIN-form input[name='value']").val(),
-                }]
+                to: $("#execute-VECHAIN-form input[name='to']").val(),
+                value: ($("#execute-VECHAIN-form input[name='value']").val() / Math.pow(10, 18)),
+                secretType: 'VECHAIN',
+                tokenAddress: '0x9c6e62b3334294d70c8e410941f52d482557955b',
             },
             'http://localhost:4000'
         );
+
+        // Native VET transaction
+        // window.arkaneConnect.executeNativeTransaction(
+        //     {
+        //         type: 'VET_TRANSACTION',
+        //         walletId: $("#execute-VECHAIN-form select[name='walletId']").val(),
+        //         clauses: [{
+        //             to: $("#execute-VECHAIN-form input[name='to']").val(),
+        //             amount: $("#execute-VECHAIN-form input[name='value']").val(),
+        //         }]
+        //     },
+        //     'http://localhost:4000'
+        // );
+
+        // Native VIP180 transaction
         // window.arkaneConnect.executeNativeTransaction(
         //     {
         //         type: 'VECHAIN_VIP180_TRANSACTION',
