@@ -72,11 +72,11 @@ app.addConnectEvents = function() {
     });
 
     document.getElementById('manage-wallets').addEventListener('click', function() {
-        window.arkaneConnect.manageWallets();
+        window.arkaneConnect.manageWallets({redirectUri: 'http://localhost:4000', correlationID: `${Date.now()}`});
     });
 
     document.getElementById('link-wallets').addEventListener('click', function() {
-        window.arkaneConnect.linkWallets();
+        window.arkaneConnect.linkWallets({redirectUri: 'http://localhost:4000', correlationID: `${Date.now()}`});
     });
 
     document.getElementById('get-profile').addEventListener('click', function() {
@@ -95,7 +95,10 @@ app.addConnectEvents = function() {
                 to: $("#sign-ETHEREUM-form input[name='to']").val(),
                 value: $("#sign-ETHEREUM-form input[name='value']").val(),
             },
-            'http://localhost:4000'
+            {
+                redirectUri: 'http://localhost:4000',
+                correlationID: `${Date.now()}`
+            }
         );
     });
 
@@ -111,13 +114,16 @@ app.addConnectEvents = function() {
                     amount: $("#sign-VECHAIN-form input[name='value']").val(),
                 }]
             },
-            'http://localhost:4000'
-        );
+            {
+                redirectUri: 'http://localhost:4000',
+                correlationID: `${Date.now()}`
+            }
+        )
+        ;
     });
 
     document.getElementById('execute-ETHEREUM-form').addEventListener('submit', function(e) {
         e.preventDefault();
-
         // Generic ETH transaction
         // window.arkaneConnect.executeTransaction(
         //     {
@@ -126,7 +132,10 @@ app.addConnectEvents = function() {
         //         value: ($("#execute-ETHEREUM-form input[name='value']").val() / Math.pow(10, 18)),
         //         secretType: 'ETHEREUM',
         //     },
-        //     'http://localhost:4000'
+        //     {
+        //         redirectUri: 'http://localhost:4000',
+        //         correlationID: `${Date.now()}`
+        //     }
         // );
 
         // Generic ERC20 transaction
@@ -138,7 +147,10 @@ app.addConnectEvents = function() {
                 secretType: 'ETHEREUM',
                 tokenAddress: '0x02f96ef85cad6639500ca1cc8356f0b5ca5bf1d2',
             },
-            'http://localhost:4000'
+            {
+                redirectUri: 'http://localhost:4000',
+                correlationID: `${Date.now()}`
+            }
         );
 
         // Native ETH transaction
@@ -149,7 +161,10 @@ app.addConnectEvents = function() {
         //         to: $("#execute-ETHEREUM-form input[name='to']").val(),
         //         value: $("#execute-ETHEREUM-form input[name='value']").val(),
         //     },
-        //     'http://localhost:4000'
+        //     {
+        //         redirectUri: 'http://localhost:4000',
+        //         correlationID: `${Date.now()}`
+        //     }
         // );
 
         // Native ERC20 transaction
@@ -161,7 +176,10 @@ app.addConnectEvents = function() {
         //         value: $("#execute-ETHEREUM-form input[name='value']").val(),
         //         tokenAddress: '0x02f96ef85cad6639500ca1cc8356f0b5ca5bf1d2',
         //     },
-        //     'http://localhost:4000'
+        //     {
+        //         redirectUri: 'http://localhost:4000',
+        //         correlationID: `${Date.now()}`
+        //     }
         // );
     });
 
@@ -176,7 +194,10 @@ app.addConnectEvents = function() {
         //         value: ($("#execute-VECHAIN-form input[name='value']").val() / Math.pow(10, 18)),
         //         secretType: 'VECHAIN',
         //     },
-        //     'http://localhost:4000'
+        //     {
+        //         redirectUri: 'http://localhost:4000',
+        //         correlationID: `${Date.now()}`
+        //     }
         // );
 
         // Generic VIP180 transaction
@@ -188,7 +209,10 @@ app.addConnectEvents = function() {
                 secretType: 'VECHAIN',
                 tokenAddress: '0x9c6e62b3334294d70c8e410941f52d482557955b',
             },
-            'http://localhost:4000'
+            {
+                redirectUri: 'http://localhost:4000',
+                correlationID: `${Date.now()}`
+            }
         );
 
         // Native VET transaction
@@ -201,7 +225,10 @@ app.addConnectEvents = function() {
         //             amount: $("#execute-VECHAIN-form input[name='value']").val(),
         //         }]
         //     },
-        //     'http://localhost:4000'
+        //     {
+        //         redirectUri: 'http://localhost:4000',
+        //         correlationID: `${Date.now()}`
+        //     }
         // );
 
         // Native VIP180 transaction
@@ -215,7 +242,10 @@ app.addConnectEvents = function() {
         //             tokenAddress: '0x9c6e62b3334294d70c8e410941f52d482557955b',
         //         }]
         //     },
-        //     'http://localhost:4000'
+        //     {
+        //         redirectUri: 'http://localhost:4000',
+        //         correlationID: `${Date.now()}`
+        //     }
         // );
     });
 
