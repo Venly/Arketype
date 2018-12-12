@@ -157,37 +157,15 @@ app.addConnectEvents = function() {
         // );
 
         // Generic ERC20 transaction
-        // window.arkaneConnect
-        //       .signer
-        //       .executeTransaction(
-        //           {
-        //               walletId: $("#execute-ETHEREUM-form select[name='walletId']").val(),
-        //               to: $("#execute-ETHEREUM-form input[name='to']").val(),
-        //               value: ($("#execute-ETHEREUM-form input[name='value']").val() / Math.pow(10, 18)),
-        //               secretType: 'ETHEREUM',
-        //               tokenAddress: '0x02f96ef85cad6639500ca1cc8356f0b5ca5bf1d2',
-        //           },
-        //           {
-        //               redirectUri: 'http://localhost:4000',
-        //               correlationID: `${Date.now()}`
-        //           }
-        //       )
-        //       .then(function(result) {
-        //           app.log(result);
-        //       })
-        //       .catch(function(err) {
-        //           app.log(err);
-        //       });
-
-        // Native ETH transaction
         window.arkaneConnect
               .signer
-              .executeNativeTransaction(
+              .executeTransaction(
                   {
-                      type: 'ETH_TRANSACTION',
                       walletId: $("#execute-ETHEREUM-form select[name='walletId']").val(),
                       to: $("#execute-ETHEREUM-form input[name='to']").val(),
-                      value: $("#execute-ETHEREUM-form input[name='value']").val(),
+                      value: ($("#execute-ETHEREUM-form input[name='value']").val() / Math.pow(10, 18)),
+                      secretType: 'ETHEREUM',
+                      tokenAddress: '0x02f96ef85cad6639500ca1cc8356f0b5ca5bf1d2',
                   },
                   {
                       redirectUri: 'http://localhost:4000',
@@ -200,6 +178,28 @@ app.addConnectEvents = function() {
               .catch(function(err) {
                   app.log(err);
               });
+
+        // Native ETH transaction
+        // window.arkaneConnect
+        //       .signer
+        //       .executeNativeTransaction(
+        //           {
+        //               type: 'ETH_TRANSACTION',
+        //               walletId: $("#execute-ETHEREUM-form select[name='walletId']").val(),
+        //               to: $("#execute-ETHEREUM-form input[name='to']").val(),
+        //               value: $("#execute-ETHEREUM-form input[name='value']").val(),
+        //           },
+        //           {
+        //               redirectUri: 'http://localhost:4000',
+        //               correlationID: `${Date.now()}`
+        //           }
+        //       )
+        //       .then(function(result) {
+        //           app.log(result);
+        //       })
+        //       .catch(function(err) {
+        //           app.log(err);
+        //       });
 
         // Native ERC20 transaction
         // window.arkaneConnect
