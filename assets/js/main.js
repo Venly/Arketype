@@ -87,9 +87,8 @@ app.addConnectEvents = function() {
 
     document.getElementById('sign-ETHEREUM-form').addEventListener('submit', function(e) {
         e.preventDefault();
-        // window.arkaneConnect.signer.openPopup();
         window.arkaneConnect
-              .signer
+              .createSigner()
               .signTransaction(
                   {
                       type: 'ETHEREUM_TRANSACTION',
@@ -113,9 +112,8 @@ app.addConnectEvents = function() {
 
     document.getElementById('sign-VECHAIN-form').addEventListener('submit', function(e) {
         e.preventDefault();
-        // window.arkaneConnect.signer.openPopup();
         window.arkaneConnect
-              .signer
+              .createSigner()
               .signTransaction(
                   {
                       type: 'VECHAIN_TRANSACTION',
@@ -141,9 +139,8 @@ app.addConnectEvents = function() {
 
     document.getElementById('execute-ETHEREUM-form').addEventListener('submit', function(e) {
         e.preventDefault();
-        // window.arkaneConnect.signer.openPopup();
         // Generic ETH transaction
-        // window.arkaneConnect.executeTransaction(
+        // window.arkaneConnect.createSigner().executeTransaction(
         //     {
         //         walletId: $("#execute-ETHEREUM-form select[name='walletId']").val(),
         //         to: $("#execute-ETHEREUM-form input[name='to']").val(),
@@ -158,7 +155,7 @@ app.addConnectEvents = function() {
 
         // Generic ERC20 transaction
         window.arkaneConnect
-              .signer
+              .createSigner()
               .executeTransaction(
                   {
                       walletId: $("#execute-ETHEREUM-form select[name='walletId']").val(),
@@ -181,7 +178,7 @@ app.addConnectEvents = function() {
 
         // Native ETH transaction
         // window.arkaneConnect
-        //       .signer
+        //       .createSigner()
         //       .executeNativeTransaction(
         //           {
         //               type: 'ETH_TRANSACTION',
@@ -203,7 +200,7 @@ app.addConnectEvents = function() {
 
         // Native ERC20 transaction
         // window.arkaneConnect
-        //       .signer
+        //       .createSigner()
         //       .executeNativeTransaction(
         //           {
         //               type: 'ETHEREUM_ERC20_TRANSACTION',
@@ -227,9 +224,8 @@ app.addConnectEvents = function() {
 
     document.getElementById('execute-VECHAIN-form').addEventListener('submit', function(e) {
         e.preventDefault();
-        // window.arkaneConnect.signer.openPopup();
         // Generic VET transaction
-        // window.arkaneConnect.executeTransaction(
+        // window.arkaneConnect.createSigner().executeTransaction(
         //     {
         //         walletId: $("#execute-VECHAIN-form select[name='walletId']").val(),
         //         to: $("#execute-VECHAIN-form input[name='to']").val(),
@@ -244,7 +240,7 @@ app.addConnectEvents = function() {
 
         // Generic VIP180 transaction
         window.arkaneConnect
-              .signer
+              .createSigner()
               .executeTransaction(
                   {
                       walletId: $("#execute-VECHAIN-form select[name='walletId']").val(),
@@ -266,7 +262,7 @@ app.addConnectEvents = function() {
               });
 
         // Native VET transaction
-        // window.arkaneConnect.executeNativeTransaction(
+        // window.arkaneConnect.createSigner().executeNativeTransaction(
         //     {
         //         type: 'VET_TRANSACTION',
         //         walletId: $("#execute-VECHAIN-form select[name='walletId']").val(),
@@ -282,7 +278,7 @@ app.addConnectEvents = function() {
         // );
 
         // Native VIP180 transaction
-        // window.arkaneConnect.executeNativeTransaction(
+        // window.arkaneConnect.createSigner().executeNativeTransaction(
         //     {
         //         type: 'VECHAIN_VIP180_TRANSACTION',
         //         walletId: $("#execute-VECHAIN-form select[name='walletId']").val(),
@@ -297,10 +293,6 @@ app.addConnectEvents = function() {
         //         correlationID: `${Date.now()}`
         //     }
         // );
-    });
-
-    document.getElementById('close-signer').addEventListener('click', function() {
-        window.arkaneConnect.destroySigner();
     });
 };
 
