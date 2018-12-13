@@ -3,7 +3,7 @@
 }
 
 .logged-in .auth-logged-in {
-    display: block;
+    display: flex;
 }
 
 .logged-in .auth-not-logged-in {

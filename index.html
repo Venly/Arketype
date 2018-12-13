@@ -11,6 +11,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <link rel="stylesheet" href="/assets/css/auth.css"/>
+  <link rel="stylesheet" href="/assets/css/arketype.css"/>
   <script src="/node_modules/@arkane-network/arkane-connect/connect.js?ts=7737"></script>
 </head>
 
@@ -21,61 +22,95 @@
 <![endif]-->
 <!-- Add your site or application content here -->
 <div class="auth-logged-in">
+  <div class="left">
 
-  <h1>User <a id="auth-logout" href="#"><span>Logout</span></a></h1>
-  <div>
-    <a id="get-profile" href="#"><span>Get Profile</span></a><br/>
-    Userid: <span id="auth-username">Anoniem</span> <br/>
-    Bearer token: <br/><textarea disabled="disabled" id="auth-token"></textarea>
+    <div id="user">
+      <h1>User <a id="auth-logout" href="javascript:void(0)"><span>Logout</span></a></h1>
+      <div>
+        <a id="get-profile" href="javascript:void(0)"><span>Get Profile</span></a><br/>
+        Userid: <span id="auth-username">Anoniem</span> <br/>
+        Bearer token: <br/><textarea disabled="disabled" id="auth-token"></textarea>
+      </div>
+    </div>
 
+    <div id="wallets">
+      <h1>Wallets</h1>
+      <div class="flex">
+        <div>
+          <h2>Manage Wallets</h2>
+          <a id="manage-wallets" href="javascript:void(0)"><span>Manage Wallets</span></a>
+        </div>
+
+        <div>
+          <h2>Link Wallets</h2>
+          <a id="link-wallets" href="javascript:void(0)"><span>Link Wallets</span></a>
+        </div>
+
+        <div>
+          <h2>Get Wallets</h2>
+          <a id="get-wallets" href="javascript:void(0)"><span>Get Wallets</span></a>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="sign">
+      <h1>Sign</h1>
+      <div class="flex">
+        <div>
+          <h2>Ethereum</h2>
+          <form id="sign-ETHEREUM-form">
+            <select name="walletId"></select>
+            <input type="text" name="to" placeholder="to" value="0xf147cA0b981C0CD0955D1323DB9980F4B43e9FED"/>
+            <input type="text" name="value" placeholder="value" value="31400000000000000"/>
+            <input type="submit" value="Sign ETHEREUM transaction"/>
+          </form>
+        </div>
+        <div>
+          <h2>VeChain</h2>
+          <form id="sign-VECHAIN-form">
+            <select name="walletId"></select>
+            <input type="text" name="to" placeholder="to" value="0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE"/>
+            <input type="text" name="value" placeholder="value" value="31400000000000000"/>
+            <input type="submit" value="Sign VECHAIN transaction"/>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div id="execute">
+      <h1>Execute</h1>
+      <div class="flex">
+        <div>
+          <h2>Ethereum</h2>
+          <form id="execute-ETHEREUM-form">
+            <select name="walletId"></select>
+            <input type="text" name="to" placeholder="to" value="0x680800Dd4913021821A9C08D569eF4338dB8E9f6"/>
+            <input type="text" name="value" placeholder="value" value="31400000000000000"/>
+            <input type="submit" value="Execute ETHEREUM transaction"/>
+          </form>
+        </div>
+        <div>
+          <h2>VeChain</h2>
+          <form id="execute-VECHAIN-form">
+            <select name="walletId"></select>
+            <input type="text" name="to" placeholder="to" value="0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE"/>
+            <input type="text" name="value" placeholder="value" value="31400000000000000"/>
+            <input type="submit" value="Execute VECHAIN transaction"/>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
-  <h1>Wallets</h1>
-  <div>
-    <a id="manage-wallets" href="#"><span>Manage Wallets</span></a>
+  <div class="right">
+    <div id="utilities">
+      <h1>Log</h1>
+      <div id="appLog"></div>
+    </div>
   </div>
-  <br/>
-  <div>
-    <a id="link-wallets" href="#"><span>Link Wallets</span></a>
-  </div>
-  <br/>
-  <div>
-    <a id="get-wallets" href="#"><span>Get Wallets</span></a>
-  </div>
-
-  <div id="sign">
-    <h1>Sign</h1>
-    <h2>Ethereum</h2>
-    <select id="sign-select-ETHEREUM"></select>
-    <a id="arkane-sign-eth" href="#"><span>Sign eth transaction</span></a>
-    <h2>Vechain</h2>
-    <select id="sign-select-VECHAIN"></select>
-    <a id="arkane-sign-vechain" href="#"><span>Sign vechain transaction</span></a>
-  </div>
-
-  <div id="execute">
-    <h1>Execute</h1>
-    <h2>Ethereum</h2>
-    <select id="execute-select-ETHEREUM"></select>
-    <a id="arkane-execute-eth" href="#"><span>Execute ETH transaction</span></a>
-    <h2>Vechain</h2>
-    <select id="execute-select-VECHAIN"></select>
-    <a id="arkane-execute-vechain" href="#"><span>Execute VET transaction</span></a>
-  </div>
-
-  <h1>Utilities</h1>
-  <a id="close-popup" href="#"><span>Close popup</span></a>
-
-
-  <br/>
-  <br/>
-  <h2>Log</h2>
-  <div style="float:left;width:60vw;height:60vw;">
-    <textarea id="appLog" style="width:100%;height: 80%;" disabled="disabled"></textarea>
-  </div>
-
 </div>
 <div class="auth-not-logged-in">
-  <a id="auth-loginlink" href="#">Login</a>
+  <a id="auth-loginlink" href="javascript:void(0)">Login</a>
 </div>
 
 <script src="/node_modules/jquery/dist/jquery.min.js"></script>

@@ -1,16 +1,20 @@
 var app = app || {};
+app.auth = {};
 
-app.initApp = function () {
-    window.arkaneConnect = new ArkaneConnect('Arketype', {chains: ['VeChain'], environment: 'staging'});
+app.initApp = function() {
+    window.arkaneConnect = new ArkaneConnect('Arketype', {chains: ['Ethereum'], environment: 'staging', signUsing: 'REDIRECT'});
     window.arkaneConnect
           .checkAuthenticated()
-          .then((result) => result.authenticated(app.handleAuthenticated)
-                                  .notAuthenticated((auth) => {
-                                      document.body.classList.add('not-logged-in');
-                                  })
+          .then((result) => {
+                  $('input[name=redirect]').val(window.location.href);
+                  return result.authenticated(app.handleAuthenticated)
+                               .notAuthenticated((auth) => {
+                                   document.body.classList.add('not-logged-in');
+                               });
+              }
           )
           .catch(reason => app.log(reason));
-    this.attachLinkEvents();
+    app.attachLinkEvents();
 };
 
 app.attachLinkEvents = function() {
@@ -26,37 +30,38 @@ app.attachLinkEvents = function() {
 };
 
 app.handleAuthenticated = (auth) => {
+    app.auth = auth;
     document.body.classList.add('logged-in');
-    $('#auth-username').text(auth.subject);
-    app.updateToken(auth.token);
+    $('#auth-username').text(app.auth.subject);
+    app.updateToken(app.auth.token);
     window.arkaneConnect.addOnTokenRefreshCallback(app.updateToken);
     app.addConnectEvents();
     app.getWallets();
 };
 
 app.updateToken = (token) => {
+    $('input[name="bearer"]').val(app.auth.token);
     $('#auth-token').val(token);
 };
 
 app.addConnectEvents = function() {
-
     document.getElementById('get-wallets').addEventListener('click', function() {
-        window.arkaneConnect.getWallets().then(function(e) {
+        window.arkaneConnect.api.getWallets().then(function(e) {
             app.log(e);
-            var secretTypes = ["ETHEREUM", "VECHAIN"];
+            var secretTypes = ['ETHEREUM', 'VECHAIN'];
             for (s of secretTypes) {
 
             }
-            $('#sign-select-' + 'ETHEREUM').find('option').remove();
-            $('#sign-select-' + 'VECHAIN').find('option').remove();
-            $('#execute-select-' + 'ETHEREUM').find('option').remove();
-            $('#execute-select-' + 'VECHAIN').find('option').remove();
+            $("#sign-ETHEREUM-form select[name='walletId']").find('option').remove();
+            $("#sign-VECHAIN-form select[name='walletId']").find('option').remove();
+            $("#execute-ETHEREUM-form select[name='walletId']").find('option').remove();
+            $("#execute-VECHAIN-form select[name='walletId']").find('option').remove();
             for (w of e) {
-                $('#sign-select-' + w.secretType).append($('<option>', {
+                $(`#sign-${w.secretType}-form select[name='walletId']`).append($('<option>', {
                     value: w.id,
                     text: w.address
                 }));
-                $('#execute-select-' + w.secretType).append($('<option>', {
+                $(`#execute-${w.secretType}-form select[name='walletId']`).append($('<option>', {
                     value: w.id,
                     text: w.address
                 }));
@@ -67,148 +72,229 @@ app.addConnectEvents = function() {
     });
 
     document.getElementById('manage-wallets').addEventListener('click', function() {
-        window.arkaneConnect.manageWallets();
+        window.arkaneConnect.manageWallets({redirectUri: 'http://localhost:4000', correlationID: `${Date.now()}`});
     });
 
     document.getElementById('link-wallets').addEventListener('click', function() {
-        window.arkaneConnect.linkWallets();
+        window.arkaneConnect.linkWallets({redirectUri: 'http://localhost:4000', correlationID: `${Date.now()}`});
     });
 
     document.getElementById('get-profile').addEventListener('click', function() {
-        window.arkaneConnect.getProfile().then(function(e) {
+        window.arkaneConnect.api.getProfile().then(function(e) {
             app.log(e);
         });
     });
 
-    document.getElementById('arkane-sign-vechain').addEventListener('click', function() {
-        //if you want to do custom logic between the user pressing a button and signing a transaction, please initialize the popup first as shown below
-        // otherwise the browser might block the popup
-        const signer = window.arkaneConnect.createSigner();
-
-        // Start - Custom logic (e.g. build the transaction request)
-        let transactionRequest;
-        try {
-            transactionRequest = {
-                type: 'VECHAIN_TRANSACTION',
-                walletId: $("#sign-select-VECHAIN").val(),
-                submit: false,
-                clauses: [{
-                    to: '0xF29C73DA25795469ABa28277f831E85D49806b3F',
-                    amount: '1000000000000000000000',
-                }]
-            };
-        }
-        catch (error) {
-            // Always catch errors, otherwise the initialising popup appears to be hanging if something goes wrong
-            signer.close();
-            app.log(error);
-        }
-        // End - Custom logic
-
-        signer.signTransaction(transactionRequest)
-              .then(function(result) {
-                  app.log(result);
-              })
-              .catch(function(error) {
-                  app.log(error);
-              });
-    });
-
-    document.getElementById('arkane-sign-eth').addEventListener('click', function() {
-        //if you want to do custom logic between the user pressing a button and signing a transaction, please initialize the popup first as shown below
-        // otherwise the browser might block the popup
-        const signer = window.arkaneConnect.createSigner();
-
-        // Start - Custom logic (e.g. build the transaction request)
-        let transactionRequest;
-        try {
-            transactionRequest = {
-                type: "ETHEREUM_TRANSACTION",
-                walletId: $("#sign-select-ETHEREUM").val(),
-                to: "0xf147cA0b981C0CD0955D1323DB9980F4B43e9FED",
-                value: 3140000000000000000,
-            };
-        }
-        catch (error) {
-            // Always catch errors, otherwise the initialising popup appears to be hanging if something goes wrong
-            signer.close();
-            app.log(error);
-        }
-        // End - Custom logic
-
-        signer.signTransaction(transactionRequest)
-              .then(function(result) {
-                  app.log(result);
-              })
-              .catch(function(error) {
-                  app.log(error);
-              });
-    });
-
-    document.getElementById('arkane-execute-eth').addEventListener('click', async function() {
-            // If you want to do custom logic between the user pressing a button and sgning a transaction, please initialize the popup first as shown below
-            // otherwise the browser might block the popup
-            const signer = window.arkaneConnect.createSigner();
-
-            // Start - Custom logic (e.g. build the transaction request)
-            window.arkaneConnect
-                  .buildTransactionRequest({
-                      walletId: $("#execute-select-ETHEREUM").val(),
-                      secretType: 'ETHEREUM',
-                      to: "0x680800Dd4913021821A9C08D569eF4338dB8E9f6",
-                      value: 0.0314
-                  })
-                  .then((transactionRequest) => {
-                      signer.executeTransaction(transactionRequest)
-                            .then(function(result) {
-                                app.log(result);
-                            })
-                            .catch(function(error) {
-                                app.log(error);
-                            });
-                  })
-                  .catch((error) => {
-                      // Always catch errors and close the signer, otherwise it looks like the initialising popup is hanging when something goes wrong
-                      signer.close();
-                      app.log(error);
-                  });
-        }
-    );
-
-    document.getElementById('arkane-execute-vechain').addEventListener('click', function() {
-        // If you want to do custom logic between the user pressing a button and sgning a transaction, please initialize the popup first as shown below
-        // otherwise the browser might block the popup
-        let signer = window.arkaneConnect.createSigner();
-
-        // Start - Custom logic (e.g. build the transaction request)
+    document.getElementById('sign-ETHEREUM-form').addEventListener('submit', function(e) {
+        e.preventDefault();
         window.arkaneConnect
-              .buildTransactionRequest({
-                  walletId: $("#execute-select-VECHAIN").val(),
-                  secretType: 'VECHAIN',
-                  to: "0x47F40Baf2dc0ccf065c44F44c0B0F49a0c690cd0",
-                  value: 700.13
+              .createSigner()
+              .signTransaction(
+                  {
+                      type: 'ETHEREUM_TRANSACTION',
+                      walletId: $("#sign-ETHEREUM-form select[name='walletId']").val(),
+                      submit: false,
+                      to: $("#sign-ETHEREUM-form input[name='to']").val(),
+                      value: $("#sign-ETHEREUM-form input[name='value']").val(),
+                  },
+                  {
+                      redirectUri: 'http://localhost:4000',
+                      correlationID: `${Date.now()}`
+                  }
+              )
+              .then(function(result) {
+                  app.log(result);
               })
-              .then((transactionRequest) => {
-                  signer.executeTransaction(transactionRequest)
-                        .then(function(result) {
-                            app.log(result);
-                        })
-                        .catch(function(error) {
-                            app.log(error);
-                        });
-              })
-              .catch((error) => {
-                  // Always catch errors and close the signer, otherwise it looks like the initialising popup is hanging when something goes wrong
-                  signer.close();
-                  app.log(error);
+              .catch(function(err) {
+                  app.log(err);
               });
     });
 
-    document.getElementById('close-signer').addEventListener('click', function() {
-        window.arkaneConnect.destroySigner();
+    document.getElementById('sign-VECHAIN-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        window.arkaneConnect
+              .createSigner()
+              .signTransaction(
+                  {
+                      type: 'VECHAIN_TRANSACTION',
+                      walletId: $("#sign-VECHAIN-form select[name='walletId']").val(),
+                      submit: false,
+                      clauses: [{
+                          to: $("#sign-VECHAIN-form input[name='to']").val(),
+                          amount: $("#sign-VECHAIN-form input[name='value']").val(),
+                      }]
+                  },
+                  {
+                      redirectUri: 'http://localhost:4000',
+                      correlationID: `${Date.now()}`
+                  }
+              )
+              .then(function(result) {
+                  app.log(result);
+              })
+              .catch(function(err) {
+                  app.log(err);
+              });
     });
-}
-;
+
+    document.getElementById('execute-ETHEREUM-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        // Generic ETH transaction
+        // window.arkaneConnect.createSigner().executeTransaction(
+        //     {
+        //         walletId: $("#execute-ETHEREUM-form select[name='walletId']").val(),
+        //         to: $("#execute-ETHEREUM-form input[name='to']").val(),
+        //         value: ($("#execute-ETHEREUM-form input[name='value']").val() / Math.pow(10, 18)),
+        //         secretType: 'ETHEREUM',
+        //     },
+        //     {
+        //         redirectUri: 'http://localhost:4000',
+        //         correlationID: `${Date.now()}`
+        //     }
+        // );
+
+        // Generic ERC20 transaction
+        window.arkaneConnect
+              .createSigner()
+              .executeTransaction(
+                  {
+                      walletId: $("#execute-ETHEREUM-form select[name='walletId']").val(),
+                      to: $("#execute-ETHEREUM-form input[name='to']").val(),
+                      value: ($("#execute-ETHEREUM-form input[name='value']").val() / Math.pow(10, 18)),
+                      secretType: 'ETHEREUM',
+                      tokenAddress: '0x02f96ef85cad6639500ca1cc8356f0b5ca5bf1d2',
+                  },
+                  {
+                      redirectUri: 'http://localhost:4000',
+                      correlationID: `${Date.now()}`
+                  }
+              )
+              .then(function(result) {
+                  app.log(result);
+              })
+              .catch(function(err) {
+                  app.log(err);
+              });
+
+        // Native ETH transaction
+        // window.arkaneConnect
+        //       .createSigner()
+        //       .executeNativeTransaction(
+        //           {
+        //               type: 'ETH_TRANSACTION',
+        //               walletId: $("#execute-ETHEREUM-form select[name='walletId']").val(),
+        //               to: $("#execute-ETHEREUM-form input[name='to']").val(),
+        //               value: $("#execute-ETHEREUM-form input[name='value']").val(),
+        //           },
+        //           {
+        //               redirectUri: 'http://localhost:4000',
+        //               correlationID: `${Date.now()}`
+        //           }
+        //       )
+        //       .then(function(result) {
+        //           app.log(result);
+        //       })
+        //       .catch(function(err) {
+        //           app.log(err);
+        //       });
+
+        // Native ERC20 transaction
+        // window.arkaneConnect
+        //       .createSigner()
+        //       .executeNativeTransaction(
+        //           {
+        //               type: 'ETHEREUM_ERC20_TRANSACTION',
+        //               walletId: $("#execute-ETHEREUM-form select[name='walletId']").val(),
+        //               to: $("#execute-ETHEREUM-form input[name='to']").val(),
+        //               value: $("#execute-ETHEREUM-form input[name='value']").val(),
+        //               tokenAddress: '0x02f96ef85cad6639500ca1cc8356f0b5ca5bf1d2',
+        //           },
+        //           {
+        //               redirectUri: 'http://localhost:4000',
+        //               correlationID: `${Date.now()}`
+        //           }
+        //       )
+        //       .then(function(result) {
+        //           app.log(result);
+        //       })
+        //       .catch(function(err) {
+        //           app.log(err);
+        //       });
+    });
+
+    document.getElementById('execute-VECHAIN-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        // Generic VET transaction
+        // window.arkaneConnect.createSigner().executeTransaction(
+        //     {
+        //         walletId: $("#execute-VECHAIN-form select[name='walletId']").val(),
+        //         to: $("#execute-VECHAIN-form input[name='to']").val(),
+        //         value: ($("#execute-VECHAIN-form input[name='value']").val() / Math.pow(10, 18)),
+        //         secretType: 'VECHAIN',
+        //     },
+        //     {
+        //         redirectUri: 'http://localhost:4000',
+        //         correlationID: `${Date.now()}`
+        //     }
+        // );
+
+        // Generic VIP180 transaction
+        window.arkaneConnect
+              .createSigner()
+              .executeTransaction(
+                  {
+                      walletId: $("#execute-VECHAIN-form select[name='walletId']").val(),
+                      to: $("#execute-VECHAIN-form input[name='to']").val(),
+                      value: ($("#execute-VECHAIN-form input[name='value']").val() / Math.pow(10, 18)),
+                      secretType: 'VECHAIN',
+                      tokenAddress: '0x9c6e62b3334294d70c8e410941f52d482557955b',
+                  },
+                  {
+                      redirectUri: 'http://localhost:4000',
+                      correlationID: `${Date.now()}`
+                  }
+              )
+              .then(function(result) {
+                  app.log(result);
+              })
+              .catch(function(err) {
+                  app.log(err);
+              });
+
+        // Native VET transaction
+        // window.arkaneConnect.createSigner().executeNativeTransaction(
+        //     {
+        //         type: 'VET_TRANSACTION',
+        //         walletId: $("#execute-VECHAIN-form select[name='walletId']").val(),
+        //         clauses: [{
+        //             to: $("#execute-VECHAIN-form input[name='to']").val(),
+        //             amount: $("#execute-VECHAIN-form input[name='value']").val(),
+        //         }]
+        //     },
+        //     {
+        //         redirectUri: 'http://localhost:4000',
+        //         correlationID: `${Date.now()}`
+        //     }
+        // );
+
+        // Native VIP180 transaction
+        // window.arkaneConnect.createSigner().executeNativeTransaction(
+        //     {
+        //         type: 'VECHAIN_VIP180_TRANSACTION',
+        //         walletId: $("#execute-VECHAIN-form select[name='walletId']").val(),
+        //         clauses: [{
+        //             to: $("#execute-VECHAIN-form input[name='to']").val(),
+        //             amount: $("#execute-VECHAIN-form input[name='value']").val(),
+        //             tokenAddress: '0x9c6e62b3334294d70c8e410941f52d482557955b',
+        //         }]
+        //     },
+        //     {
+        //         redirectUri: 'http://localhost:4000',
+        //         correlationID: `${Date.now()}`
+        //     }
+        // );
+    });
+};
 
 app.getWallets = function() {
     window.arkaneConnect.getWallets().then(function(result) {
@@ -218,13 +304,11 @@ app.getWallets = function() {
 
 app.log = function(txt) {
     if (isObject(txt)) {
-        txt = JSON.stringify(txt);
+        txt = JSON.stringify(txt, null, 2);
     }
     var date = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
     txt = '---' + date + '---\n' + txt;
-    $('#appLog').val(function(index, old) {
-        return txt + "\n\n" + old;
-    });
+    $('#appLog').html(txt + '\n\n' + $('#appLog').html());
 };
 
 function isObject(obj) {

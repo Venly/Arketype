@@ -3,10 +3,10 @@
   "version": "0.0.1",
   "description": "",
   "dependencies": {
-    "@arkane-network/arkane-connect": "latest",
+    "@arkane-network/arkane-connect": "development",
     "axios": "^0.18.0",
     "jquery": "^3.3.1",
-    "keycloak-js": "^4.3.0"
+    "keycloak-js": "^4.7.0"
   },
   "scripts": {
     "start": "http-server -p 4000 -a localhost -c-1"
