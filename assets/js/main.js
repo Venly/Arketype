@@ -2,7 +2,7 @@ var app = app || {};
 app.auth = {};
 
 app.initApp = function() {
-    window.arkaneConnect = new ArkaneConnect('Arketype', {chains: ['Ethereum'], environment: 'staging', signUsing: Arkane.SignMethod.REDIRECT});
+    window.arkaneConnect = new ArkaneConnect('Arketype', {chains: ['Ethereum'], environment: 'staging', signUsing: 'REDIRECT'});
     window.arkaneConnect
           .checkAuthenticated()
           .then((result) => {
