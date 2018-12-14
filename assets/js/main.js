@@ -2,7 +2,7 @@ var app = app || {};
 app.auth = {};
 
 app.initApp = function() {
-    window.arkaneConnect = new ArkaneConnect('Arketype', {chains: ['Ethereum'], environment: 'staging', signUsing: 'REDIRECT'});
+    window.arkaneConnect = new ArkaneConnect('Arketype', {environment: 'staging', signUsing: 'REDIRECT'});
     window.arkaneConnect
           .checkAuthenticated()
           .then((result) => {
@@ -71,12 +71,16 @@ app.addConnectEvents = function() {
         });
     });
 
-    document.getElementById('manage-wallets').addEventListener('click', function() {
-        window.arkaneConnect.manageWallets({redirectUri: 'http://localhost:4000', correlationID: `${Date.now()}`});
+    document.getElementById('manage-eth-wallets').addEventListener('click', function() {
+        window.arkaneConnect.manageWallets('ETHEREUM', {redirectUri: 'http://localhost:4000'});
+    });
+
+    document.getElementById('manage-vechain-wallets').addEventListener('click', function() {
+        window.arkaneConnect.manageWallets('VECHAIN', {redirectUri: 'http://localhost:4000', correlationID: `${Date.now()}`});
     });
 
     document.getElementById('link-wallets').addEventListener('click', function() {
-        window.arkaneConnect.linkWallets({redirectUri: 'http://localhost:4000', correlationID: `${Date.now()}`});
+        window.arkaneConnect.linkWallets({redirectUri: 'http://localhost:4000'});
     });
 
     document.getElementById('get-profile').addEventListener('click', function() {

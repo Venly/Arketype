@@ -39,6 +39,11 @@ form {
     font-family: arial, sans-serif;
 }
 
+form label {
+    margin-bottom: 5px;
+    display: block;
+}
+
 form a,
 form input,
 form textarea,
@@ -52,7 +57,7 @@ form select {
     border-radius: 5px;
     line-height: 24px;
     padding: 0 5px;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 
 form select {
