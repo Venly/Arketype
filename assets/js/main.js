@@ -139,21 +139,8 @@ app.addConnectEvents = function() {
 
     document.getElementById('execute-ETHEREUM-form').addEventListener('submit', function(e) {
         e.preventDefault();
-        // Generic ETH transaction
-        // window.arkaneConnect.createSigner().executeTransaction(
-        //     {
-        //         walletId: $("#execute-ETHEREUM-form select[name='walletId']").val(),
-        //         to: $("#execute-ETHEREUM-form input[name='to']").val(),
-        //         value: ($("#execute-ETHEREUM-form input[name='value']").val() / Math.pow(10, 18)),
-        //         secretType: 'ETHEREUM',
-        //     },
-        //     {
-        //         redirectUri: 'http://localhost:4000',
-        //         correlationID: `${Date.now()}`
-        //     }
-        // );
 
-        // Generic ERC20 transaction
+        // Generic transaction
         window.arkaneConnect
               .createSigner()
               .executeTransaction(
@@ -162,12 +149,9 @@ app.addConnectEvents = function() {
                       to: $("#execute-ETHEREUM-form input[name='to']").val(),
                       value: ($("#execute-ETHEREUM-form input[name='value']").val() / Math.pow(10, 18)),
                       secretType: 'ETHEREUM',
-                      tokenAddress: '0x02f96ef85cad6639500ca1cc8356f0b5ca5bf1d2',
+                      tokenAddress: $("#execute-ETHEREUM-form input[name='tokenAddress']").val(),
                   },
-                  {
-                      redirectUri: 'http://localhost:4000',
-                      correlationID: `${Date.now()}`
-                  }
+                  {redirectUri: 'http://localhost:4000', correlationID: `${Date.now()}`}
               )
               .then(function(result) {
                   app.log(result);
@@ -224,21 +208,8 @@ app.addConnectEvents = function() {
 
     document.getElementById('execute-VECHAIN-form').addEventListener('submit', function(e) {
         e.preventDefault();
-        // Generic VET transaction
-        // window.arkaneConnect.createSigner().executeTransaction(
-        //     {
-        //         walletId: $("#execute-VECHAIN-form select[name='walletId']").val(),
-        //         to: $("#execute-VECHAIN-form input[name='to']").val(),
-        //         value: ($("#execute-VECHAIN-form input[name='value']").val() / Math.pow(10, 18)),
-        //         secretType: 'VECHAIN',
-        //     },
-        //     {
-        //         redirectUri: 'http://localhost:4000',
-        //         correlationID: `${Date.now()}`
-        //     }
-        // );
 
-        // Generic VIP180 transaction
+        // Generic transaction
         window.arkaneConnect
               .createSigner()
               .executeTransaction(
@@ -247,12 +218,9 @@ app.addConnectEvents = function() {
                       to: $("#execute-VECHAIN-form input[name='to']").val(),
                       value: ($("#execute-VECHAIN-form input[name='value']").val() / Math.pow(10, 18)),
                       secretType: 'VECHAIN',
-                      tokenAddress: '0x9c6e62b3334294d70c8e410941f52d482557955b',
+                      transactionRequest: $("#execute-VECHAIN-form input[name='tokenAddress']").val(),
                   },
-                  {
-                      redirectUri: 'http://localhost:4000',
-                      correlationID: `${Date.now()}`
-                  }
+                  {redirectUri: 'http://localhost:4000', correlationID: `${Date.now()}`}
               )
               .then(function(result) {
                   app.log(result);

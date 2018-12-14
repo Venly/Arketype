@@ -60,18 +60,24 @@
         <div>
           <h2>Ethereum</h2>
           <form id="sign-ETHEREUM-form">
-            <select name="walletId"></select>
-            <input type="text" name="to" placeholder="to" value="0xf147cA0b981C0CD0955D1323DB9980F4B43e9FED"/>
-            <input type="text" name="value" placeholder="value" value="31400000000000000"/>
+            <label for="sign-eth-from">From:</label>
+            <select id="sign-eth-from" name="walletId"></select>
+            <label for="sign-eth-to">To:</label>
+            <input type="text" id="sign-eth-to" name="to" placeholder="to" value="0xf147cA0b981C0CD0955D1323DB9980F4B43e9FED"/>
+            <label for="sign-eth-amount">Amount:</label>
+            <input type="text" id="sign-eth-amount" name="value" placeholder="value" value="31400000000000000"/>
             <input type="submit" value="Sign ETHEREUM transaction"/>
           </form>
         </div>
         <div>
           <h2>VeChain</h2>
           <form id="sign-VECHAIN-form">
-            <select name="walletId"></select>
-            <input type="text" name="to" placeholder="to" value="0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE"/>
-            <input type="text" name="value" placeholder="value" value="31400000000000000"/>
+            <label for="sign-vechain-from">From:</label>
+            <select id="sign-vechain-from" name="walletId"></select>
+            <label for="sign-vechain-to">To:</label>
+            <input type="text" id="sign-vechain-to" name="to" placeholder="to" value="0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE"/>
+            <label for="sign-vechain-amount">Amount:</label>
+            <input type="text" id="sign-vechain-amount" name="value" placeholder="value" value="31400000000000000"/>
             <input type="submit" value="Sign VECHAIN transaction"/>
           </form>
         </div>
@@ -84,18 +90,28 @@
         <div>
           <h2>Ethereum</h2>
           <form id="execute-ETHEREUM-form">
-            <select name="walletId"></select>
-            <input type="text" name="to" placeholder="to" value="0x680800Dd4913021821A9C08D569eF4338dB8E9f6"/>
-            <input type="text" name="value" placeholder="value" value="31400000000000000"/>
+            <label for="exec-eth-from">From:</label>
+            <select id="exec-eth-from" name="walletId"></select>
+            <label for="exec-eth-to">To:</label>
+            <input type="text" id="exec-eth-to" name="to" placeholder="to" value="0x680800Dd4913021821A9C08D569eF4338dB8E9f6"/>
+            <label for="exec-eth-token-address">Token address (optional):</label>
+            <input type="text" id="exec-eth-token-address" name="tokenAddress" placeholder="token address" value=""/>
+            <label for="exec-eth-amount">Amount:</label>
+            <input type="text" id="exec-eth-amount" name="value" placeholder="value" value="31400000000000000"/>
             <input type="submit" value="Execute ETHEREUM transaction"/>
           </form>
         </div>
         <div>
           <h2>VeChain</h2>
           <form id="execute-VECHAIN-form">
-            <select name="walletId"></select>
-            <input type="text" name="to" placeholder="to" value="0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE"/>
-            <input type="text" name="value" placeholder="value" value="31400000000000000"/>
+            <label for="exec-vechain-from">From:</label>
+            <select id="exec-vechain-from" name="walletId"></select>
+            <label for="exec-vechain-to">To:</label>
+            <input type="text" id="exec-vechain-to" name="to" placeholder="to" value="0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE"/>
+            <label for="exec-eth-token-address">Token address (optional):</label>
+            <input type="text" id="exec-vechain-token-address" name="tokenAddress" placeholder="token address" value=""/>
+            <label for="exec-vechain-amount">Amount:</label>
+            <input type="text" id="exec-vechain-amount" name="value" placeholder="value" value="31400000000000000"/>
             <input type="submit" value="Execute VECHAIN transaction"/>
           </form>
         </div>
