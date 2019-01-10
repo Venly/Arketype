@@ -72,7 +72,7 @@ app.addConnectEvents = function() {
     });
 
     document.getElementById('manage-eth-wallets').addEventListener('click', function() {
-        window.arkaneConnect.manageWallets('ETHEREUM', {redirectUri: 'http://localhost:4000'});
+        window.arkaneConnect.manageWallets('ETHEREUM');
     });
 
     document.getElementById('manage-vechain-wallets').addEventListener('click', function() {
