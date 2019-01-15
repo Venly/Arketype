@@ -48,11 +48,8 @@ app.addConnectEvents = function() {
     document.getElementById('get-wallets').addEventListener('click', function() {
         window.arkaneConnect.api.getWallets().then(function(e) {
             app.log(e);
-            var secretTypes = ['ETHEREUM', 'VECHAIN'];
-            for (s of secretTypes) {
-
-            }
             $("#sign-ETHEREUM-form select[name='walletId']").find('option').remove();
+            $("#sign-ETHEREUM-RAW-form select[name='walletId']").find('option').remove();
             $("#sign-VECHAIN-form select[name='walletId']").find('option').remove();
             $("#execute-ETHEREUM-form select[name='walletId']").find('option').remove();
             $("#execute-VECHAIN-form select[name='walletId']").find('option').remove();
@@ -61,6 +58,12 @@ app.addConnectEvents = function() {
                     value: w.id,
                     text: w.address
                 }));
+
+                $(`#sign-${w.secretType}-RAW-form select[name='walletId']`).append($('<option>', {
+                    value: w.id,
+                    text: w.address
+                }));
+
                 $(`#execute-${w.secretType}-form select[name='walletId']`).append($('<option>', {
                     value: w.id,
                     text: w.address
@@ -100,6 +103,30 @@ app.addConnectEvents = function() {
                       submit: false,
                       to: $("#sign-ETHEREUM-form input[name='to']").val(),
                       value: $("#sign-ETHEREUM-form input[name='value']").val(),
+                  },
+                  {
+                      redirectUri: 'http://localhost:4000',
+                      correlationID: `${Date.now()}`
+                  }
+              )
+              .then(function(result) {
+                  app.log(result);
+              })
+              .catch(function(err) {
+                  app.log(err);
+              });
+    });
+
+    document.getElementById('sign-ETHEREUM-RAW-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        // Sign Ethereum RAW
+        window.arkaneConnect
+              .createSigner()
+              .signTransaction(
+                  {
+                      type: 'ETHEREUM_RAW',
+                      walletId: $("#sign-ETHEREUM-RAW-form select[name='walletId']").val(),
+                      data: $("#sign-ETHEREUM-RAW-form textarea[name='data']").val(),
                   },
                   {
                       redirectUri: 'http://localhost:4000',
