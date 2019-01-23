@@ -12,4 +12,4 @@ RUN pwd && ls -l && perl -pi -w -e 's/https:\/\/localhost:4000/https:\/\/demo.ar
 COPY . .
 
 EXPOSE 8080
-CMD [ "npm", "run", "start" ]
+CMD [ "npm", "run", "start-ext" ]
