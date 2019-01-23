@@ -128,6 +128,7 @@ app.addConnectEvents = function() {
                       submit: false,
                       to: $("#sign-ETHEREUM-form input[name='to']").val(),
                       value: $("#sign-ETHEREUM-form input[name='value']").val(),
+                      data:  $("#sign-ETHEREUM-form textarea[name='data']").val(),
                   },
                   {
                       redirectUri: 'http://localhost:4000',
@@ -178,6 +179,7 @@ app.addConnectEvents = function() {
                       clauses: [{
                           to: $("#sign-VECHAIN-form input[name='to']").val(),
                           amount: $("#sign-VECHAIN-form input[name='value']").val(),
+                          data:  $("#sign-VECHAIN-form textarea[name='data']").val(),
                       }]
                   },
                   {
@@ -206,6 +208,7 @@ app.addConnectEvents = function() {
                       value: ($("#execute-ETHEREUM-form input[name='value']").val() / Math.pow(10, 18)),
                       secretType: 'ETHEREUM',
                       tokenAddress: $("#execute-ETHEREUM-form input[name='tokenAddress']").val(),
+                      data:  $("#execute-ETHEREUM-form textarea[name='data']").val(),
                   },
                   {redirectUri: 'http://localhost:4000', correlationID: `${Date.now()}`}
               )
@@ -225,6 +228,7 @@ app.addConnectEvents = function() {
         //               walletId: $("#execute-ETHEREUM-form select[name='walletId']").val(),
         //               to: $("#execute-ETHEREUM-form input[name='to']").val(),
         //               value: $("#execute-ETHEREUM-form input[name='value']").val(),
+        //               data:  $("#execute-ETHEREUM-form textarea[name='data']").val(),
         //           },
         //           {
         //               redirectUri: 'http://localhost:4000',
@@ -274,7 +278,8 @@ app.addConnectEvents = function() {
                       to: $("#execute-VECHAIN-form input[name='to']").val(),
                       value: ($("#execute-VECHAIN-form input[name='value']").val() / Math.pow(10, 18)),
                       secretType: 'VECHAIN',
-                      transactionRequest: $("#execute-VECHAIN-form input[name='tokenAddress']").val(),
+                      tokenAddress: $("#execute-VECHAIN-form input[name='tokenAddress']").val(),
+                      data:  $("#execute-VECHAIN-form textarea[name='data']").val(),
                   },
                   {redirectUri: 'http://localhost:4000', correlationID: `${Date.now()}`}
               )
@@ -293,6 +298,7 @@ app.addConnectEvents = function() {
         //         clauses: [{
         //             to: $("#execute-VECHAIN-form input[name='to']").val(),
         //             amount: $("#execute-VECHAIN-form input[name='value']").val(),
+        //             data:  $("#execute-VECHAIN-form textarea[name='data']").val(),
         //         }]
         //     },
         //     {
