@@ -10,6 +10,7 @@ pipeline {
     stages {
         stage('Docker Build') {
           steps {
+            sh 'ls -l'
             sh 'docker build -t fundrequestio/arkane-arketype:${BRANCH_NAME} .'
           }
         }
