@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 # where available (npm@5+)
 COPY * ./
 RUN npm install
-RUN perl -pi -w -e 's/https:\/\/localhost:4000/https:\/\/demo.arkane.network/g' assets/js/main.js
+RUN pwd && ls -l && perl -pi -w -e 's/https:\/\/localhost:4000/https:\/\/demo.arkane.network/g' assets/js/main.js
 COPY . .
 
 EXPOSE 8080
