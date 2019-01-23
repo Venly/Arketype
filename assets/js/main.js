@@ -78,6 +78,8 @@ app.addConnectEvents = function() {
             $("#sign-VECHAIN-form select[name='walletId']").find('option').remove();
             $("#execute-ETHEREUM-form select[name='walletId']").find('option').remove();
             $("#execute-VECHAIN-form select[name='walletId']").find('option').remove();
+            $("#execute-BITCOIN-form select[name='walletId']").find('option').remove();
+
             for (w of e) {
                 $(`#sign-${w.secretType}-form select[name='walletId']`).append($('<option>', {
                     value: w.id,
@@ -323,6 +325,44 @@ app.addConnectEvents = function() {
         //         correlationID: `${Date.now()}`
         //     }
         // );
+    });
+
+    document.getElementById('execute-BITCOIN-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Generic transaction
+        // window.arkaneConnect
+        //       .createSigner()
+        //       .executeTransaction(
+        //           {
+        //               walletId: $("#execute-VECHAIN-form select[name='walletId']").val(),
+        //               to: $("#execute-VECHAIN-form input[name='to']").val(),
+        //               value: ($("#execute-VECHAIN-form input[name='value']").val() / Math.pow(10, 18)),
+        //               secretType: 'VECHAIN',
+        //               transactionRequest: $("#execute-VECHAIN-form input[name='tokenAddress']").val(),
+        //           },
+        //           {redirectUri: 'http://localhost:4000', correlationID: `${Date.now()}`}
+        //       )
+        //       .then(function(result) {
+        //           app.log(result);
+        //       })
+        //       .catch(function(err) {
+        //           app.log(err);
+        //       });
+
+        // Native BITCOIN transaction
+        window.arkaneConnect.createSigner().executeNativeTransaction(
+            {
+                type: 'BTC_TRANSACTION',
+                walletId: $("#execute-BITCOIN-form select[name='walletId']").val(),
+                to: $("#execute-BITCOIN-form input[name='to']").val(),
+                value: $("#execute-BITCOIN-form input[name='value']").val(),
+            },
+            {
+                redirectUri: 'http://localhost:4000',
+                correlationID: `${Date.now()}`
+            }
+        );
     });
 };
 
