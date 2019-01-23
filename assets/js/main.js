@@ -6,12 +6,12 @@ app.initApp = function() {
     window.arkaneConnect
           .checkAuthenticated()
           .then((result) => {
-                  $('input[name=redirect]').val(window.location.href);
-                  return result.authenticated(app.handleAuthenticated)
-                               .notAuthenticated((auth) => {
-                                   document.body.classList.add('not-logged-in');
-                               });
-              }
+                    $('input[name=redirect]').val(window.location.href);
+                    return result.authenticated(app.handleAuthenticated)
+                                 .notAuthenticated((auth) => {
+                                     document.body.classList.add('not-logged-in');
+                                 });
+                }
           )
           .catch(reason => app.log(reason));
     app.attachLinkEvents();
@@ -35,13 +35,38 @@ app.handleAuthenticated = (auth) => {
     $('#auth-username').text(app.auth.subject);
     app.updateToken(app.auth.token);
     window.arkaneConnect.addOnTokenRefreshCallback(app.updateToken);
+    app.checkResultRequestParams();
     app.addConnectEvents();
     app.getWallets();
 };
-
 app.updateToken = (token) => {
     $('input[name="bearer"]').val(app.auth.token);
     $('#auth-token').val(token);
+};
+
+app.checkResultRequestParams = function() {
+    const status = this.getQueryParam('status');
+    if (status === 'SUCCESS') {
+        app.log({status: status, result: app.extractResultFromQueryParams()});
+    } else if (status === 'ABORTED') {
+        app.log({status, errors: []});
+    }
+};
+
+app.extractResultFromQueryParams = function() {
+    const validResultParams = ['transactionHash', 'signedTransaction', 'r', 's', 'v'];
+    const result = {};
+    const regex = new RegExp(/[\?|\&]([^=]+)\=([^&]+)/g);
+    let requestParam = regex.exec(window.location.href);
+    while (requestParam && requestParam !== null) {
+        if (validResultParams.includes(requestParam[1])) {
+            var asObject = {};
+            asObject[decodeURIComponent(requestParam[1])] = decodeURIComponent(requestParam[2]);
+            Object.assign(result, asObject);
+        }
+        requestParam = regex.exec(window.location.href);
+    }
+    return result;
 };
 
 app.addConnectEvents = function() {
@@ -308,6 +333,14 @@ app.log = function(txt) {
     var date = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
     txt = '---' + date + '---\n' + txt;
     $('#appLog').html(txt + '\n\n' + $('#appLog').html());
+};
+
+app.getQueryParam = function(name) {
+    var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    if (results == null) {
+        return null;
+    }
+    return decodeURIComponent(results[1]) || 0;
 };
 
 function isObject(obj) {
