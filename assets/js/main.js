@@ -121,6 +121,7 @@ app.addConnectEvents = function() {
 
     document.getElementById('sign-ETHEREUM-form').addEventListener('submit', function(e) {
         e.preventDefault();
+        const data = $("#sign-ETHEREUM-form textarea[name='data']").val();
         window.arkaneConnect
               .createSigner()
               .signTransaction(
@@ -130,7 +131,7 @@ app.addConnectEvents = function() {
                       submit: false,
                       to: $("#sign-ETHEREUM-form input[name='to']").val(),
                       value: $("#sign-ETHEREUM-form input[name='value']").val(),
-                      data:  $("#sign-ETHEREUM-form textarea[name='data']").val(),
+                      data: data ? data : null,
                   },
                   {
                       redirectUri: 'http://localhost:4000',
@@ -148,13 +149,14 @@ app.addConnectEvents = function() {
     document.getElementById('sign-ETHEREUM-RAW-form').addEventListener('submit', function(e) {
         e.preventDefault();
         // Sign Ethereum RAW
+        const data = $("#sign-ETHEREUM-RAW-form textarea[name='data']").val();
         window.arkaneConnect
               .createSigner()
               .signTransaction(
                   {
                       type: 'ETHEREUM_RAW',
                       walletId: $("#sign-ETHEREUM-RAW-form select[name='walletId']").val(),
-                      data: $("#sign-ETHEREUM-RAW-form textarea[name='data']").val(),
+                      data: data ? data : null,
                   },
                   {
                       redirectUri: 'http://localhost:4000',
@@ -171,6 +173,7 @@ app.addConnectEvents = function() {
 
     document.getElementById('sign-VECHAIN-form').addEventListener('submit', function(e) {
         e.preventDefault();
+        const data = $("#sign-VECHAIN-form textarea[name='data']").val();
         window.arkaneConnect
               .createSigner()
               .signTransaction(
@@ -181,7 +184,7 @@ app.addConnectEvents = function() {
                       clauses: [{
                           to: $("#sign-VECHAIN-form input[name='to']").val(),
                           amount: $("#sign-VECHAIN-form input[name='value']").val(),
-                          data:  $("#sign-VECHAIN-form textarea[name='data']").val(),
+                          data: data ? data : null,
                       }]
                   },
                   {
@@ -201,6 +204,7 @@ app.addConnectEvents = function() {
         e.preventDefault();
 
         // Generic transaction
+        const data = $("#execute-ETHEREUM-form textarea[name='data']").val();
         window.arkaneConnect
               .createSigner()
               .executeTransaction(
@@ -210,7 +214,7 @@ app.addConnectEvents = function() {
                       value: ($("#execute-ETHEREUM-form input[name='value']").val() / Math.pow(10, 18)),
                       secretType: 'ETHEREUM',
                       tokenAddress: $("#execute-ETHEREUM-form input[name='tokenAddress']").val(),
-                      data:  $("#execute-ETHEREUM-form textarea[name='data']").val(),
+                      data: data === "" ? null : data,
                   },
                   {redirectUri: 'http://localhost:4000', correlationID: `${Date.now()}`}
               )
@@ -230,7 +234,7 @@ app.addConnectEvents = function() {
         //               walletId: $("#execute-ETHEREUM-form select[name='walletId']").val(),
         //               to: $("#execute-ETHEREUM-form input[name='to']").val(),
         //               value: $("#execute-ETHEREUM-form input[name='value']").val(),
-        //               data:  $("#execute-ETHEREUM-form textarea[name='data']").val(),
+        //               data: data === "" ? null : data,
         //           },
         //           {
         //               redirectUri: 'http://localhost:4000',
@@ -272,6 +276,7 @@ app.addConnectEvents = function() {
         e.preventDefault();
 
         // Generic transaction
+        const data = $("#execute-VECHAIN-form textarea[name='data']").val();
         window.arkaneConnect
               .createSigner()
               .executeTransaction(
@@ -281,7 +286,7 @@ app.addConnectEvents = function() {
                       value: ($("#execute-VECHAIN-form input[name='value']").val() / Math.pow(10, 18)),
                       secretType: 'VECHAIN',
                       tokenAddress: $("#execute-VECHAIN-form input[name='tokenAddress']").val(),
-                      data:  $("#execute-VECHAIN-form textarea[name='data']").val(),
+                      data: data ? data : null,
                   },
                   {redirectUri: 'http://localhost:4000', correlationID: `${Date.now()}`}
               )
@@ -300,7 +305,7 @@ app.addConnectEvents = function() {
         //         clauses: [{
         //             to: $("#execute-VECHAIN-form input[name='to']").val(),
         //             amount: $("#execute-VECHAIN-form input[name='value']").val(),
-        //             data:  $("#execute-VECHAIN-form textarea[name='data']").val(),
+        //             data: data ? data : null,
         //         }]
         //     },
         //     {
