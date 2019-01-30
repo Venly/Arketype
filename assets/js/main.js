@@ -101,12 +101,10 @@ app.addConnectEvents = function() {
         });
     });
 
-    document.getElementById('manage-eth-wallets').addEventListener('click', function() {
-        window.arkaneConnect.manageWallets('ETHEREUM', {redirectUri: 'http://localhost:4000', correlationID: `${Date.now()}`});
-    });
-
-    document.getElementById('manage-vechain-wallets').addEventListener('click', function() {
-        window.arkaneConnect.manageWallets('VECHAIN', {redirectUri: 'http://localhost:4000', correlationID: `${Date.now()}`});
+    document.querySelectorAll('.manage-wallets').forEach(function(el) {
+       el.addEventListener('click', function() {
+           window.arkaneConnect.manageWallets(this.dataset.chain, {redirectUri: 'http://localhost:4000', correlationID: `${Date.now()}`});
+       })
     });
 
     document.getElementById('link-wallets').addEventListener('click', function() {
