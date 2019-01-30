@@ -6,12 +6,12 @@ app.initApp = function() {
     window.arkaneConnect
           .checkAuthenticated()
           .then((result) => {
-                    $('input[name=redirect]').val(window.location.href);
-                    return result.authenticated(app.handleAuthenticated)
-                                 .notAuthenticated((auth) => {
-                                     document.body.classList.add('not-logged-in');
-                                 });
-                }
+                  $('input[name=redirect]').val(window.location.href);
+                  return result.authenticated(app.handleAuthenticated)
+                               .notAuthenticated((auth) => {
+                                   document.body.classList.add('not-logged-in');
+                               });
+              }
           )
           .catch(reason => app.log(reason));
     app.attachLinkEvents();
@@ -48,9 +48,10 @@ app.checkResultRequestParams = function() {
     const status = this.getQueryParam('status');
     if (status === 'SUCCESS') {
         app.log({status: status, result: app.extractResultFromQueryParams()});
-    } else if (status === 'ABORTED') {
-        app.log({status, errors: []});
-    }
+    } else
+        if (status === 'ABORTED') {
+            app.log({status, errors: []});
+        }
 };
 
 app.extractResultFromQueryParams = function() {
@@ -73,12 +74,12 @@ app.addConnectEvents = function() {
     document.getElementById('get-wallets').addEventListener('click', function() {
         window.arkaneConnect.api.getWallets().then(function(e) {
             app.log(e);
-            $("#sign-ETHEREUM-form select[name='walletId']").find('option').remove();
-            $("#sign-ETHEREUM-RAW-form select[name='walletId']").find('option').remove();
-            $("#sign-VECHAIN-form select[name='walletId']").find('option').remove();
-            $("#execute-ETHEREUM-form select[name='walletId']").find('option').remove();
-            $("#execute-VECHAIN-form select[name='walletId']").find('option').remove();
-            $("#execute-BITCOIN-form select[name='walletId']").find('option').remove();
+            $('#sign-ETHEREUM-form select[name=\'walletId\']').find('option').remove();
+            $('#sign-ETHEREUM-RAW-form select[name=\'walletId\']').find('option').remove();
+            $('#sign-VECHAIN-form select[name=\'walletId\']').find('option').remove();
+            $('#execute-ETHEREUM-form select[name=\'walletId\']').find('option').remove();
+            $('#execute-VECHAIN-form select[name=\'walletId\']').find('option').remove();
+            $('#execute-BITCOIN-form select[name=\'walletId\']').find('option').remove();
 
             for (w of e) {
                 $(`#sign-${w.secretType}-form select[name='walletId']`).append($('<option>', {
@@ -102,9 +103,9 @@ app.addConnectEvents = function() {
     });
 
     document.querySelectorAll('.manage-wallets').forEach(function(el) {
-       el.addEventListener('click', function() {
-           window.arkaneConnect.manageWallets(this.dataset.chain, {redirectUri: 'http://localhost:4000', correlationID: `${Date.now()}`});
-       })
+        el.addEventListener('click', function() {
+            window.arkaneConnect.manageWallets(this.dataset.chain, {redirectUri: 'http://localhost:4000', correlationID: `${Date.now()}`});
+        });
     });
 
     document.getElementById('link-wallets').addEventListener('click', function() {
@@ -119,16 +120,16 @@ app.addConnectEvents = function() {
 
     document.getElementById('sign-ETHEREUM-form').addEventListener('submit', function(e) {
         e.preventDefault();
-        const data = $("#sign-ETHEREUM-form textarea[name='data']").val();
+        const data = $('#sign-ETHEREUM-form textarea[name=\'data\']').val();
         window.arkaneConnect
               .createSigner()
               .signTransaction(
                   {
                       type: 'ETHEREUM_TRANSACTION',
-                      walletId: $("#sign-ETHEREUM-form select[name='walletId']").val(),
+                      walletId: $('#sign-ETHEREUM-form select[name=\'walletId\']').val(),
                       submit: false,
-                      to: $("#sign-ETHEREUM-form input[name='to']").val(),
-                      value: $("#sign-ETHEREUM-form input[name='value']").val(),
+                      to: $('#sign-ETHEREUM-form input[name=\'to\']').val(),
+                      value: $('#sign-ETHEREUM-form input[name=\'value\']').val(),
                       data: data ? data : null,
                   },
                   {
@@ -147,13 +148,13 @@ app.addConnectEvents = function() {
     document.getElementById('sign-ETHEREUM-RAW-form').addEventListener('submit', function(e) {
         e.preventDefault();
         // Sign Ethereum RAW
-        const data = $("#sign-ETHEREUM-RAW-form textarea[name='data']").val();
+        const data = $('#sign-ETHEREUM-RAW-form textarea[name=\'data\']').val();
         window.arkaneConnect
               .createSigner()
               .signTransaction(
                   {
                       type: 'ETHEREUM_RAW',
-                      walletId: $("#sign-ETHEREUM-RAW-form select[name='walletId']").val(),
+                      walletId: $('#sign-ETHEREUM-RAW-form select[name=\'walletId\']').val(),
                       data: data ? data : null,
                   },
                   {
@@ -171,17 +172,17 @@ app.addConnectEvents = function() {
 
     document.getElementById('sign-VECHAIN-form').addEventListener('submit', function(e) {
         e.preventDefault();
-        const data = $("#sign-VECHAIN-form textarea[name='data']").val();
+        const data = $('#sign-VECHAIN-form textarea[name=\'data\']').val();
         window.arkaneConnect
               .createSigner()
               .signTransaction(
                   {
                       type: 'VECHAIN_TRANSACTION',
-                      walletId: $("#sign-VECHAIN-form select[name='walletId']").val(),
+                      walletId: $('#sign-VECHAIN-form select[name=\'walletId\']').val(),
                       submit: false,
                       clauses: [{
-                          to: $("#sign-VECHAIN-form input[name='to']").val(),
-                          amount: $("#sign-VECHAIN-form input[name='value']").val(),
+                          to: $('#sign-VECHAIN-form input[name=\'to\']').val(),
+                          amount: $('#sign-VECHAIN-form input[name=\'value\']').val(),
                           data: data ? data : null,
                       }]
                   },
@@ -202,17 +203,17 @@ app.addConnectEvents = function() {
         e.preventDefault();
 
         // Generic transaction
-        const data = $("#execute-ETHEREUM-form textarea[name='data']").val();
+        const data = $('#execute-ETHEREUM-form textarea[name=\'data\']').val();
         window.arkaneConnect
               .createSigner()
               .executeTransaction(
                   {
-                      walletId: $("#execute-ETHEREUM-form select[name='walletId']").val(),
-                      to: $("#execute-ETHEREUM-form input[name='to']").val(),
-                      value: ($("#execute-ETHEREUM-form input[name='value']").val() / Math.pow(10, 18)),
+                      walletId: $('#execute-ETHEREUM-form select[name=\'walletId\']').val(),
+                      to: $('#execute-ETHEREUM-form input[name=\'to\']').val(),
+                      value: ($('#execute-ETHEREUM-form input[name=\'value\']').val() / Math.pow(10, 18)),
                       secretType: 'ETHEREUM',
-                      tokenAddress: $("#execute-ETHEREUM-form input[name='tokenAddress']").val(),
-                      data: data === "" ? null : data,
+                      tokenAddress: $('#execute-ETHEREUM-form input[name=\'tokenAddress\']').val(),
+                      data: data === '' ? null : data,
                   },
                   {redirectUri: 'http://localhost:4000', correlationID: `${Date.now()}`}
               )
@@ -274,16 +275,16 @@ app.addConnectEvents = function() {
         e.preventDefault();
 
         // Generic transaction
-        const data = $("#execute-VECHAIN-form textarea[name='data']").val();
+        const data = $('#execute-VECHAIN-form textarea[name=\'data\']').val();
         window.arkaneConnect
               .createSigner()
               .executeTransaction(
                   {
-                      walletId: $("#execute-VECHAIN-form select[name='walletId']").val(),
-                      to: $("#execute-VECHAIN-form input[name='to']").val(),
-                      value: ($("#execute-VECHAIN-form input[name='value']").val() / Math.pow(10, 18)),
+                      walletId: $('#execute-VECHAIN-form select[name=\'walletId\']').val(),
+                      to: $('#execute-VECHAIN-form input[name=\'to\']').val(),
+                      value: ($('#execute-VECHAIN-form input[name=\'value\']').val() / Math.pow(10, 18)),
                       secretType: 'VECHAIN',
-                      tokenAddress: $("#execute-VECHAIN-form input[name='tokenAddress']").val(),
+                      tokenAddress: $('#execute-VECHAIN-form input[name=\'tokenAddress\']').val(),
                       data: data ? data : null,
                   },
                   {redirectUri: 'http://localhost:4000', correlationID: `${Date.now()}`}
@@ -334,38 +335,37 @@ app.addConnectEvents = function() {
         e.preventDefault();
 
         // Generic transaction
-        // window.arkaneConnect
-        //       .createSigner()
-        //       .executeTransaction(
-        //           {
-        //               walletId: $("#execute-VECHAIN-form select[name='walletId']").val(),
-        //               to: $("#execute-VECHAIN-form input[name='to']").val(),
-        //               value: ($("#execute-VECHAIN-form input[name='value']").val() / Math.pow(10, 18)),
-        //               secretType: 'VECHAIN',
-        //               transactionRequest: $("#execute-VECHAIN-form input[name='tokenAddress']").val(),
-        //           },
-        //           {redirectUri: 'http://localhost:4000', correlationID: `${Date.now()}`}
-        //       )
-        //       .then(function(result) {
-        //           app.log(result);
-        //       })
-        //       .catch(function(err) {
-        //           app.log(err);
-        //       });
+        window.arkaneConnect
+              .createSigner()
+              .executeTransaction(
+                  {
+                      secretType: 'BITCOIN',
+                      walletId: $('#execute-BITCOIN-form select[name=\'walletId\']').val(),
+                      to: $('#execute-BITCOIN-form input[name=\'to\']').val(),
+                      value: $('#execute-BITCOIN-form input[name=\'value\']').val() / Math.pow(10, 8),
+                  },
+                  {redirectUri: 'http://localhost:4000', correlationID: `${Date.now()}`}
+              )
+              .then(function(result) {
+                  app.log(result);
+              })
+              .catch(function(err) {
+                  app.log(err);
+              });
 
         // Native BITCOIN transaction
-        window.arkaneConnect.createSigner().executeNativeTransaction(
-            {
-                type: 'BTC_TRANSACTION',
-                walletId: $("#execute-BITCOIN-form select[name='walletId']").val(),
-                to: $("#execute-BITCOIN-form input[name='to']").val(),
-                value: $("#execute-BITCOIN-form input[name='value']").val(),
-            },
-            {
-                redirectUri: 'http://localhost:4000',
-                correlationID: `${Date.now()}`
-            }
-        );
+        // window.arkaneConnect.createSigner().executeNativeTransaction(
+        //     {
+        //         type: 'BTC_TRANSACTION',
+        //         walletId: $("#execute-BITCOIN-form select[name='walletId']").val(),
+        //         to: $("#execute-BITCOIN-form input[name='to']").val(),
+        //         value: $("#execute-BITCOIN-form input[name='value']").val(),
+        //     },
+        //     {
+        //         redirectUri: 'http://localhost:4000',
+        //         correlationID: `${Date.now()}`
+        //     }
+        // );
     });
 };
 
