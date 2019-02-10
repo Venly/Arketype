@@ -90,6 +90,9 @@
                         <button type="button" data-chain="VECHAIN" class="btn manage-wallets list-group-item list-group-item-action">
                             VeChain Wallets
                         </button>
+                        <button type="button" data-chain="TRON" class="btn manage-wallets list-group-item list-group-item-action">
+                            Tron Wallets
+                        </button>
                         <button type="button" data-chain="BITCOIN" class="btn manage-wallets list-group-item list-group-item-action">
                             Bitcoin Wallets
                         </button>
@@ -191,6 +194,41 @@
                         </form>
                     </div>
                     <div class="card mb-3">
+                        <form data-form="sign" data-chain="TRON" class="card-body">
+                            <h5 class="card-title d-flex align-items-center justify-content-between collapsed" data-toggle="collapse" data-target="#sign-trx">
+                                <a href="javascript:void(0)">
+                                    <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>Tron</span>
+                                </a>
+                                <span class="hide-expanded"><button type="submit" class="btn btn-primary">Sign transaction</button></span>
+                            </h5>
+                            <div id="sign-trx" class="collapse">
+                                <div class="form-group row">
+                                    <label for="sign-from-trx" class="col-sm-3 col-form-label">From</label>
+                                    <div class="col-sm-9">
+                                        <select id="sign-from-trx" class="form-control" name="walletId"></select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="sign-to-trx" class="col-sm-3 col-form-label">To</label>
+                                    <div class="col-sm-9">
+                                        <input id="sign-to-trx" class="form-control" name="to" placeholder="to" value="0xf147cA0b981C0CD0955D1323DB9980F4B43e9FED"/>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="sign-amount-trx" class="col-sm-3 col-form-label">Amount</label>
+                                    <div class="col-sm-9">
+                                        <input id="sign-amount-trx" class="form-control" name="value" placeholder="value" value="31400000000000000"/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="offset-3 col-9">
+                                        <button type="submit" class="btn btn-primary">Sign TRON transaction</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card mb-3">
                         <form data-form="sign" data-chain="VECHAIN" class="card-body">
                             <h5 class="card-title d-flex align-items-center justify-content-between collapsed" data-toggle="collapse" data-target="#sign-vechain">
                                 <a href="javascript:void(0)">
@@ -283,6 +321,49 @@
                                 <div class="row">
                                     <div class="offset-3 col-9">
                                         <button type="submit" class="btn btn-primary">Execute ETHEREUM transaction</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card mb-3">
+                        <form data-form="execute" data-chain="TRON" class="card-body">
+                            <h5 class="card-title d-flex align-items-center justify-content-between collapsed" data-toggle="collapse" data-target="#exec-trx">
+                                <a href="javascript:void(0)">
+                                    <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>Tron</span>
+                                </a>
+                                <span class="hide-expanded"><button type="submit" class="btn btn-primary">Execute transaction</button></span>
+                            </h5>
+                            <div id="exec-trx" class="collapse">
+                                <div class="form-group row">
+                                    <label for="exec-from-trx" class="col-sm-3 col-form-label">From</label>
+                                    <div class="col-sm-9">
+                                        <select id="exec-from-trx" class="form-control" name="walletId"></select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="exec-to-trx" class="col-sm-3 col-form-label">To</label>
+                                    <div class="col-sm-9">
+                                        <input id="exec-to-trx" class="form-control" name="to" placeholder="to" value="0x680800Dd4913021821A9C08D569eF4338dB8E9f6"/>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="exec-token-address-trx" class="col-sm-3 col-form-label">Token address (optional)</label>
+                                    <div class="col-sm-9">
+                                        <input id="exec-token-address-trx" class="form-control" name="tokenAddress" placeholder="Token address"/>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="exec-amount-trx" class="col-sm-3 col-form-label">Amount</label>
+                                    <div class="col-sm-9">
+                                        <input id="exec-amount-trx" class="form-control" name="value" placeholder="value" value="31400000000000000"/>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="offset-3 col-9">
+                                        <button type="submit" class="btn btn-primary">Execute TRON transaction</button>
                                     </div>
                                 </div>
                             </div>

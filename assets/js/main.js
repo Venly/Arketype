@@ -171,6 +171,22 @@
             });
         });
 
+        var formSignTrx = document.querySelector('[data-form="sign"][data-chain="TRON"]');
+        formSignTrx.addEventListener('submit', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var walletId = $('select[name="walletId"]', formSignTrx).val();
+            var to = $('input[name="to"]', formSignTrx).val();
+            var value = $('input[name="value"]', formSignTrx).val();
+            signTransaction({
+                type: 'TRON_TRANSACTION',
+                walletId,
+                submit: false,
+                to,
+                value,
+            });
+        });
+
         var formSignVechain = document.querySelector('[data-form="sign"][data-chain="VECHAIN"]');
         formSignVechain.addEventListener('submit', function(e) {
             e.stopPropagation();
@@ -279,6 +295,28 @@
             //         }]
             //     }
             // );
+        });
+
+
+        var formExecTrx = document.querySelector('[data-form="execute"][data-chain="TRON"]');
+        formExecEth.addEventListener('submit', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var data = $('textarea[name="data"]', formExecTrx).val() || null;
+            var walletId = $('select[name="walletId"]', formExecTrx).val();
+            var to = $('input[name="to"]', formExecTrx).val();
+            var value = $('input[name="value"]', formExecTrx).val() / Math.pow(10, 18);
+            var tokenAddress = $('input[name="tokenAddress"]', formExecTrx).val();
+
+            // Generic transaction
+            executeTransaction({
+                secretType: 'TRON',
+                walletId,
+                to,
+                value,
+                tokenAddress,
+                data
+            });
         });
 
         var formExecBitcoin = document.querySelector('[data-form="execute"][data-chain="BITCOIN"]');
