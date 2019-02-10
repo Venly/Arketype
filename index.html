@@ -374,6 +374,43 @@
                             </div>
                         </form>
                     </div>
+
+                    <div class="card mb-3">
+                        <form data-form="execute" data-chain="LITECOIN" class="card-body">
+                            <h5 class="card-title d-flex align-items-center justify-content-between collapsed" data-toggle="collapse" data-target="#exec-litecoin">
+                                <a href="javascript:void(0)">
+                                    <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>Litecoin</span>
+                                </a>
+                                <span class="hide-expanded"><button type="submit" class="btn btn-primary">Execute transaction</button></span>
+                            </h5>
+                            <div id="exec-litecoin" class="collapse">
+                                <div class="form-group row">
+                                    <label for="sign-from-vechain" class="col-sm-3 col-form-label">From</label>
+                                    <div class="col-sm-9">
+                                        <select id="exec-from-litecoin" class="form-control" name="walletId"></select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="exec-to-vechain" class="col-sm-3 col-form-label">To</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" id="exec-to-litecoin" class="form-control" name="to" value="mvcJQvoqP7QswpC2R9Bjytw8BEyfDtdcfy"/>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="exec-amount-litecoin" class="col-sm-3 col-form-label">Amount</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" id="exec-amount-litecoin" class="form-control" name="value" value="00003141"/>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="offset-sm-3 col-sm-9">
+                                        <button type="submit" class="btn btn-primary">Execute LITECOIN transaction</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
