@@ -5,7 +5,9 @@
   "dependencies": {
     "@arkane-network/arkane-connect": "latest",
     "axios": "^0.18.0",
-    "jquery": "^3.3.1"
+    "bootstrap": "^4.2.1",
+    "jquery": "^3.3.1",
+    "popper.js": "^1.14.7"
   },
   "scripts": {
     "start": "http-server -p 4000 -a localhost -c-1",
