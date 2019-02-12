@@ -6,7 +6,7 @@
     var redirectUri = 'http://localhost:4000';
 
     app.initApp = function() {
-        window.arkaneConnect = new ArkaneConnect('Arketype', {environment: 'tst1-local', signUsing: 'REDIRECT'});
+        window.arkaneConnect = new ArkaneConnect('Arketype', {environment: 'staging', signUsing: 'REDIRECT'});
         window.arkaneConnect
               .checkAuthenticated()
               .then((result) => {
