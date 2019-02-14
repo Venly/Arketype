@@ -1,38 +1,38 @@
 {
-  "bitcoin": {
-    "1": {
+  "bitcoin": [
+    {
       "primary": true,
       "description": "Spooky Hawk",
       "address": "mx3DgMQJdrhwtR8XNQs9cnyzpvVffxtArr"
     },
-    "2": {
+    {
       "primary": false,
       "description": "Hidden Hippopotamus",
       "address": "n4d8BxWN6ERs7q2TNtD1Ktje3xWdfBHaPS"
     }
-  },
-  "ethereum": {
-    "1": {
-      "primary": true,
-      "description": "Marvelous Goosander",
-      "address": "0xb16355948A8448c7D4b58bb25f524f9dAE598c9C"
-    },
-    "2": {
+  ],
+  "ethereum": [
+    {
       "primary": false,
       "description": "Inviting Kinkajou",
       "address": "0x969BB561C1E6415575eeecc0b78bf5683a7371BA"
+    },
+    {
+      "primary": true,
+      "description": "Marvelous Goosander",
+      "address": "0xb16355948A8448c7D4b58bb25f524f9dAE598c9C"
     }
-  },
-  "vechain": {
-    "1": {
+  ],
+  "vechain": [
+    {
       "primary": true,
       "description": "Wild Gharial",
       "address": "0xf5875417ccEb3aF5ef691374b49021Ce7c62A55f"
     },
-    "2": {
+    {
       "primary": false,
       "description": "Otherworldly Seahorse",
       "address": "0x40a5a7DaAa2830317d5C3c3c79c059F1764a8832"
     }
-  }
+  ]
 }

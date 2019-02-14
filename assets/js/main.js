@@ -35,6 +35,7 @@
 
     app.handleAuthenticated = (auth) => {
         app.auth = auth;
+        document.body.classList.remove('not-logged-in');
         document.body.classList.add('logged-in');
         $('#auth-username').text(app.auth.subject);
         app.updateToken(app.auth.token);

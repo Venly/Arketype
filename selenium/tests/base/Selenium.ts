@@ -1,6 +1,7 @@
-import { Builder, ThenableWebDriver, WebDriver } from 'selenium-webdriver';
-import { Local as BsLocal }                      from 'browserstack-local';
-import { BrowserConfig }                         from '../../src/browser-configs/all';
+import { Builder, WebDriver } from 'selenium-webdriver';
+
+import { Local as BsLocal } from 'browserstack-local';
+import { BrowserConfig }    from '../../src/browser-configs/all';
 
 export class Selenium {
     private static readonly HUB: string = 'http://hub-cloud.browserstack.com/wd/hub';
@@ -54,7 +55,7 @@ export class Selenium {
                     });
                 });
             }
-        } catch(e) {
+        } catch (e) {
             return false;
         }
         return true;

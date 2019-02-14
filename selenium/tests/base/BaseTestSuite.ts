@@ -5,20 +5,21 @@ import { BrowserConfigs } from '../../src/browser-configs/all';
 import '../../src/fast-selenium.js';
 
 export class BaseTestSuite {
+    private static time: number;
     private static selenium: Selenium;
     private static staticDriver: WebDriver | undefined;
     private static config: Config;
 
-    public getDriver() {
-        return BaseTestSuite.getDriver();
+    public getBrowser() {
+        return BaseTestSuite.getBrowser();
     }
 
     public static getUser() {
-        return BaseTestSuite.config &&  BaseTestSuite.config.userData &&  BaseTestSuite.config.userData.arkane;
+        return BaseTestSuite.config && BaseTestSuite.config.userData && BaseTestSuite.config.userData.arkane;
     }
 
-    public static getDriver(): WebDriver {
-        if(BaseTestSuite.staticDriver) {
+    public static getBrowser(): WebDriver {
+        if (BaseTestSuite.staticDriver) {
             return BaseTestSuite.staticDriver as WebDriver;
         } else {
             throw Error('Driver not defined');
@@ -26,6 +27,7 @@ export class BaseTestSuite {
     }
 
     public static async before() {
+        BaseTestSuite.time = Date.now();
         BaseTestSuite.config = await Setup.getConfig();
         BaseTestSuite.selenium = new Selenium(BaseTestSuite.config.capabilities, BaseTestSuite.config.userData.browserstack, true);
         await BaseTestSuite.selenium.start(BrowserConfigs.MAC_CHROME);
@@ -42,6 +44,5 @@ export class BaseTestSuite {
         if (BaseTestSuite.selenium) {
             BaseTestSuite.selenium.stop()
         }
-
     }
 }
