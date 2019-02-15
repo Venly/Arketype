@@ -1,7 +1,7 @@
 import { Builder, WebDriver } from 'selenium-webdriver';
 
 import { Local as BsLocal } from 'browserstack-local';
-import { BrowserConfig }    from '../../src/browser-configs/all';
+import { BrowserConfig }    from '@config/browser-configs/all';
 
 export class Selenium {
     private static readonly HUB: string = 'http://hub-cloud.browserstack.com/wd/hub';
@@ -18,7 +18,7 @@ export class Selenium {
         };
         if (this.isLocal) {
             this.bsConfig = Object.assign({}, this.bsConfig, {
-                'binarypath': './BrowserStackLocal',
+                'binarypath': './testConfig/BrowserStackLocal',
                 'localIdentifier': '',
             })
         }

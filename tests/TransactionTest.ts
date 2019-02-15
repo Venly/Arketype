@@ -1,12 +1,12 @@
-import chai           from 'chai';
-import chaiAsPromised from 'chai-as-promised';
+import chai            from 'chai';
+import chaiAsPromised  from 'chai-as-promised';
+import { suite, test } from 'mocha-typescript';
+import { By, until }   from 'selenium-webdriver';
 
-import { suite, test }   from 'mocha-typescript';
 import { BaseTestSuite } from './base/BaseTestSuite';
 import { Utils }         from './base/Utils';
-import { By, until }     from 'selenium-webdriver';
 
-import jsonWallets from '../src/wallets.json';
+import jsonWallets from '../testConfig/wallets.json';
 
 
 chai.use(chaiAsPromised);

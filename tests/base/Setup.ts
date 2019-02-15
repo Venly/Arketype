@@ -1,5 +1,5 @@
 import settings from '../../package.json';
-import user     from '../../src/user.json';
+import user     from '@config/user.json';
 
 export interface Config {
     userData: any,
@@ -9,7 +9,7 @@ export interface Config {
 
 export class Setup {
     public static async getConfig(): Promise<Config> {
-        let userInfo = await Setup.importIfExists('../../src/user.local.json') || {};
+        let userInfo = await Setup.importIfExists('../../testConfig/user.local.json') || {};
         let userData = Object.assign({}, user, userInfo);
 
         // Input capabilities

@@ -1,8 +1,8 @@
 import { Config, Setup }  from './Setup';
 import { Selenium }       from './Selenium';
 import { WebDriver }      from 'selenium-webdriver';
-import { BrowserConfigs } from '../../src/browser-configs/all';
-import '../../src/fast-selenium.js';
+import { BrowserConfigs } from '@config/browser-configs/all';
+import '@config/fast-selenium.js';
 
 export class BaseTestSuite {
     private static time: number;

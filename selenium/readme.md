@@ -1,2 +1,0 @@
-- `npm i`
-- update `/src/user.json` with credentials 
