@@ -54,10 +54,7 @@ export class BaseTestSuite {
     protected after(): void {
         const test = (this.mocha.currentTest as Mocha.Test);
         if(test.state !== 'passed') {
-            BaseTestSuite.errors.push({
-               "test": test.name,
-               "error": test.err
-            });
+            BaseTestSuite.errors.push(`${test.title}: ${test.err && test.err.message}`);
         }
     }
 
@@ -65,10 +62,10 @@ export class BaseTestSuite {
         await BaseTestSuite.markTest();
 
         if (BaseTestSuite.staticDriver) {
-            BaseTestSuite.staticDriver.quit();
+            await BaseTestSuite.staticDriver.quit();
         }
         if (BaseTestSuite.selenium) {
-            BaseTestSuite.selenium.stop()
+            await BaseTestSuite.selenium.stop()
         }
     }
 
@@ -91,9 +88,7 @@ export class BaseTestSuite {
         const data: any = { status: 'passed' };
         if(BaseTestSuite.errors.length > 0) {
             data.status = 'failed';
-            data.reason = {
-                errors: BaseTestSuite.errors
-            }
+            data.reason = BaseTestSuite.errors
         }
         const response = await instance.put(`${session.getId()}.json`, data);
     }

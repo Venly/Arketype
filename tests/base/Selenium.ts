@@ -44,13 +44,12 @@ export class Selenium {
 
         try {
             if (this.isLocal) {
-                console.info('***BS*** Local Url, starting BrowserStack Local');
-                this.bsConfig.localIdentifier = `test-arketype-${browserConfig.name}`;
+                this.bsConfig.localIdentifier = `arketype-${browserConfig.name}-` + Math.floor(Math.random()*(999999));
                 this.cap = Object.assign({}, this.cap, {'browserstack.localIdentifier': this.bsConfig.localIdentifier});
                 this.localBrowserStack = new BsLocal();
                 await new Promise((resolve) => {
-                    this.localBrowserStack.start(this.bsConfig, async () => {
-                        console.info('***BS*** BrowserStack started: ', this.localBrowserStack.isRunning());
+                    this.localBrowserStack.start(this.bsConfig,  () => {
+                        this.log('BrowserStack started: ', this.localBrowserStack.isRunning());
                         resolve(true);
                     });
                 });
@@ -61,11 +60,18 @@ export class Selenium {
         return true;
     }
 
-    public stop() {
+    public async stop() {
         if (this.isLocal && this.localBrowserStack) {
-            this.localBrowserStack.stop(() => {
-                console.info('***BS*** BrowserStack Local is stopped.');
-            })
+            await new Promise((resolve) => {
+                this.localBrowserStack.stop(() => {
+                    this.log('BrowserStack Local is stopped.');
+                    resolve(true);
+                });
+            });
         }
+    }
+
+    private log(...args: any[]) {
+        console.info(`***BS*** ${this.bsConfig.localIdentifier} *`, ...args);
     }
 }
