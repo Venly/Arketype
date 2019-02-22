@@ -1,17 +1,26 @@
-import { By, until, WebDriver } from 'selenium-webdriver';
+import { By, error, until, WebDriver, WebElement } from 'selenium-webdriver';
+import NoSuchElementError = error.NoSuchElementError;
 
 export class Utils {
-    public static async login(driver: WebDriver, url: string, login: string, password: string) {
-        await driver.get(url);
-        await driver.sleep(500);
-        let notLoggedIn = (await driver.findElement(By.id('arketype')).getAttribute('class')).indexOf('not-logged-in') > -1;
-        if (notLoggedIn) {
-            await driver.wait(until.elementLocated(By.id('auth-loginlink')), 3000);
-            await driver.findElement(By.id('auth-loginlink')).click();
-            await driver.findElement(By.name('username')).sendKeys(login);
-            await driver.findElement(By.name('password')).sendKeys(password);
-            await driver.findElement(By.name('login')).click();
-            await driver.wait(until.elementLocated(By.id('arketype')), 5000);
+    public static async login(browser: WebDriver, url: string, login: string, password: string): Promise<void> {
+        await browser.get(url);
+        await browser.wait(until.elementLocated(By.css('body#arketype')), 5000);
+
+        try {
+            let notLoggedIn: WebElement | void = await browser.findElement(By.css('body#arketype.not-logged-in')).catch((e: NoSuchElementError) => {});
+            if (notLoggedIn) {
+                await browser.wait(until.elementLocated(By.css('#auth-loginlink')), 3000);
+                await browser.findElement(By.css('#auth-loginlink')).click();
+                await browser.findElement(By.css('[name=username]')).sendKeys(login);
+                await browser.findElement(By.css('[name=password]')).sendKeys(password);
+                await browser.findElement(By.css('[name=login]')).click();
+                await browser.wait(until.elementLocated(By.css('#arketype.logged-in')), 5000);
+            } else {
+                await browser.findElement(By.css('#arketype.logged-in'));
+            }
+        }
+        catch (e) {
+            throw e;
         }
     }
 }
