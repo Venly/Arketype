@@ -1,16 +1,15 @@
-import { Config, Setup }      from './Setup';
-import { Selenium }           from './Selenium';
-import { Session, WebDriver } from 'selenium-webdriver';
-import { BrowserConfigs }     from '@config/browser-configs/all';
-import { Utils }              from '@/base/Utils';
-import chai                   from 'chai';
-import { context }            from 'mocha-typescript';
-import axios                  from 'axios';
-
-import chaiAsPromised = require('chai-as-promised');
-chai.use(chaiAsPromised);
-
+import { Config, Setup }  from './Setup';
+import { Selenium }       from './Selenium';
+import { WebDriver }      from 'selenium-webdriver';
+import { BrowserConfigs } from '@config/browser-configs/all';
+import { Utils }          from '@/base/Utils';
+import chai               from 'chai';
+import { context }        from 'mocha-typescript';
+import axios              from 'axios';
 import '@config/fast-selenium.js';
+import chaiAsPromised = require('chai-as-promised');
+
+chai.use(chaiAsPromised);
 
 export class BaseTestSuite {
     @context
@@ -43,7 +42,7 @@ export class BaseTestSuite {
     }
 
 
-    protected get user(): { login: string, password: string, pincode: string} {
+    protected get user(): { login: string, password: string, pincode: string } {
         return BaseTestSuite.getUser();
     }
 
@@ -65,7 +64,7 @@ export class BaseTestSuite {
 
     protected after(): void {
         const test = (this.mocha.currentTest as Mocha.Test);
-        if(test.state !== 'passed') {
+        if (test.state !== 'passed') {
             BaseTestSuite.errors.push(`${test.title}: ${test.err && test.err.message}`);
         }
     }
@@ -97,8 +96,8 @@ export class BaseTestSuite {
                 'password': BaseTestSuite.config.userData.browserstack['browserstack.key']
             }
         });
-        const data: any = { status: 'passed' };
-        if(BaseTestSuite.errors.length > 0) {
+        const data: any = {status: 'passed'};
+        if (BaseTestSuite.errors.length > 0) {
             data.status = 'failed';
             data.reason = BaseTestSuite.errors
         }

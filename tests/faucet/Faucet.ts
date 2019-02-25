@@ -1,21 +1,24 @@
 import { WebDriver } from 'selenium-webdriver';
 import { FaucetBtc } from '@/faucet/FaucetBtc';
+import { FaucetEth } from '@/faucet/FaucetEth';
 
 export class Faucet {
-    public static async getFaucetIfNeeded(browser: WebDriver, chain: string, balance: number, address: string): Promise<void> {
+    public static async getFaucetIfNeeded(browser: WebDriver, chain: string, balance: number, minBalance: number, address: string): Promise<void> {
 
-        switch (chain.toLowerCase()) {
-            case 'bitcoin':
-                if(balance < 0.01) {
-                    return FaucetBtc.getFaucetBtc(browser, address);
-                }
-                break;
-            case 'ethereum':
-                break;
-            case 'vechain':
-                break;
-            default:
-                return Promise.resolve();
+        if(balance < minBalance) {
+            switch (chain.toLowerCase()) {
+                case 'bitcoin':
+                    // return FaucetBtc.getFaucetBtc(browser, address);
+                    break;
+                case 'ethereum':
+                    // return FaucetEth.getFaucetEth(browser, address);
+                    break;
+                case 'vechain':
+                    // return FaucetVet.getFaucetVet(browser, address);
+                    break;
+            }
         }
+
+        return Promise.resolve();
     }
 }
