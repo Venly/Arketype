@@ -13,7 +13,7 @@ class LoginTest extends TransactionBaseTest {
 
     @test()
     public async loggedIn() {
-        await assert.isFulfilled(this.browser.wait(until.elementLocated(By.css('body#arketype.logged-in')), 1000));
+        await assert.isFulfilled(this.browser.wait(until.elementLocated(By.css('body#arketype.logged-in')), 1000), 'Logged In');
     }
 
 }

@@ -8,10 +8,9 @@ import { context }            from 'mocha-typescript';
 import axios                  from 'axios';
 
 import chaiAsPromised = require('chai-as-promised');
+chai.use(chaiAsPromised);
 
 import '@config/fast-selenium.js';
-
-chai.use(chaiAsPromised);
 
 export class BaseTestSuite {
     @context
@@ -23,16 +22,29 @@ export class BaseTestSuite {
     private static config: Config;
     private static errors: any[] = [];
 
-    protected get assert(): Chai.AssertStatic {
+    protected static get assert(): Chai.AssertStatic {
         return chai.assert;
     }
 
-    protected get expect(): Chai.ExpectStatic {
+    protected static get expect(): Chai.ExpectStatic {
         return chai.expect;
+    }
+
+    protected get assert(): Chai.AssertStatic {
+        return BaseTestSuite.assert;
+    }
+
+    protected get expect(): Chai.ExpectStatic {
+        return BaseTestSuite.expect;
     }
 
     protected get browser(): WebDriver {
         return BaseTestSuite.getBrowser();
+    }
+
+
+    protected get user(): { login: string, password: string, pincode: string} {
+        return BaseTestSuite.getUser();
     }
 
     protected static getBrowser(): WebDriver {
@@ -69,7 +81,7 @@ export class BaseTestSuite {
         }
     }
 
-    private static getUser(): { login: string, password: string } {
+    private static getUser(): { login: string, password: string, pincode: string } {
         return BaseTestSuite.config && BaseTestSuite.config.userData && BaseTestSuite.config.userData.arkane;
     }
 

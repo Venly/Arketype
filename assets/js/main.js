@@ -109,6 +109,7 @@
         document.getElementById('get-wallets').addEventListener('click', function() {
             window.arkaneConnect.api.getWallets().then(function(wallets) {
                 app.log(wallets);
+                document.querySelector('body').dataset.wallets = JSON.stringify(wallets);
                 $('[data-form]').each(function() {
                     $('select[name="walletId"]', this).find('option').remove();
                 });
@@ -199,7 +200,7 @@
             var data = $('textarea[name="data"]', formExecEth).val() || null;
             var walletId = $('select[name="walletId"]', formExecEth).val();
             var to = $('input[name="to"]', formExecEth).val();
-            var value = $('input[name="value"]', formExecEth).val() / Math.pow(10, 18);
+            var value = $('input[name="value"]', formExecEth).val();
             var tokenAddress = $('input[name="tokenAddress"]', formExecEth).val();
 
             // Generic transaction
@@ -242,7 +243,7 @@
             var data = $('textarea[name="data"]', formExecVechain).val() || null;
             var walletId = $('select[name="walletId"]', formExecVechain).val();
             var to = $('input[name="to"]', formExecVechain).val();
-            var value = $('input[name="value"]', formExecVechain).val()  / Math.pow(10, 18);
+            var value = $('input[name="value"]', formExecVechain).val();
             var tokenAddress = $('input[name="tokenAddress"]', formExecVechain).val();
 
             // Generic transaction
@@ -288,7 +289,7 @@
             e.preventDefault();
             var walletId = $('select[name="walletId"]', formExecBitcoin).val();
             var to = $('input[name="to"]', formExecBitcoin).val();
-            var value = $('input[name="value"]', formExecBitcoin).val() / Math.pow(10, 8);
+            var value = $('input[name="value"]', formExecBitcoin).val();
 
             // Generic transaction
             executeTransaction({
@@ -329,11 +330,13 @@
     };
 
     app.getQueryParam = function(name) {
-        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-        if (results == null) {
+        const url = new URL(window.location.href);
+        const params = url.searchParams.getAll(name);
+        if(params.length > 0) {
+            return params[params.length - 1];
+        } else {
             return null;
         }
-        return decodeURIComponent(results[1]) || 0;
     };
 
     function isObject(obj) {
