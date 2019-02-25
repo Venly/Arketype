@@ -8,7 +8,8 @@ import { Faucet }              from '@/faucet/Faucet';
 class VechainTransactionTest extends TransactionBaseTest {
     public chain: string = 'vechain';
     public currency: string = 'VET';
-    public amount: string = '0.001';
+    public amount: string = '0.0012';
+    public amountVisible: string = '0.001';
     public gasName: string = 'VTHO';
     public walletFromMinimumBalance: number = 10;
     public walletFrom = {
