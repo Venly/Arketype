@@ -306,6 +306,23 @@
             //     value: $('#execute-BITCOIN-form input[name=\'value\']').val(),
             // });
         });
+
+        var formExecLitecoin = document.querySelector('[data-form="execute"][data-chain="LITECOIN"]');
+        formExecLitecoin.addEventListener('submit', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var walletId = $('select[name="walletId"]', formExecLitecoin).val();
+            var to = $('input[name="to"]', formExecLitecoin).val();
+            var value = $('input[name="value"]', formExecLitecoin).val() / Math.pow(10, 8);
+
+            // Generic transaction
+            executeTransaction({
+                secretType: 'LITECOIN',
+                walletId,
+                to,
+                value,
+            });
+        });
     };
 
     app.getWallets = function() {
