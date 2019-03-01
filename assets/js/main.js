@@ -339,6 +339,8 @@
         return obj === Object(obj);
     }
 
-    app.initApp();
+    $(function() {
+        app.initApp();
+    });
 
 })();
