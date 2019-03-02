@@ -173,6 +173,37 @@
             });
         });
 
+        var formSignGo = document.querySelector('[data-form="sign"][data-chain="GOCHAIN"]');
+        formSignGo.addEventListener('submit', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var data = $('textarea[name="data"]', formSignGo).val() || null;
+            var walletId = $('select[name="walletId"]', formSignGo).val();
+            var to = $('input[name="to"]', formSignGo).val();
+            var value = $('input[name="value"]', formSignGo).val();
+            signTransaction({
+                type: 'GOCHAIN_TRANSACTION',
+                walletId,
+                submit: false,
+                to,
+                value,
+                data
+            });
+        });
+
+        var formSignGoRaw = document.querySelector('[data-form="sign-raw"][data-chain="GOCHAIN"]');
+        formSignGoRaw.addEventListener('submit', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var data = $('textarea[name="data"]', formSignGoRaw).val() || null;
+            var walletId = $('select[name="walletId"]', formSignGoRaw).val();
+            signTransaction({
+                type: 'GOCHAIN_RAW',
+                walletId,
+                data
+            });
+        });
+
         var formSignVechain = document.querySelector('[data-form="sign"][data-chain="VECHAIN"]');
         formSignVechain.addEventListener('submit', function(e) {
             e.stopPropagation();
@@ -234,6 +265,27 @@
             //               tokenAddress: '0x02f96ef85cad6639500ca1cc8356f0b5ca5bf1d2',
             //           },
             //       );
+        });
+
+        var formExecGo = document.querySelector('[data-form="execute"][data-chain="GOCHAIN"]');
+        formExecGo.addEventListener('submit', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var data = $('textarea[name="data"]', formExecGo).val() || null;
+            var walletId = $('select[name="walletId"]', formExecGo).val();
+            var to = $('input[name="to"]', formExecGo).val();
+            var value = $('input[name="value"]', formExecGo).val() / Math.pow(10, 18);
+            var tokenAddress = $('input[name="tokenAddress"]', formExecGo).val();
+
+            // Generic transaction
+            executeTransaction({
+                secretType: 'GOCHAIN',
+                walletId,
+                to,
+                value,
+                tokenAddress,
+                data
+            });
         });
 
         var formExecVechain = document.querySelector('[data-form="execute"][data-chain="VECHAIN"]');
@@ -307,6 +359,23 @@
             //     to: $('#execute-BITCOIN-form input[name=\'to\']').val(),
             //     value: $('#execute-BITCOIN-form input[name=\'value\']').val(),
             // });
+        });
+
+        var formExecLitecoin = document.querySelector('[data-form="execute"][data-chain="LITECOIN"]');
+        formExecLitecoin.addEventListener('submit', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var walletId = $('select[name="walletId"]', formExecLitecoin).val();
+            var to = $('input[name="to"]', formExecLitecoin).val();
+            var value = $('input[name="value"]', formExecLitecoin).val() / Math.pow(10, 8);
+
+            // Generic transaction
+            executeTransaction({
+                secretType: 'LITECOIN',
+                walletId,
+                to,
+                value,
+            });
         });
     };
 
