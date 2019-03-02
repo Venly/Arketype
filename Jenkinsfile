@@ -22,5 +22,12 @@ pipeline {
             }
           }
         }
+        stage('Test') {
+          steps {
+            browserstack(credentialsId: '173f1b06-fe19-4ee3-bb13-a4e6ca83bf46') {
+              sh 'sh ./runTests.sh'
+            }
+          }
+        }
     }
 }
