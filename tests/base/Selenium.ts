@@ -6,12 +6,12 @@ import { BrowserConfig }    from '@config/browser-configs/all';
 export class Selenium {
     private static readonly HUB: string = 'http://hub-cloud.browserstack.com/wd/hub';
     private readonly isLocal: boolean;
-    private localBrowserStack: BsLocal = new BsLocal();
+    private localBrowserStack?: BsLocal;
     private cap: any = null;
     private bsConfig: any = null;
 
-    constructor(capabilities: any, browserstackUser: any, isLocal: boolean = true) {
-        this.isLocal = isLocal;
+    constructor(capabilities: any, browserstackUser: any) {
+        this.isLocal = capabilities['browserstack.local'];
         this.bsConfig = {
             'key': browserstackUser['browserstack.key'],
             'onlyAutomate': 'true',
@@ -44,12 +44,12 @@ export class Selenium {
 
         try {
             if (this.isLocal) {
-                this.bsConfig.localIdentifier = `arketype-${browserConfig.name}-` + Math.floor(Math.random()*(999999));
+                this.bsConfig.localIdentifier = `arketype-${browserConfig.name}-` + Math.floor(Math.random() * (999999));
                 this.cap = Object.assign({}, this.cap, {'browserstack.localIdentifier': this.bsConfig.localIdentifier});
                 this.localBrowserStack = new BsLocal();
                 await new Promise((resolve) => {
-                    this.localBrowserStack.start(this.bsConfig,  () => {
-                        this.log('BrowserStack started: ', this.localBrowserStack.isRunning());
+                    this.localBrowserStack && this.localBrowserStack.start(this.bsConfig, () => {
+                        this.log('BrowserStack started: ', this.localBrowserStack && localBrowserStack.isRunning());
                         resolve(true);
                     });
                 });
@@ -63,7 +63,7 @@ export class Selenium {
     public async stop() {
         if (this.isLocal && this.localBrowserStack) {
             await new Promise((resolve) => {
-                this.localBrowserStack.stop(() => {
+                this.localBrowserStack && this.localBrowserStack.stop(() => {
                     this.log('BrowserStack Local is stopped.');
                     resolve(true);
                 });

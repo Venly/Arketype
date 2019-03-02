@@ -11,8 +11,6 @@ export class Setup {
     public static async getConfig(): Promise<Config> {
         const env = Utils.env;
 
-        console.log('env', env);
-        
         const userData = {
             'browserstack': {
                 'browserstack.user': env.BROWSERSTACK_USERNAME,
@@ -32,7 +30,7 @@ export class Setup {
             'project': settings.name,
             'acceptSslCerts': 'true',
             'browserstack.networkLogs': 'true',
-            'browserstack.local': env.BROWSERSTACK_LOCAL,
+            'browserstack.local': Boolean(env.BROWSERSTACK_LOCAL),
         };
 
         return {

@@ -53,7 +53,7 @@ export class BaseTestSuite {
     protected static async before(): Promise<void> {
         BaseTestSuite.time = Date.now();
         BaseTestSuite.config = await Setup.getConfig();
-        BaseTestSuite.selenium = new Selenium(BaseTestSuite.config.capabilities, BaseTestSuite.config.userData.browserstack, true);
+        BaseTestSuite.selenium = new Selenium(BaseTestSuite.config.capabilities, BaseTestSuite.config.userData.browserstack);
         await BaseTestSuite.selenium.start(BrowserConfigs.MAC_CHROME);
         BaseTestSuite.staticDriver = await BaseTestSuite.selenium.createDriver() as WebDriver;
         if (!BaseTestSuite.staticDriver) {
