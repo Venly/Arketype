@@ -716,4 +716,5 @@ $RECYCLE.BIN/
 
 
 # CUSTOM
+.env
 src/user.local.json

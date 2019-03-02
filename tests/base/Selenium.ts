@@ -2,6 +2,7 @@ import { Builder, WebDriver } from 'selenium-webdriver';
 
 import { Local as BsLocal } from 'browserstack-local';
 import { BrowserConfig }    from '@config/browser-configs/all';
+import { Utils }            from '@/base/Utils';
 
 export class Selenium {
     private static readonly HUB: string = 'http://hub-cloud.browserstack.com/wd/hub';
@@ -49,7 +50,7 @@ export class Selenium {
                 this.localBrowserStack = new BsLocal();
                 await new Promise((resolve) => {
                     this.localBrowserStack && this.localBrowserStack.start(this.bsConfig, () => {
-                        this.log('BrowserStack started: ', this.localBrowserStack && localBrowserStack.isRunning());
+                        this.log('BrowserStack started: ', this.localBrowserStack && this.localBrowserStack.isRunning());
                         resolve(true);
                     });
                 });

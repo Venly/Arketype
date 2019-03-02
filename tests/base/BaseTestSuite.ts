@@ -59,7 +59,7 @@ export class BaseTestSuite {
         if (!BaseTestSuite.staticDriver) {
             throw new Error('Could not initialize Selenium');
         }
-        await Utils.login(BaseTestSuite.getBrowser(), 'http://localhost:4000', BaseTestSuite.getUser().login, BaseTestSuite.getUser().password);
+        await Utils.login(BaseTestSuite.getBrowser(), BaseTestSuite.config.url, BaseTestSuite.getUser().login, BaseTestSuite.getUser().password);
     }
 
     protected after(): void {

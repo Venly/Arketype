@@ -25,9 +25,6 @@ export class Utils {
     }
 
     public static get env() {
-        // let userInfo = await Setup.importIfExists('../../testConfig/user.local.json') || {};
-        // let userData = Object.assign({}, user, userInfo);
-
         return {
             BROWSERSTACK_USERNAME: process.env.BROWSERSTACK_USERNAME || '',
             BROWSERSTACK_ACCESS_KEY: process.env.BROWSERSTACK_ACCESS_KEY || '',

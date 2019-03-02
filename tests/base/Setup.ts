@@ -30,7 +30,7 @@ export class Setup {
             'project': settings.name,
             'acceptSslCerts': 'true',
             'browserstack.networkLogs': 'true',
-            'browserstack.local': Boolean(env.BROWSERSTACK_LOCAL),
+            'browserstack.local': env.BROWSERSTACK_LOCAL === 'true',
         };
 
         return {
