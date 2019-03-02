@@ -4,12 +4,13 @@ import { suite, test } from 'mocha-typescript';
 import { By, until }   from 'selenium-webdriver';
 
 import { TransactionBaseTest } from './base/TransactionBaseTest';
+import { BaseTestSuite }       from '@/base/BaseTestSuite';
 
 chai.use(chaiAsPromised);
 const assert = chai.assert;
 
 @suite
-class LoginTest extends TransactionBaseTest {
+class LoginTest extends BaseTestSuite {
 
     @test()
     public async loggedIn() {

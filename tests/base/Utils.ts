@@ -23,4 +23,29 @@ export class Utils {
             throw e;
         }
     }
+
+    public static get env() {
+        // let userInfo = await Setup.importIfExists('../../testConfig/user.local.json') || {};
+        // let userData = Object.assign({}, user, userInfo);
+
+        return {
+            BROWSERSTACK_USERNAME: process.env.BROWSERSTACK_USERNAME || '',
+            BROWSERSTACK_ACCESS_KEY: process.env.BROWSERSTACK_ACCESS_KEY || '',
+            BROWSERSTACK_LOCAL: process.env.BROWSERSTACK_LOCAL || '',
+            BROWSERSTACK_BUILD: process.env.BROWSERSTACK_BUILD || '',
+            ARKANE_USERNAME: process.env.ARKANE_USERNAME || '',
+            ARKANE_PASSWORD: process.env.ARKANE_PASSWORD || '',
+            ARKANE_PINCODE: process.env.ARKANE_PINCODE || '',
+            TEST_URL: process.env.TEST_URL || 'http://localhost:4000',
+        }
+    }
+
+    // private static async importIfExists(file: string): Promise<any> {
+    //     try {
+    //         return await require(file);
+    //     } catch (e) {
+    //         console.log('user.local.json not found');
+    //         return;
+    //     }
+    // }
 }

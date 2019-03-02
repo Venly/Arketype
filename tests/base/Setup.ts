@@ -1,5 +1,5 @@
-import settings from '../../package.json';
-import user     from '@config/user.json';
+import settings  from '../../package.json';
+import { Utils } from '@/base/Utils';
 
 export interface Config {
     userData: any,
@@ -9,31 +9,36 @@ export interface Config {
 
 export class Setup {
     public static async getConfig(): Promise<Config> {
-        let userInfo = await Setup.importIfExists('../../testConfig/user.local.json') || {};
-        let userData = Object.assign({}, user, userInfo);
+        const env = Utils.env;
+
+        console.log('env', env);
+        
+        const userData = {
+            'browserstack': {
+                'browserstack.user': env.BROWSERSTACK_USERNAME,
+                'browserstack.key': env.BROWSERSTACK_ACCESS_KEY,
+            },
+            'arkane': {
+                'login': env.ARKANE_USERNAME,
+                'password': env.ARKANE_PASSWORD,
+                'pincode': env.ARKANE_PINCODE
+            }
+        };
+
 
         // Input capabilities
         const capabilities = {
-            'build': settings.version,
+            'build': env.BROWSERSTACK_BUILD,
             'project': settings.name,
             'acceptSslCerts': 'true',
             'browserstack.networkLogs': 'true',
-            'browserstack.local': 'true',
+            'browserstack.local': env.BROWSERSTACK_LOCAL,
         };
 
         return {
             userData,
             capabilities,
-            url: 'http://localhost:4000'
-        }
-    }
-
-    private static async importIfExists(file: string): Promise<any> {
-        try {
-            return await require(file);
-        } catch (e) {
-            console.log('user.local.json not found');
-            return;
+            url: env.TEST_URL
         }
     }
 }
