@@ -712,3 +712,9 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+
+
+# CUSTOM
+.env
+src/user.local.json
