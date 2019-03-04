@@ -1,4 +1,4 @@
-import { skipOnError, suite, timeout } from 'mocha-typescript';
+import { skipOnError, slow, suite, test, timeout } from 'mocha-typescript';
 
 import { TransactionBaseTest } from './base/TransactionBaseTest';
 import { Faucet }              from '@/faucet/Faucet';
@@ -31,5 +31,9 @@ class EthereumTransactionTest extends TransactionBaseTest {
             this.walletFromMinimumBalance,
             this.walletFrom.address
         );
+    }
+
+    public async advancedOptions() {
+        await this.advancedOptionsSlider();
     }
 }

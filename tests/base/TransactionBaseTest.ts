@@ -95,23 +95,11 @@ export abstract class TransactionBaseTest extends BaseTestSuite {
         await this.assert.equal(await this.browser.findElement(By.css('.tx-pincode-form .totals-box__amount .currency')).getAttribute('innerHTML'), ' ' + this.currency, 'Currency');
     }
 
+    public abstract advancedOptions(): Promise<void>;
+
     @test(timeout(4000), slow(2000))
-    public async advancedOptions() {
-        const fee = Number.parseFloat(await this.browser.findElement(By.css('.tx-pincode-form .totals-box__fee .value')).getAttribute('innerHTML'));
-        await this.browser.findElement(By.css('.totals-box__settings-link')).click();
-        await this.assert.equal(await this.browser.findElement(By.css('.advanced h3')).getAttribute('innerHTML'), 'Advanced Settings', 'Title');
-        await this.assert.equal(await this.browser.findElement(By.css('.advanced .totals-box__amount .value')).getAttribute('innerHTML'), this.amountVisible, 'Amount');
-        await this.assert.equal(await this.browser.findElement(By.css('.advanced .totals-box__amount .currency')).getAttribute('innerHTML'), ' ' + this.currency, 'Currency');
-        const tooltip = await this.browser.findElement(By.css('.advanced .vue-slider-tooltip'));
-        const tooltipLabel = (await tooltip.getAttribute('innerHTML')).split(' ');
-        await this.assert.equal(tooltipLabel[1], this.gasName, `Check if tooltip label is ${this.gasName}`);
-        const gasDefault = Number.parseInt(tooltipLabel[0]);
-        await this.browser.findElement(By.css('.advanced .vue-slider-piecewise-item:last-child > span')).click();
-        const gasHigh = Number.parseInt((await tooltip.getAttribute('innerHTML')).split(' ')[0]);
-        await this.assert.isAbove(gasHigh, gasDefault, 'Set priority to fast');
-        await this.browser.findElement(By.css('.advanced button.btn.btn--default')).click();
-        const feeHigh = Number.parseFloat(await this.browser.findElement(By.css('.tx-pincode-form .totals-box__fee .value')).getAttribute('innerHTML'));
-        await this.assert.isAbove(feeHigh, fee, 'Fee is higher after sliding to fast');
+    public async runAdvancedOptionsTest() {
+        await this.advancedOptions();
     }
 
     @test(timeout(12000), slow(6000))
@@ -135,6 +123,32 @@ export abstract class TransactionBaseTest extends BaseTestSuite {
         if (minimumBalance > 0) {
             this.assert.isAbove(w.balance && w.balance.balance || 0, minimumBalance, `Wallet ${jsonWallet.address} - balance above ${minimumBalance}`);
         }
+    }
+
+    protected async advancedOptionsSlider() {
+        const fee = await this.getFee();
+        await this.browser.findElement(By.css('.totals-box__settings-link')).click();
+        await this.advancedCheckTotalBox();
+        const tooltip = await this.browser.findElement(By.css('.advanced .vue-slider-tooltip'));
+        const tooltipLabel = (await tooltip.getAttribute('innerHTML')).split(' ');
+        await this.assert.equal(tooltipLabel[1], this.gasName, `Check if tooltip label is ${this.gasName}`);
+        const gasDefault = Number.parseInt(tooltipLabel[0]);
+        await this.browser.findElement(By.css('.advanced .vue-slider-piecewise-item:last-child > span')).click();
+        const gasHigh = Number.parseInt((await tooltip.getAttribute('innerHTML')).split(' ')[0]);
+        await this.assert.isAbove(gasHigh, gasDefault, 'Set priority to fast');
+        await this.browser.findElement(By.css('.advanced button.btn.btn--default')).click();
+        const feeHigh = await this.getFee();
+        await this.assert.isAbove(feeHigh, fee, 'Fee is higher after updating priority');
+    }
+
+    protected async getFee(): Promise<number> {
+        return Number.parseFloat(await this.browser.findElement(By.css('.tx-pincode-form .totals-box__fee .value')).getAttribute('innerHTML'));
+    }
+
+    protected async advancedCheckTotalBox(): Promise<void> {
+        await this.assert.equal(await this.browser.findElement(By.css('.advanced h3')).getAttribute('innerHTML'), 'Advanced Settings', 'Title');
+        await this.assert.equal(await this.browser.findElement(By.css('.advanced .totals-box__amount .value')).getAttribute('innerHTML'), this.amountVisible, 'Amount');
+        await this.assert.equal(await this.browser.findElement(By.css('.advanced .totals-box__amount .currency')).getAttribute('innerHTML'), ' ' + this.currency, 'Currency');
     }
 
     private static async signFormVisible(): Promise<boolean> {
