@@ -3,7 +3,6 @@ import chaiAsPromised  from 'chai-as-promised';
 import { suite, test } from 'mocha-typescript';
 import { By, until }   from 'selenium-webdriver';
 
-import { TransactionBaseTest } from './base/TransactionBaseTest';
 import { BaseTestSuite }       from '@/base/BaseTestSuite';
 
 chai.use(chaiAsPromised);

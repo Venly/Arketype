@@ -13,14 +13,14 @@ class BitcoinTransactionTest extends TransactionBaseTest {
     public gasName: string = 'Satoshi';
     public walletFromMinimumBalance: number = 0.01;
     public walletFrom = {
-        "primary": false,
-        "description": "Hidden Hippopotamus",
-        "address": "n4d8BxWN6ERs7q2TNtD1Ktje3xWdfBHaPS"
+        primary: false,
+        description: "Hidden Hippopotamus",
+        address: "n4d8BxWN6ERs7q2TNtD1Ktje3xWdfBHaPS"
     };
     public walletTo = {
-        "primary": true,
-        "description": "Spooky Hawk",
-        "address": "mx3DgMQJdrhwtR8XNQs9cnyzpvVffxtArr"
+        primary: true,
+        description: "Spooky Hawk",
+        address: "mx3DgMQJdrhwtR8XNQs9cnyzpvVffxtArr"
     };
 
     public async checkFaucet() {

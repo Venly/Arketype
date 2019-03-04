@@ -1,4 +1,4 @@
-import { By, until } from 'selenium-webdriver';
+import { By, until, WebElement } from 'selenium-webdriver';
 
 import { BaseTestSuite } from './BaseTestSuite';
 
@@ -6,9 +6,9 @@ import { Wallet }              from '@arkane-network/arkane-connect';
 import { slow, test, timeout } from "mocha-typescript";
 
 export interface JsonWallet {
-    'address': string,
-    'description': string,
-    'primary': boolean
+    address: string,
+    description: string,
+    primary: boolean
 }
 
 export abstract class TransactionBaseTest extends BaseTestSuite {
@@ -60,7 +60,16 @@ export abstract class TransactionBaseTest extends BaseTestSuite {
     public async testToInitiateTransactionWindow() {
         await this.browser.findElement(By.css(`[data-toggle][data-target="#exec-${this.chain}"]`)).click();
         await this.browser.wait(until.elementLocated(By.css(`#exec-${this.chain}.collapse.show`)), 1000);
-        await this.assert.equal(await this.browser.findElement(By.css(`#exec-from-${this.chain} option:first-child`)).getAttribute('innerHTML'), this.walletFrom.address);
+        const select = (await this.browser.findElement(By.css(`#exec-from-${this.chain}`)));
+        const options: WebElement[] = (await select.findElements(By.css('option')));
+        let optionFound = false;
+        for(let i = 0; i < options.length; i++) {
+            if(!optionFound && (await options[i].getText()) === this.walletFrom.address) {
+                optionFound = true;
+                await options[i].click();
+            }
+        }
+        await this.assert.isTrue(optionFound, 'From Wallet Selected');
         await this.browser.findElement(By.css(`#exec-to-${this.chain}`)).clear();
         await this.browser.findElement(By.css(`#exec-to-${this.chain}`)).sendKeys(this.walletTo.address);
         await this.browser.findElement(By.css(`#exec-amount-${this.chain}`)).clear();
@@ -97,7 +106,7 @@ export abstract class TransactionBaseTest extends BaseTestSuite {
         const tooltipLabel = (await tooltip.getAttribute('innerHTML')).split(' ');
         await this.assert.equal(tooltipLabel[1], this.gasName, `Check if tooltip label is ${this.gasName}`);
         const gasDefault = Number.parseInt(tooltipLabel[0]);
-        await this.browser.findElement(By.css('.advanced .vue-slider-piecewise-item:last-child')).click();
+        await this.browser.findElement(By.css('.advanced .vue-slider-piecewise-item:last-child > span')).click();
         const gasHigh = Number.parseInt((await tooltip.getAttribute('innerHTML')).split(' ')[0]);
         await this.assert.isAbove(gasHigh, gasDefault, 'Set priority to fast');
         await this.browser.findElement(By.css('.advanced button.btn.btn--default')).click();
@@ -111,11 +120,11 @@ export abstract class TransactionBaseTest extends BaseTestSuite {
         await this.assert.equal(await confirmButton.getAttribute('disabled'), 'true', 'Confirm button is disabled');
         await this.browser.findElement(By.css('input[type="password"]')).sendKeys(this.user.pincode);
         await this.assert.isNull(await confirmButton.getAttribute('disabled'), 'Confirm button is enabled');
-        // await confirmButton.click();
-        // await this.browser.wait(until.elementLocated(By.css('body#arketype.logged-in')), 10000);
-        // const url = new URL(await this.browser.getCurrentUrl());
-        // await this.assert.equal(url.searchParams.get('status'), 'SUCCESS', 'Status is success');
-        // await this.assert.isNotEmpty(url.searchParams.get('transactionHash'), 'Has transaction hash');
+        await confirmButton.click();
+        await this.browser.wait(until.elementLocated(By.css('body#arketype.logged-in')), 10000);
+        const url = new URL(await this.browser.getCurrentUrl());
+        await this.assert.equal(url.searchParams.get('status'), 'SUCCESS', 'Status is success');
+        await this.assert.isNotEmpty(url.searchParams.get('transactionHash'), 'Has transaction hash');
     }
 
     protected testWallet(jsonWallet: JsonWallet, minimumBalance: number = 0): void {
