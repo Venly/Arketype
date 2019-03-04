@@ -86,10 +86,10 @@ export abstract class TransactionBaseTest extends BaseTestSuite {
 
     @test(timeout(2000), slow(2000))
     public async transactionScreen() {
-        const walletFromElement = this.browser.findElement(By.css('.tx-pincode-form #wallet-from'));
+        const walletFromElement = await this.browser.findElement(By.css('.tx-pincode-form #wallet-from'));
         await this.assert.equal((await walletFromElement.findElement(By.css('.wallet-card__description')).getText()).trim(), this.walletFrom.description, 'Wallet From description');
         await this.assert.equal((await walletFromElement.findElement(By.css('.wallet-card__address')).getText()).trim(), this.walletFrom.address, 'Wallet From address');
-        const walletToElement = this.browser.findElement(By.css('.tx-pincode-form #wallet-to'));
+        const walletToElement = await this.browser.findElement(By.css('.tx-pincode-form #wallet-to'));
         await this.assert.equal((await walletToElement.findElement(By.css('.wallet-card__address')).getText()).trim(), this.walletTo.address, 'Wallet To address');
         await this.assert.equal(await this.browser.findElement(By.css('.tx-pincode-form .totals-box__amount .value')).getAttribute('innerHTML'), this.amountVisible, 'Transaction Amount');
         await this.assert.equal(await this.browser.findElement(By.css('.tx-pincode-form .totals-box__amount .currency')).getAttribute('innerHTML'), ' ' + this.currency, 'Currency');
