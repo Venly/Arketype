@@ -3,7 +3,7 @@
 
     window.app = window.app || {};
     app.auth = {};
-    var redirectUri = 'http://localhost:4000';
+    var redirectUri = window.location.origin;
 
     app.initApp = function() {
         window.arkaneConnect = new ArkaneConnect('Arketype', {environment: 'qa', signUsing: 'REDIRECT'});
