@@ -11,7 +11,7 @@
 * Goto [http://localhost:4000](http://localhost:4000)
 
 
-<img align="center" src="https://cdn-images-1.medium.com/max/1000/1*an-58xPyJ1C_qib03GMZHw.png" />
+<img align="center" src="https://cdn-images-1.medium.com/max/1000/1*dwc3lCLurKR8ujuO08CE7Q.png" />
 
 ## Selenium tests on BrowserStack
 
