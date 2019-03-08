@@ -1,4 +1,4 @@
-import { By, until } from 'selenium-webdriver';
+import { By, until, WebDriver } from 'selenium-webdriver';
 
 import { BaseTestSuite } from './BaseTestSuite';
 
@@ -19,18 +19,24 @@ export abstract class TransactionBaseTest extends BaseTestSuite {
     protected static async before(): Promise<void> {
         await super.before();
         const browser = super.getBrowser();
-        // Check if wallets are available
-        if (!await this.signFormVisible()) {
-            await browser.findElement(By.id('get-wallets')).click();
-            await browser.wait(until.elementIsVisible(browser.findElement(By.css('#sign'))), 3000);
-        }
-        // Save wallets to variable
+
+        await this.initWallets(browser);
         const w = await browser.findElement(By.css('body[data-wallets]')).getAttribute('data-wallets');
+
+        // Save wallets to variable
         TransactionBaseTest.myWallets = JSON.parse(w) as Wallet[];
     }
 
     private static async signFormVisible(): Promise<boolean> {
         return (await super.getBrowser().findElement(By.id('sign')).getCssValue('display')) === 'block';
+    }
+
+    private static async initWallets(browser: WebDriver): Promise<void> {
+        // Check if wallets are available
+        if (!await this.signFormVisible()) {
+            await browser.findElement(By.id('get-wallets')).click();
+            await browser.wait(until.elementIsVisible(browser.findElement(By.css('#sign'))), 3000);
+        }
     }
 
     public abstract chain: string;
@@ -41,6 +47,10 @@ export abstract class TransactionBaseTest extends BaseTestSuite {
     public abstract walletFrom: JsonWallet;
     public abstract walletFromMinimumBalance: number;
     public abstract walletTo: JsonWallet;
+
+    protected async before(): Promise<void> {
+        await TransactionBaseTest.initWallets(this.browser);
+    }
 
     protected get wallets(): Wallet[] {
         return TransactionBaseTest.myWallets;
@@ -75,11 +85,11 @@ export abstract class TransactionBaseTest extends BaseTestSuite {
     }
 
     @test(timeout(15000), slow(5000))
-    public async checkFor_PREPARE_TRANSACTION_ERROR_TO_NotFoundError() {
+    public async checkFor_API_ERROR_TO_NotFoundError() {
         const walletTo = this.walletTo;
         walletTo.address = 'SomeBogusToAddress';
-        await this.openTransactionWindow(this.chain, this.walletFrom, walletTo , this.amount);
-        await this.checkErrorCodeAndCancelTransaction(ErrorTypes.PREPARE_TRANSACTION_ERROR_TO);
+        await this.openTransactionWindow(this.chain, this.walletFrom, walletTo, this.amount);
+        await this.checkErrorCodeAndCancelTransaction(ErrorTypes.API_ERROR_TO);
     }
 
     @test(timeout(15000), slow(8000))
@@ -127,6 +137,18 @@ export abstract class TransactionBaseTest extends BaseTestSuite {
         if (minimumBalance > 0) {
             this.assert.isAbove(w.balance && w.balance.balance || 0, minimumBalance, `Wallet ${jsonWallet.address} - balance above ${minimumBalance}`);
         }
+    }
+
+    protected async advancedOptionsSliderSingleValue(gasValue: number) {
+        await this.browser.findElement(By.css('.totals-box__settings-link')).click();
+        await this.advancedCheckTotalBox();
+        const tooltip = await this.browser.findElement(By.css('.advanced .vue-slider-tooltip'));
+        const tooltipLabel = (await tooltip.getAttribute('innerHTML')).split(' ');
+        await this.assert.equal(tooltipLabel[1], this.gasName, `Check if tooltip label is ${this.gasName}`);
+        const gasDefault = Number.parseInt(tooltipLabel[0]);
+        await this.assert.equal(gasDefault, gasValue, 'Gas value is correct');
+
+        await this.browser.findElement(By.css('.advanced button.btn.btn--default')).click();
     }
 
     protected async advancedOptionsSlider() {

@@ -289,7 +289,7 @@
             var data = $('textarea[name="data"]', formExecGo).val() || null;
             var walletId = $('select[name="walletId"]', formExecGo).val();
             var to = $('input[name="to"]', formExecGo).val();
-            var value = $('input[name="value"]', formExecGo).val() / Math.pow(10, 18);
+            var value = $('input[name="value"]', formExecGo).val();
             var tokenAddress = $('input[name="tokenAddress"]', formExecGo).val();
 
             // Generic transaction
