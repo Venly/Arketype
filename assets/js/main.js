@@ -6,7 +6,7 @@
     var redirectUri = window.location.origin;
 
     app.initApp = function() {
-        window.arkaneConnect = new ArkaneConnect('Arketype', {environment: 'qa', signUsing: 'REDIRECT'});
+        window.arkaneConnect = new ArkaneConnect('Arketype', {environment: 'qa-local', signUsing: 'REDIRECT'});
         window.arkaneConnect
               .checkAuthenticated()
               .then((result) => {
@@ -112,16 +112,30 @@
                 document.querySelector('body').dataset.wallets = JSON.stringify(wallets);
                 $('[data-form]').each(function() {
                     $('select[name="walletId"]', this).find('option').remove();
+                    $('select[name="walletId"]', this).append($('<option>', {
+                        value: '',
+                        text: '-- No Wallet Selected --',
+                        'data-address': '',
+                    }));
                 });
 
                 for (var w of wallets) {
-                    $('[data-form][data-chain="' + w.secretType.toUpperCase() + '"]').each(function() {
+                    var $form = $('[data-form][data-chain="' + w.secretType.toUpperCase() + '"]');
+                    $form.each(function() {
                         $('select[name="walletId"]', this).append($('<option>', {
                             value: w.id,
-                            text: w.address
+                            text: w.address,
+                            'data-address': w.address,
                         }));
                     });
                 }
+
+                $('[data-form] select[name="walletId"]').each(function() {
+                    if(this.length > 1) {
+                        this.selectedIndex = 1;
+                    }
+                });
+
                 $('#sign, #execute').show();
             });
         });
@@ -233,6 +247,7 @@
             var to = $('input[name="to"]', formExecEth).val();
             var value = $('input[name="value"]', formExecEth).val();
             var tokenAddress = $('input[name="tokenAddress"]', formExecEth).val();
+            console.log('walletId', walletId);
 
             // Generic transaction
             executeTransaction({
@@ -391,7 +406,8 @@
         }
         var date = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
         txt = '---' + date + '---\n' + txt;
-        $('#appLog').html(txt + '\n\n' + $('#appLog').html());
+        var $appLog = $('#appLog');
+        $appLog.html(txt + '\n\n' + $appLog.html());
     };
 
     app.clearLog = function() {

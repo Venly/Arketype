@@ -25,14 +25,26 @@ export class Utils {
     }
 
     public static get env() {
+        const x = {
+            "browserstack": {
+                "user": "stevemaris3",
+                "key": "USChyZB6gAzHjfB5zqiV"
+            },
+            "arkane": {
+                "login": "selenium-arketype@mailinator.com",
+                "password": "L7le%K&18NMnx3lsr939",
+                "pincode": "97531"
+            }
+        };
+
         return {
-            BROWSERSTACK_USERNAME: process.env.BROWSERSTACK_USERNAME || '',
-            BROWSERSTACK_ACCESS_KEY: process.env.BROWSERSTACK_ACCESS_KEY || '',
-            BROWSERSTACK_LOCAL: process.env.BROWSERSTACK_LOCAL || '',
-            BROWSERSTACK_BUILD: process.env.BROWSERSTACK_BUILD || '',
-            ARKANE_USERNAME: process.env.ARKANE_USERNAME || '',
-            ARKANE_PASSWORD: process.env.ARKANE_PASSWORD || '',
-            ARKANE_PINCODE: process.env.ARKANE_PINCODE || '',
+            BROWSERSTACK_USERNAME: process.env.BROWSERSTACK_USERNAME || x.browserstack.user,
+            BROWSERSTACK_ACCESS_KEY: process.env.BROWSERSTACK_ACCESS_KEY || x.browserstack.key,
+            BROWSERSTACK_LOCAL: process.env.BROWSERSTACK_LOCAL || 'true',
+            BROWSERSTACK_BUILD: process.env.BROWSERSTACK_BUILD || 'local-1',
+            ARKANE_USERNAME: process.env.ARKANE_USERNAME || x.arkane.login,
+            ARKANE_PASSWORD: process.env.ARKANE_PASSWORD || x.arkane.password,
+            ARKANE_PINCODE: process.env.ARKANE_PINCODE || x.arkane.pincode,
             TEST_URL: process.env.TEST_URL || 'http://localhost:4000',
         }
     }
