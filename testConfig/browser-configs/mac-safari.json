@@ -1,0 +1,8 @@
+{
+  "browserName" : "Safari",
+  "browser_version" : "12.0",
+  "os" : "OS X",
+  "os_version" : "Mojave",
+  "resolution" : "1280x1024",
+  "browserstack.safari.enablePopups" : "true"
+}

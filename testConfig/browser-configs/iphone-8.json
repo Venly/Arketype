@@ -1,0 +1,6 @@
+{
+  "browserName": "iPhone",
+  "device": "iPhone 8 Plus",
+  "realMobile": "true",
+  "os_version": "11"
+}

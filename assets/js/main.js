@@ -3,10 +3,10 @@
 
     window.app = window.app || {};
     app.auth = {};
-    var redirectUri = 'http://localhost:4000';
+    var redirectUri = window.location.origin;
 
     app.initApp = function() {
-        window.arkaneConnect = new ArkaneConnect('Arketype', {environment: 'staging', signUsing: 'REDIRECT'});
+        window.arkaneConnect = new ArkaneConnect('Arketype', {environment: 'qa', signUsing: 'REDIRECT'});
         window.arkaneConnect
               .checkAuthenticated()
               .then((result) => {
@@ -35,6 +35,7 @@
 
     app.handleAuthenticated = (auth) => {
         app.auth = auth;
+        document.body.classList.remove('not-logged-in');
         document.body.classList.add('logged-in');
         $('#auth-username').text(app.auth.subject);
         app.updateToken(app.auth.token);
@@ -108,18 +109,33 @@
         document.getElementById('get-wallets').addEventListener('click', function() {
             window.arkaneConnect.api.getWallets().then(function(wallets) {
                 app.log(wallets);
+                document.querySelector('body').dataset.wallets = JSON.stringify(wallets);
                 $('[data-form]').each(function() {
                     $('select[name="walletId"]', this).find('option').remove();
+                    $('select[name="walletId"]', this).append($('<option>', {
+                        value: '',
+                        text: '-- No Wallet Selected --',
+                        'data-address': '',
+                    }));
                 });
 
                 for (var w of wallets) {
-                    $('[data-form][data-chain="' + w.secretType.toUpperCase() + '"]').each(function() {
+                    var $form = $('[data-form][data-chain="' + w.secretType.toUpperCase() + '"]');
+                    $form.each(function() {
                         $('select[name="walletId"]', this).append($('<option>', {
                             value: w.id,
-                            text: w.address
+                            text: w.address,
+                            'data-address': w.address,
                         }));
                     });
                 }
+
+                $('[data-form] select[name="walletId"]').each(function() {
+                    if(this.length > 1) {
+                        this.selectedIndex = 1;
+                    }
+                });
+
                 $('#sign, #execute').show();
             });
         });
@@ -171,6 +187,37 @@
             });
         });
 
+        var formSignGo = document.querySelector('[data-form="sign"][data-chain="GOCHAIN"]');
+        formSignGo.addEventListener('submit', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var data = $('textarea[name="data"]', formSignGo).val() || null;
+            var walletId = $('select[name="walletId"]', formSignGo).val();
+            var to = $('input[name="to"]', formSignGo).val();
+            var value = $('input[name="value"]', formSignGo).val();
+            signTransaction({
+                type: 'GOCHAIN_TRANSACTION',
+                walletId,
+                submit: false,
+                to,
+                value,
+                data
+            });
+        });
+
+        var formSignGoRaw = document.querySelector('[data-form="sign-raw"][data-chain="GOCHAIN"]');
+        formSignGoRaw.addEventListener('submit', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var data = $('textarea[name="data"]', formSignGoRaw).val() || null;
+            var walletId = $('select[name="walletId"]', formSignGoRaw).val();
+            signTransaction({
+                type: 'GOCHAIN_RAW',
+                walletId,
+                data
+            });
+        });
+
         var formSignVechain = document.querySelector('[data-form="sign"][data-chain="VECHAIN"]');
         formSignVechain.addEventListener('submit', function(e) {
             e.stopPropagation();
@@ -198,8 +245,9 @@
             var data = $('textarea[name="data"]', formExecEth).val() || null;
             var walletId = $('select[name="walletId"]', formExecEth).val();
             var to = $('input[name="to"]', formExecEth).val();
-            var value = $('input[name="value"]', formExecEth).val() / Math.pow(10, 18);
+            var value = $('input[name="value"]', formExecEth).val();
             var tokenAddress = $('input[name="tokenAddress"]', formExecEth).val();
+            console.log('walletId', walletId);
 
             // Generic transaction
             executeTransaction({
@@ -234,6 +282,27 @@
             //       );
         });
 
+        var formExecGo = document.querySelector('[data-form="execute"][data-chain="GOCHAIN"]');
+        formExecGo.addEventListener('submit', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var data = $('textarea[name="data"]', formExecGo).val() || null;
+            var walletId = $('select[name="walletId"]', formExecGo).val();
+            var to = $('input[name="to"]', formExecGo).val();
+            var value = $('input[name="value"]', formExecGo).val();
+            var tokenAddress = $('input[name="tokenAddress"]', formExecGo).val();
+
+            // Generic transaction
+            executeTransaction({
+                secretType: 'GOCHAIN',
+                walletId,
+                to,
+                value,
+                tokenAddress,
+                data
+            });
+        });
+
         var formExecVechain = document.querySelector('[data-form="execute"][data-chain="VECHAIN"]');
         formExecVechain.addEventListener('submit', function(e) {
             e.stopPropagation();
@@ -241,7 +310,7 @@
             var data = $('textarea[name="data"]', formExecVechain).val() || null;
             var walletId = $('select[name="walletId"]', formExecVechain).val();
             var to = $('input[name="to"]', formExecVechain).val();
-            var value = $('input[name="value"]', formExecVechain).val()  / Math.pow(10, 18);
+            var value = $('input[name="value"]', formExecVechain).val();
             var tokenAddress = $('input[name="tokenAddress"]', formExecVechain).val();
 
             // Generic transaction
@@ -287,7 +356,7 @@
             e.preventDefault();
             var walletId = $('select[name="walletId"]', formExecBitcoin).val();
             var to = $('input[name="to"]', formExecBitcoin).val();
-            var value = $('input[name="value"]', formExecBitcoin).val() / Math.pow(10, 8);
+            var value = $('input[name="value"]', formExecBitcoin).val();
 
             // Generic transaction
             executeTransaction({
@@ -306,6 +375,23 @@
             //     value: $('#execute-BITCOIN-form input[name=\'value\']').val(),
             // });
         });
+
+        var formExecLitecoin = document.querySelector('[data-form="execute"][data-chain="LITECOIN"]');
+        formExecLitecoin.addEventListener('submit', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var walletId = $('select[name="walletId"]', formExecLitecoin).val();
+            var to = $('input[name="to"]', formExecLitecoin).val();
+            var value = $('input[name="value"]', formExecLitecoin).val() / Math.pow(10, 8);
+
+            // Generic transaction
+            executeTransaction({
+                secretType: 'LITECOIN',
+                walletId,
+                to,
+                value,
+            });
+        });
     };
 
     app.getWallets = function() {
@@ -320,7 +406,8 @@
         }
         var date = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
         txt = '---' + date + '---\n' + txt;
-        $('#appLog').html(txt + '\n\n' + $('#appLog').html());
+        var $appLog = $('#appLog');
+        $appLog.html(txt + '\n\n' + $appLog.html());
     };
 
     app.clearLog = function() {
@@ -328,11 +415,13 @@
     };
 
     app.getQueryParam = function(name) {
-        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-        if (results == null) {
+        const url = new URL(window.location.href);
+        const params = url.searchParams.getAll(name);
+        if(params.length > 0) {
+            return params[params.length - 1];
+        } else {
             return null;
         }
-        return decodeURIComponent(results[1]) || 0;
     };
 
     function isObject(obj) {

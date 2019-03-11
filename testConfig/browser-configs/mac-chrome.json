@@ -1,0 +1,11 @@
+{
+  "browserName" : "Chrome",
+  "browser_version" : "72.0",
+  "os" : "OS X",
+  "os_version" : "Mojave",
+  "resolution" : "1280x1024",
+  "chromeOptions" : {
+    "args" : ["--disable-plugins"],
+    "excludeSwitches" : ["disable-popup-blocking"]
+  }
+}
