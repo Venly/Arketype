@@ -13,7 +13,13 @@
     "start": "http-server -p 4000 -a localhost -c-1",
     "start-ext": "http-server -p 4000 -c-1",
     "test": "bash ./runTests.sh",
-    "testSingle": "mocha -r ts-node/register -r tsconfig-paths/register -t 120000 $NODE_DEBUG_OPTION tests/EthereumTransactionTest.ts"
+    "testBitcoin": "mocha -r ts-node/register -r tsconfig-paths/register -t 120000 $NODE_DEBUG_OPTION tests/BitcoinTransactionTest.ts",
+    "testEthereum": "mocha -r ts-node/register -r tsconfig-paths/register -t 120000 $NODE_DEBUG_OPTION tests/EthereumTransactionTest.ts",
+    "testGochain": "mocha -r ts-node/register -r tsconfig-paths/register -t 120000 $NODE_DEBUG_OPTION tests/GochainTransactionTest.ts",
+    "testVechain": "mocha -r ts-node/register -r tsconfig-paths/register -t 120000 $NODE_DEBUG_OPTION tests/VechainTransactionTest.ts",
+    "testSingleSuite": "mocha -r ts-node/register -r tsconfig-paths/register -t 120000 $NODE_DEBUG_OPTION tests/EthereumTransactionTest.ts",
+    "testSingleTest1": "mocha -r ts-node/register -r tsconfig-paths/register -t 120000 $NODE_DEBUG_OPTION tests/VechainTransactionTest.ts -g 'checkFor_PREPARE_TRANSACTION_ERROR_TO_NotFoundError'",
+    "testSingleTest2": "mocha -r ts-node/register -r tsconfig-paths/register -t 120000 $NODE_DEBUG_OPTION tests/EthereumTransactionTest.ts -g 'checkFor_NO_WALLET_ID_FoundError'"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",

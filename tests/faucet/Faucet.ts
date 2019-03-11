@@ -16,6 +16,9 @@ export class Faucet {
                 case 'vechain':
                     // return FaucetVet.getFaucetVet(browser, address);
                     break;
+                case 'gochain':
+                    // return FaucetVet.getFaucetVet(browser, address);
+                    break;
             }
         }
 
