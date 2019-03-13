@@ -6,7 +6,7 @@
     var redirectUri = window.location.origin;
 
     app.initApp = function() {
-        window.arkaneConnect = new ArkaneConnect('Arketype', {environment: 'qa', signUsing: 'REDIRECT'});
+        window.arkaneConnect = new ArkaneConnect('Arketype', {environment: 'qa-local', signUsing: 'REDIRECT'});
         window.arkaneConnect
               .checkAuthenticated()
               .then((result) => {
@@ -124,7 +124,7 @@
                     $form.each(function() {
                         $('select[name="walletId"]', this).append($('<option>', {
                             value: w.id,
-                            text: w.address,
+                            text: w.description ? w.description + ' - ' + w.address : w.address,
                             'data-address': w.address,
                         }));
                     });
