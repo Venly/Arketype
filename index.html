@@ -19,42 +19,31 @@
 <body class="bg-light not-logged-in" id="arketype">
 
 <div class="container">
-    <div class="py-5 text-center">
-        <img class="d-block mx-auto mb-4" src="/assets/img/logo-arkane-a-light.svg" alt="" width="72" height="72">
-        <h2>Arkane Network</h2>
-        <div class="lead">
-            <p class="mb-1"><span>Demo project</span><img class="d-inline mx-1" src="/assets/img/Arketype-thumbnail.png" alt="" width="32" height="32"><span>Arketype</span></p>
-            <p>Source code available on <a href="https://github.com/ArkaneNetwork/arketype" target="_blank">GitHub</a></p>
+    <div class="row">
+        <div class="col-12 py-5 text-center">
+            <img class="d-block mx-auto mb-4" src="/assets/img/logo-arkane-a-light.svg" alt="" width="72" height="72">
+            <h2>Arkane Network</h2>
+            <div class="lead">
+                <p class="mb-1"><span>Demo project</span><img class="d-inline mx-1" src="/assets/img/Arketype-thumbnail.png" alt="" width="32" height="32"><span>Arketype</span></p>
+                <p>Source code available on <a href="https://github.com/ArkaneNetwork/arketype" target="_blank">GitHub</a></p>
+            </div>
         </div>
     </div>
 
-    <div class="row auth-not-logged-in text-center">
-        <div class="form-group row col-12">
-            <label class="col-sm-12" for="auth-loginlink">You're not logged in</label>
-            <div class="col-sm-12">
+    <div class="row auth-not-logged-in">
+        <div class="form-group col-12 text-center">
+            <label for="auth-loginlink">You're not logged in</label>
+            <div>
                 <button class="btn btn-primary" id="auth-loginlink">Login</button>
             </div>
         </div>
     </div>
 
     <div class="row auth-logged-in">
-        <div class="col-md-4 order-md-2 mb-4">
-            <h4 class="d-flex justify-content-between align-items-center mb-3">
-                <span class="text-muted">Logs</span>
-                <span class="badge badge-secondary badge-pill"></span>
-            </h4>
-            <div id="appLog" class="form-control"></div>
-
-            <div class="card p-2">
-                <button class="btn btn-secondary" onclick="app.clearLog()">Clear logs</button>
-            </div>
-        </div>
-        <div class="col-md-8 order-md-1">
+        <div class="col-md-6 mb-4">
             <div class="mb-5" id="user-container">
-                <h4 class="mb-3" data-toggle="collapse" data-target="#user"><a href="javascript:void(0)">
-                    <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>User</span></a>
-                </h4>
-                <div id="user" class="show">
+                <h4 class="mb-3">User</h4>
+                <div>
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Actions</label>
                         <div class="col-sm-9 form-row align-items-center">
@@ -78,536 +67,551 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">Logs</span>
+                <span class="badge badge-secondary badge-pill"></span>
+            </h4>
+            <div id="appLog" class="form-control"></div>
 
+            <div class="card p-2">
+                <button class="btn btn-secondary" onclick="app.clearLog()">Clear logs</button>
+            </div>
+        </div>
+        <div class="col-md-12 mb-4">
             <div class="mb-5 row" id="wallet-management">
                 <h4 class="mb-3 col-12">Wallets</h4>
-                <div class="col-12 col-md-4">
-                    <h5 class="mb-3">Manage Wallets</h5>
-                    <div class="list-group">
-                        <button type="button" data-chain="ETHEREUM" class="btn manage-wallets list-group-item list-group-item-action">
-                            Ethereum Wallets
-                        </button>
-                        <button type="button" data-chain="GOCHAIN" class="btn manage-wallets list-group-item list-group-item-action">
-                            GoChain Wallets
-                        </button>
-                        <button type="button" data-chain="VECHAIN" class="btn manage-wallets list-group-item list-group-item-action">
-                            VeChain Wallets
-                        </button>
-                        <button type="button" data-chain="TRON" class="btn manage-wallets list-group-item list-group-item-action">
-                            Tron Wallets
-                        </button>
-                        <button type="button" data-chain="BITCOIN" class="btn manage-wallets list-group-item list-group-item-action">
-                            Bitcoin Wallets
-                        </button>
-                        <button type="button" data-chain="LITECOIN" class="btn manage-wallets list-group-item list-group-item-action">
-                            Litecoin Wallets
-                        </button>
-                    </div>
-                </div>
-                <div class="col-12 col-md-4">
-                    <h5 class="mb-3">Link Wallets</h5>
-                    <div class="list-group">
-                        <button type="button" id="link-wallets" class="btn list-group-item list-group-item-action">
-                            Link Wallets
-                        </button>
-                    </div>
-                </div>
-                <div class="col-12 col-md-4">
-                    <h5 class="mb-3">Get Wallets</h5>
-                    <div class="list-group">
-                        <button type="button" id="get-wallets" class="btn list-group-item list-group-item-action">
-                            Get Wallets
-                        </button>
-                    </div>
+                <div class="col-12 col-md-6">
+                    <button type="button" id="link-wallets" class="btn btn-outline-primary">
+                        Link Wallets
+                    </button>
                 </div>
             </div>
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-ETHEREUM-tab" data-toggle="tab" href=".tab-pane#tab-ETHEREUM" role="tab" aria-controls="nav-ETHEREUM" aria-selected="true">Ethereum</a>
+                    <a class="nav-item nav-link" id="nav-GOCHAIN-tab" data-toggle="tab" href=".tab-pane#nav-GOCHAIN" role="tab" aria-controls="nav-GOCHAIN" aria-selected="false">GoChain</a>
+                    <a class="nav-item nav-link" id="nav-VECHAIN-tab" data-toggle="tab" href=".tab-pane#nav-VECHAIN" role="tab" aria-controls="nav-VECHAIN" aria-selected="false">VeChain</a>
+                    <a class="nav-item nav-link" id="nav-TRON-tab" data-toggle="tab" href=".tab-pane#nav-TRON" role="tab" aria-controls="nav-TRON" aria-selected="false">Tron</a>
+                    <a class="nav-item nav-link" id="nav-BITCOIN-tab" data-toggle="tab" href=".tab-pane#nav-BITCOIN" role="tab" aria-controls="nav-BITCOIN" aria-selected="false">Bitcoin</a>
+                    <a class="nav-item nav-link" id="nav-LITECOIN-tab" data-toggle="tab" href=".tab-pane#nav-LITECOIN" role="tab" aria-controls="nav-LITECOIN"
+                       aria-selected="false">Litecoin</a>
+                </div>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active p-4 bg-white border" id="tab-ETHEREUM" data-chain="ETHEREUM" role="tabpanel" aria-labelledby="nav-ETHEREUM-tab">
+                    <button type="button" data-chain="ETHEREUM" class="btn btn-outline-primary get-wallets mb-3">
+                        Get Wallets
+                    </button>
+                    <button type="button" data-chain="ETHEREUM" class="btn btn-outline-primary manage-wallets mb-3">
+                        Manage Wallets
+                    </button>
 
-            <div class="mb-5" id="sign">
-                <h4 class="mb-3" data-toggle="collapse" data-target="#sign-forms"><a href="javascript:void(0)">
-                    <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>Sign</span></a>
-                </h4>
-                <div id="sign-forms" class="show">
-                    <div class="card mb-3">
-                        <form data-form="sign" data-chain="ETHEREUM" class="card-body">
-                            <h5 class="card-title d-flex align-items-center justify-content-between collapsed" data-toggle="collapse" data-target="#sign-eth">
-                                <a href="javascript:void(0)">
-                                    <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>Ethereum</span>
-                                </a>
-                            </h5>
-                            <div id="sign-eth" class="collapse">
-                                <div class="form-group row">
-                                    <label for="sign-from-eth" class="col-sm-3 col-form-label">From</label>
-                                    <div class="col-sm-9">
-                                        <select id="sign-from-eth" class="form-control" name="walletId"></select>
+                    <div class="row">
+                        <div class="mb-3 col-lg-6">
+                            <form data-form="sign" data-chain="ETHEREUM" class="card bg-light">
+                                <fieldset class="card-body">
+                                    <legend class="card-title">Sign Transaction</legend>
+                                    <div class="form-group row">
+                                        <label for="sign-from-eth" class="col-sm-5 col-form-label">From</label>
+                                        <div class="col-sm-7">
+                                            <select id="sign-from-eth" class="form-control" name="walletId"></select>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="sign-to-eth" class="col-sm-3 col-form-label">To</label>
-                                    <div class="col-sm-9">
-                                        <input id="sign-to-eth" class="form-control" name="to" placeholder="to" value="0xf147cA0b981C0CD0955D1323DB9980F4B43e9FED"/>
+                                    <div class="form-group row">
+                                        <label for="sign-to-eth" class="col-sm-5 col-form-label">To</label>
+                                        <div class="col-sm-7">
+                                            <input id="sign-to-eth" class="form-control" name="to" placeholder="to" value="0xf147cA0b981C0CD0955D1323DB9980F4B43e9FED"/>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="sign-amount-eth" class="col-sm-3 col-form-label">Amount  (in WEI)</label>
-                                    <div class="col-sm-9">
-                                        <input id="sign-amount-eth" class="form-control" name="value" placeholder="value" value="31400000000000000"/>
+                                    <div class="form-group row">
+                                        <label for="sign-amount-eth" class="col-sm-5 col-form-label">Amount (in WEI)</label>
+                                        <div class="col-sm-7">
+                                            <input id="sign-amount-eth" class="form-control" name="value" placeholder="value" value="31400000000000000"/>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="sign-data-eth" class="col-sm-3 col-form-label">Data (optional)</label>
-                                    <div class="col-sm-9">
-                                        <textarea id="sign-data-eth" class="form-control" name="data" rows="4"></textarea>
+                                    <div class="form-group row">
+                                        <label for="sign-data-eth" class="col-sm-5 col-form-label">Data (optional)</label>
+                                        <div class="col-sm-7">
+                                            <textarea id="sign-data-eth" class="form-control" name="data" rows="4"></textarea>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="row">
-                                    <div class="offset-3 col-9">
-                                        <button type="submit" class="btn btn-primary">Sign ETHEREUM transaction</button>
+                                    <div class="row">
+                                        <div class="offset-5 col-7">
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="card mb-3">
-                        <form data-form="sign-raw" data-chain="ETHEREUM" class="card-body">
-                            <h5 class="card-title d-flex align-items-center justify-content-between collapsed" data-toggle="collapse" data-target="#sign-eth-raw">
-                                <a href="javascript:void(0)">
-                                    <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>Ethereum RAW</span>
-                                </a>
-                            </h5>
-                            <div id="sign-eth-raw" class="collapse">
-                                <div class="form-group row">
-                                    <label for="sign-from-eth-raw" class="col-sm-3 col-form-label">From</label>
-                                    <div class="col-sm-9">
-                                        <select id="sign-from-eth-raw" class="form-control" name="walletId"></select>
+                                </fieldset>
+                            </form>
+                        </div>
+                        <div class="mb-3 col-lg-6">
+                            <form data-form="execute" data-chain="ETHEREUM" class="card bg-light">
+                                <fieldset class="card-body">
+                                    <legend class="card-title">Execute Transaction</legend>
+                                    <div class="form-group row">
+                                        <label for="exec-from-eth" class="col-sm-5 col-form-label">From</label>
+                                        <div class="col-sm-7">
+                                            <select id="exec-from-eth" class="form-control" name="walletId"></select>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="sign-data-eth-raw" class="col-sm-3 col-form-label">Data</label>
-                                    <div class="col-sm-9">
-                                        <textarea id="sign-data-eth-raw" class="form-control" name="data" rows="4">123456789ABCDEF</textarea>
+                                    <div class="form-group row">
+                                        <label for="exec-to-eth" class="col-sm-5 col-form-label">To</label>
+                                        <div class="col-sm-7">
+                                            <input id="exec-to-eth" class="form-control" name="to" placeholder="to" value="0x680800Dd4913021821A9C08D569eF4338dB8E9f6"/>
+                                        </div>
                                     </div>
-                                </div>
+                                    <div class="form-group row">
+                                        <label for="exec-token-address-eth" class="col-sm-5 col-form-label">Token address (optional)</label>
+                                        <div class="col-sm-7">
+                                            <input id="exec-token-address-eth" class="form-control" name="tokenAddress" placeholder="Token address"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="exec-amount-eth" class="col-sm-5 col-form-label">Amount (ETH)</label>
+                                        <div class="col-sm-7">
+                                            <input id="exec-amount-eth" class="form-control" name="value" placeholder="value" value="0.0314"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="exec-data-eth" class="col-sm-5 col-form-label">Data (optional)</label>
+                                        <div class="col-sm-7">
+                                            <textarea id="exec-data-eth" class="form-control" name="data" rows="4"></textarea>
+                                        </div>
+                                    </div>
 
-                                <div class="row">
-                                    <div class="offset-sm-3 col-sm-9">
-                                        <button type="submit" class="btn btn-primary">Sign ETHEREUM RAW transaction</button>
+                                    <div class="row">
+                                        <div class="offset-5 col-7">
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="card mb-3">
-                        <form data-form="sign" data-chain="GOCHAIN" class="card-body">
-                            <h5 class="card-title d-flex align-items-center justify-content-between collapsed" data-toggle="collapse" data-target="#sign-go">
-                                <a href="javascript:void(0)">
-                                    <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>Gochain</span>
-                                </a>
-                            </h5>
-                            <div id="sign-go" class="collapse">
-                                <div class="form-group row">
-                                    <label for="sign-from-go" class="col-sm-3 col-form-label">From</label>
-                                    <div class="col-sm-9">
-                                        <select id="sign-from-go" class="form-control" name="walletId"></select>
+                                </fieldset>
+                            </form>
+                        </div>
+                        <div class="mb-3 col-lg-6">
+                            <form data-form="sign-raw" data-chain="ETHEREUM" class="card bg-light">
+                                <fieldset class="card-body">
+                                    <legend class="card-title">Sign Raw Transaction</legend>
+                                    <div class="form-group row">
+                                        <label for="sign-from-eth-raw" class="col-sm-5 col-form-label">From</label>
+                                        <div class="col-sm-7">
+                                            <select id="sign-from-eth-raw" class="form-control" name="walletId"></select>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="sign-to-go" class="col-sm-3 col-form-label">To</label>
-                                    <div class="col-sm-9">
-                                        <input id="sign-to-go" class="form-control" name="to" placeholder="to" value="0xd84aeb36b2a30eDB94e9f0A25A82E94e506ebB15"/>
+                                    <div class="form-group row">
+                                        <label for="sign-data-eth-raw" class="col-sm-5 col-form-label">Data</label>
+                                        <div class="col-sm-7">
+                                            <textarea id="sign-data-eth-raw" class="form-control" name="data" rows="4">123456789ABCDEF</textarea>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="sign-amount-go" class="col-sm-3 col-form-label">Amount</label>
-                                    <div class="col-sm-9">
-                                        <input id="sign-amount-go" class="form-control" name="value" placeholder="value" value="32000000000000000"/>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="sign-data-go" class="col-sm-3 col-form-label">Data (optional)</label>
-                                    <div class="col-sm-9">
-                                        <textarea id="sign-data-go" class="form-control" name="data" rows="4"></textarea>
-                                    </div>
-                                </div>
 
-                                <div class="row">
-                                    <div class="offset-3 col-9">
-                                        <button type="submit" class="btn btn-primary">Sign GOCHAIN transaction</button>
+                                    <div class="row">
+                                        <div class="offset-sm-5 col-sm-7">
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="card mb-3">
-                        <form data-form="sign-raw" data-chain="GOCHAIN" class="card-body">
-                            <h5 class="card-title d-flex align-items-center justify-content-between collapsed" data-toggle="collapse" data-target="#sign-go-raw">
-                                <a href="javascript:void(0)">
-                                    <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>Gochain RAW</span>
-                                </a>
-                            </h5>
-                            <div id="sign-go-raw" class="collapse">
-                                <div class="form-group row">
-                                    <label for="sign-from-go-raw" class="col-sm-3 col-form-label">From</label>
-                                    <div class="col-sm-9">
-                                        <select id="sign-from-go-raw" class="form-control" name="walletId"></select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="sign-data-go-raw" class="col-sm-3 col-form-label">Data</label>
-                                    <div class="col-sm-9">
-                                        <textarea id="sign-data-go-raw" class="form-control" name="data" rows="4">123456789ABCDEF</textarea>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="offset-sm-3 col-sm-9">
-                                        <button type="submit" class="btn btn-primary">Sign GOCHAIN RAW transaction</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="card mb-3">
-                        <form data-form="sign" data-chain="TRON" class="card-body">
-                            <h5 class="card-title d-flex align-items-center justify-content-between collapsed" data-toggle="collapse" data-target="#sign-trx">
-                                <a href="javascript:void(0)">
-                                    <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>Tron</span>
-                                </a>
-                                <span class="hide-expanded"><button type="submit" class="btn btn-primary">Sign transaction</button></span>
-                            </h5>
-                            <div id="sign-trx" class="collapse">
-                                <div class="form-group row">
-                                    <label for="sign-from-trx" class="col-sm-3 col-form-label">From</label>
-                                    <div class="col-sm-9">
-                                        <select id="sign-from-trx" class="form-control" name="walletId"></select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="sign-to-trx" class="col-sm-3 col-form-label">To</label>
-                                    <div class="col-sm-9">
-                                        <input id="sign-to-trx" class="form-control" name="to" placeholder="to" value="0xf147cA0b981C0CD0955D1323DB9980F4B43e9FED"/>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="sign-amount-trx" class="col-sm-3 col-form-label">Amount</label>
-                                    <div class="col-sm-9">
-                                        <input id="sign-amount-trx" class="form-control" name="value" placeholder="value" value="31400000000000000"/>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="offset-3 col-9">
-                                        <button type="submit" class="btn btn-primary">Sign TRON transaction</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="card mb-3">
-                        <form data-form="sign" data-chain="VECHAIN" class="card-body">
-                            <h5 class="card-title d-flex align-items-center justify-content-between collapsed" data-toggle="collapse" data-target="#sign-vechain">
-                                <a href="javascript:void(0)">
-                                    <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>Vechain</span>
-                                </a>
-                            </h5>
-                            <div id="sign-vechain" class="collapse">
-                                <div class="form-group row">
-                                    <label for="sign-from-vechain" class="col-sm-3 col-form-label">From</label>
-                                    <div class="col-sm-9">
-                                        <select id="sign-from-vechain" class="form-control" name="walletId"></select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="sign-to-vechain" class="col-sm-3 col-form-label">To</label>
-                                    <div class="col-sm-9">
-                                        <input type="text" id="sign-to-vechain" class="form-control" name="to" value="0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE"/>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="sign-amount-vechain" class="col-sm-3 col-form-label">Amount (in WEI)</label>
-                                    <div class="col-sm-9">
-                                        <input type="text" id="sign-amount-vechain" class="form-control" name="value" value="31400000000000000"/>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="sign-data-vechain" class="col-sm-3 col-form-label">Data (optional)</label>
-                                    <div class="col-sm-9">
-                                        <textarea id="sign-data-vechain" class="form-control" name="data" rows="4"></textarea>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="offset-sm-3 col-sm-9">
-                                        <button type="submit" class="btn btn-primary">Sign VECHAIN transaction</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
+                                </fieldset>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
+                <div class="tab-pane fade p-4 bg-white border" id="nav-GOCHAIN" data-chain="GOCHAIN" role="tabpanel" aria-labelledby="nav-GOCHAIN-tab">
+                    <button type="button" data-chain="GOCHAIN" class="btn btn-outline-primary get-wallets mb-3">
+                        Get Wallets
+                    </button>
+                    <button type="button" data-chain="GOCHAIN" class="btn btn-outline-primary manage-wallets mb-3">
+                        Manage Wallets
+                    </button>
 
-            <div class="mb-5" id="execute">
-                <h4 class="mb-3" data-toggle="collapse" data-target="#execute-forms"><a href="javascript:void(0)">
-                    <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>Execute</span></a>
-                </h4>
-                <div id="execute-forms" class="show">
-                    <div class="card mb-3">
-                        <form data-form="execute" data-chain="ETHEREUM" class="card-body">
-                            <h5 class="card-title d-flex align-items-center justify-content-between collapsed" data-toggle="collapse" data-target="#exec-eth">
-                                <a href="javascript:void(0)">
-                                    <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>Ethereum</span>
-                                </a>
-                            </h5>
-                            <div id="exec-eth" class="collapse">
-                                <div class="form-group row">
-                                    <label for="exec-from-eth" class="col-sm-3 col-form-label">From</label>
-                                    <div class="col-sm-9">
-                                        <select id="exec-from-eth" class="form-control" name="walletId"></select>
+                    <div class="row">
+                        <div class="mb-3 col-lg-6">
+                            <form data-form="sign" data-chain="GOCHAIN" class="card bg-light">
+                                <fieldset class="card-body">
+                                    <legend class="card-title">Sign Transaction</legend>
+                                    <div class="form-group row">
+                                        <label for="sign-from-go" class="col-sm-3 col-form-label">From</label>
+                                        <div class="col-sm-9">
+                                            <select id="sign-from-go" class="form-control" name="walletId"></select>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="exec-to-eth" class="col-sm-3 col-form-label">To</label>
-                                    <div class="col-sm-9">
-                                        <input id="exec-to-eth" class="form-control" name="to" placeholder="to" value="0x680800Dd4913021821A9C08D569eF4338dB8E9f6"/>
+                                    <div class="form-group row">
+                                        <label for="sign-to-go" class="col-sm-3 col-form-label">To</label>
+                                        <div class="col-sm-9">
+                                            <input id="sign-to-go" class="form-control" name="to" placeholder="to" value="0xd84aeb36b2a30eDB94e9f0A25A82E94e506ebB15"/>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="exec-token-address-eth" class="col-sm-3 col-form-label">Token address (optional)</label>
-                                    <div class="col-sm-9">
-                                        <input id="exec-token-address-eth" class="form-control" name="tokenAddress" placeholder="Token address"/>
+                                    <div class="form-group row">
+                                        <label for="sign-amount-go" class="col-sm-3 col-form-label">Amount</label>
+                                        <div class="col-sm-9">
+                                            <input id="sign-amount-go" class="form-control" name="value" placeholder="value" value="32000000000000000"/>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="exec-amount-eth" class="col-sm-3 col-form-label">Amount (ETH)</label>
-                                    <div class="col-sm-9">
-                                        <input id="exec-amount-eth" class="form-control" name="value" placeholder="value" value="0.0314"/>
+                                    <div class="form-group row">
+                                        <label for="sign-data-go" class="col-sm-3 col-form-label">Data (optional)</label>
+                                        <div class="col-sm-9">
+                                            <textarea id="sign-data-go" class="form-control" name="data" rows="4"></textarea>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="exec-data-eth" class="col-sm-3 col-form-label">Data (optional)</label>
-                                    <div class="col-sm-9">
-                                        <textarea id="exec-data-eth" class="form-control" name="data" rows="4"></textarea>
+                                    <div class="row">
+                                        <div class="offset-5 col-7">
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </div>
                                     </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="offset-3 col-9">
-                                        <button type="submit" class="btn btn-primary">Execute ETHEREUM transaction</button>
+                                </fieldset>
+                            </form>
+                        </div>
+                        <div class="mb-3 col-lg-6">
+                            <form data-form="execute" data-chain="GOCHAIN" class="card bg-light">
+                                <fieldset class="card-body">
+                                    <legend class="card-title">Execute Transaction</legend>
+                                    <div class="form-group row">
+                                        <label for="exec-from-go" class="col-sm-3 col-form-label">From</label>
+                                        <div class="col-sm-9">
+                                            <select id="exec-from-go" class="form-control" name="walletId"></select>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        </form>
+                                    <div class="form-group row">
+                                        <label for="exec-to-go" class="col-sm-3 col-form-label">To</label>
+                                        <div class="col-sm-9">
+                                            <input id="exec-to-go" class="form-control" name="to" placeholder="to" value="0xd84aeb36b2a30eDB94e9f0A25A82E94e506ebB15"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="exec-token-address-go" class="col-sm-3 col-form-label">Token address (optional)</label>
+                                        <div class="col-sm-9">
+                                            <input id="exec-token-address-go" class="form-control" name="tokenAddress" placeholder="Token address"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="exec-amount-go" class="col-sm-3 col-form-label">Amount</label>
+                                        <div class="col-sm-9">
+                                            <input id="exec-amount-go" class="form-control" name="value" placeholder="value" value="0.0321"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="exec-data-go" class="col-sm-3 col-form-label">Data (optional)</label>
+                                        <div class="col-sm-9">
+                                            <textarea id="exec-data-go" class="form-control" name="data" rows="4"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="offset-5 col-7">
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                        <div class="mb-3 col-lg-6">
+                            <form data-form="sign-raw" data-chain="GOCHAIN" class="card bg-light">
+                                <fieldset class="card-body">
+                                    <legend class="card-title">Sign Raw Transaction</legend>
+                                    <div class="form-group row">
+                                        <label for="sign-from-go-raw" class="col-sm-3 col-form-label">From</label>
+                                        <div class="col-sm-9">
+                                            <select id="sign-from-go-raw" class="form-control" name="walletId"></select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="sign-data-go-raw" class="col-sm-3 col-form-label">Data</label>
+                                        <div class="col-sm-9">
+                                            <textarea id="sign-data-go-raw" class="form-control" name="data" rows="4">123456789ABCDEF</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="offset-5 col-7">
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
                     </div>
+                </div>
+                <div class="tab-pane fade p-4 bg-white border" id="nav-VECHAIN" data-chain="VECHAIN" role="tabpanel" aria-labelledby="nav-VECHAIN-tab">
+                    <button type="button" data-chain="VECHAIN" class="btn btn-outline-primary get-wallets mb-3">
+                        Get Wallets
+                    </button>
+                    <button type="button" data-chain="VECHAIN" class="btn btn-outline-primary manage-wallets mb-3">
+                        Manage Wallets
+                    </button>
 
-                    <div class="card mb-3">
-                        <form data-form="execute" data-chain="GOCHAIN" class="card-body">
-                            <h5 class="card-title d-flex align-items-center justify-content-between collapsed" data-toggle="collapse" data-target="#exec-go">
-                                <a href="javascript:void(0)">
-                                    <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>Gochain</span>
-                                </a>
-                            </h5>
-                            <div id="exec-go" class="collapse">
-                                <div class="form-group row">
-                                    <label for="exec-from-go" class="col-sm-3 col-form-label">From</label>
-                                    <div class="col-sm-9">
-                                        <select id="exec-from-go" class="form-control" name="walletId"></select>
+                    <div class="row">
+                        <div class="mb-3 col-lg-6">
+                            <form data-form="sign" data-chain="VECHAIN" class="card bg-light">
+                                <fieldset class="card-body">
+                                    <legend class="card-title">Sign Transaction</legend>
+                                    <div class="form-group row">
+                                        <label for="sign-from-VECHAIN" class="col-sm-5 col-form-label">From</label>
+                                        <div class="col-sm-7">
+                                            <select id="sign-from-VECHAIN" class="form-control" name="walletId"></select>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="exec-to-go" class="col-sm-3 col-form-label">To</label>
-                                    <div class="col-sm-9">
-                                        <input id="exec-to-go" class="form-control" name="to" placeholder="to" value="0xd84aeb36b2a30eDB94e9f0A25A82E94e506ebB15"/>
+                                    <div class="form-group row">
+                                        <label for="sign-to-VECHAIN" class="col-sm-5 col-form-label">To</label>
+                                        <div class="col-sm-7">
+                                            <input id="sign-to-VECHAIN" class="form-control" name="to" placeholder="to" value="0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE"/>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="exec-token-address-go" class="col-sm-3 col-form-label">Token address (optional)</label>
-                                    <div class="col-sm-9">
-                                        <input id="exec-token-address-go" class="form-control" name="tokenAddress" placeholder="Token address"/>
+                                    <div class="form-group row">
+                                        <label for="sign-amount-VECHAIN" class="col-sm-5 col-form-label">Amount</label>
+                                        <div class="col-sm-7">
+                                            <input id="sign-amount-VECHAIN" class="form-control" name="value" placeholder="value" value="31400000000000000"/>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="exec-amount-go" class="col-sm-3 col-form-label">Amount</label>
-                                    <div class="col-sm-9">
-                                        <input id="exec-amount-go" class="form-control" name="value" placeholder="value" value="0.0321"/>
+                                    <div class="form-group row">
+                                        <label for="sign-data-VECHAIN" class="col-sm-5 col-form-label">Data (optional)</label>
+                                        <div class="col-sm-7">
+                                            <textarea id="sign-data-VECHAIN" class="form-control" name="data" rows="4"></textarea>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="exec-data-go" class="col-sm-3 col-form-label">Data (optional)</label>
-                                    <div class="col-sm-9">
-                                        <textarea id="exec-data-go" class="form-control" name="data" rows="4"></textarea>
+                                    <div class="row">
+                                        <div class="offset-5 col-7">
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </div>
                                     </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="offset-3 col-9">
-                                        <button type="submit" class="btn btn-primary">Execute GOCHAIN transaction</button>
+                                </fieldset>
+                            </form>
+                        </div>
+                        <div class="mb-3 col-lg-6">
+                            <form data-form="execute" data-chain="VECHAIN" class="card bg-light">
+                                <fieldset class="card-body">
+                                    <legend class="card-title">Execute Transaction</legend>
+                                    <div class="form-group row">
+                                        <label for="exec-from-VECHAIN" class="col-sm-5 col-form-label">From</label>
+                                        <div class="col-sm-7">
+                                            <select id="exec-from-VECHAIN" class="form-control" name="walletId"></select>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        </form>
+                                    <div class="form-group row">
+                                        <label for="exec-to-VECHAIN" class="col-sm-5 col-form-label">To</label>
+                                        <div class="col-sm-7">
+                                            <input id="exec-to-VECHAIN" class="form-control" name="to" placeholder="to" value="0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="exec-token-address-VECHAIN" class="col-sm-5 col-form-label">Token address (optional)</label>
+                                        <div class="col-sm-7">
+                                            <input id="exec-token-address-VECHAIN" class="form-control" name="tokenAddress" placeholder="Token address"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="exec-amount-VECHAIN" class="col-sm-5 col-form-label">Amount (VET)</label>
+                                        <div class="col-sm-7">
+                                            <input id="exec-amount-VECHAIN" class="form-control" name="value" placeholder="value" value="0.0314"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="exec-data-VECHAIN" class="col-sm-5 col-form-label">Data (optional)</label>
+                                        <div class="col-sm-7">
+                                            <textarea id="exec-data-VECHAIN" class="form-control" name="data" rows="4"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="offset-5 col-7">
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
                     </div>
+                </div>
+                <div class="tab-pane fade p-4 bg-white border" id="nav-TRON" data-chain="TRON" role="tabpanel" aria-labelledby="nav-TRON-tab">
+                    <button type="button" data-chain="TRON" class="btn btn-outline-primary get-wallets mb-3">
+                        Get Wallets
+                    </button>
+                    <button type="button" data-chain="TRON" class="btn btn-outline-primary manage-wallets mb-3">
+                        Manage Wallets
+                    </button>
 
-                    <div class="card mb-3">
-                        <form data-form="execute" data-chain="TRON" class="card-body">
-                            <h5 class="card-title d-flex align-items-center justify-content-between collapsed" data-toggle="collapse" data-target="#exec-trx">
-                                <a href="javascript:void(0)">
-                                    <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>Tron</span>
-                                </a>
-                                <span class="hide-expanded"><button type="submit" class="btn btn-primary">Execute transaction</button></span>
-                            </h5>
-                            <div id="exec-trx" class="collapse">
-                                <div class="form-group row">
-                                    <label for="exec-from-trx" class="col-sm-3 col-form-label">From</label>
-                                    <div class="col-sm-9">
-                                        <select id="exec-from-trx" class="form-control" name="walletId"></select>
+                    <div class="row">
+                        <div class="mb-3 col-lg-6">
+                            <form data-form="sign" data-chain="TRON" class="card bg-light">
+                                <fieldset class="card-body">
+                                    <legend class="card-title">Sign Transaction</legend>
+                                    <div class="form-group row">
+                                        <label for="sign-from-TRON" class="col-sm-5 col-form-label">From</label>
+                                        <div class="col-sm-7">
+                                            <select id="sign-from-TRON" class="form-control" name="walletId"></select>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="exec-to-trx" class="col-sm-3 col-form-label">To</label>
-                                    <div class="col-sm-9">
-                                        <input id="exec-to-trx" class="form-control" name="to" placeholder="to" value="0x680800Dd4913021821A9C08D569eF4338dB8E9f6"/>
+                                    <div class="form-group row">
+                                        <label for="sign-to-TRON" class="col-sm-5 col-form-label">To</label>
+                                        <div class="col-sm-7">
+                                            <input id="sign-to-TRON" class="form-control" name="to" placeholder="to" value="TAwwCCoa6cTjtKJVTSpnKbkDimgALcAXfb"/>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="exec-token-address-trx" class="col-sm-3 col-form-label">Token address (optional)</label>
-                                    <div class="col-sm-9">
-                                        <input id="exec-token-address-trx" class="form-control" name="tokenAddress" placeholder="Token address"/>
+                                    <div class="form-group row">
+                                        <label for="sign-amount-TRON" class="col-sm-5 col-form-label">Amount</label>
+                                        <div class="col-sm-7">
+                                            <input id="sign-amount-TRON" class="form-control" name="value" placeholder="value" value="31400000000000000"/>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="exec-amount-trx" class="col-sm-3 col-form-label">Amount</label>
-                                    <div class="col-sm-9">
-                                        <input id="exec-amount-trx" class="form-control" name="value" placeholder="value" value="31400000000000000"/>
+                                    <div class="form-group row">
+                                        <label for="sign-data-TRON" class="col-sm-5 col-form-label">Data (optional)</label>
+                                        <div class="col-sm-7">
+                                            <textarea id="sign-data-TRON" class="form-control" name="data" rows="4"></textarea>
+                                        </div>
                                     </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="offset-3 col-9">
-                                        <button type="submit" class="btn btn-primary">Execute TRON transaction</button>
+                                    <div class="row">
+                                        <div class="offset-5 col-7">
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        </form>
+                                </fieldset>
+                            </form>
+                        </div>
+                        <div class="mb-3 col-lg-6">
+                            <form data-form="execute" data-chain="TRON" class="card bg-light">
+                                <fieldset class="card-body">
+                                    <legend class="card-title">Execute Transaction</legend>
+                                    <div class="form-group row">
+                                        <label for="exec-from-TRON" class="col-sm-5 col-form-label">From</label>
+                                        <div class="col-sm-7">
+                                            <select id="exec-from-TRON" class="form-control" name="walletId"></select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="exec-to-TRON" class="col-sm-5 col-form-label">To</label>
+                                        <div class="col-sm-7">
+                                            <input id="exec-to-TRON" class="form-control" name="to" placeholder="to" value="TAwwCCoa6cTjtKJVTSpnKbkDimgALcAXfb"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="exec-token-address-TRON" class="col-sm-5 col-form-label">Token address (optional)</label>
+                                        <div class="col-sm-7">
+                                            <input id="exec-token-address-TRON" class="form-control" name="tokenAddress" placeholder="Token address"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="exec-amount-TRON" class="col-sm-5 col-form-label">Amount</label>
+                                        <div class="col-sm-7">
+                                            <input id="exec-amount-TRON" class="form-control" name="value" placeholder="value" value="0.0314"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="exec-data-TRON" class="col-sm-5 col-form-label">Data (optional)</label>
+                                        <div class="col-sm-7">
+                                            <textarea id="exec-data-TRON" class="form-control" name="data" rows="4"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="offset-5 col-7">
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
                     </div>
+                </div>
+                <div class="tab-pane fade p-4 bg-white border" id="nav-BITCOIN" data-chain="BITCOIN" role="tabpanel" aria-labelledby="nav-BITCOIN-tab">
+                    <button type="button" data-chain="BITCOIN" class="btn btn-outline-primary get-wallets mb-3">
+                        Get Wallets
+                    </button>
+                    <button type="button" data-chain="BITCOIN" class="btn btn-outline-primary manage-wallets mb-3">
+                        Manage Wallets
+                    </button>
 
-                    <div class="card mb-3">
-                        <form data-form="execute" data-chain="VECHAIN" class="card-body">
-                            <h5 class="card-title d-flex align-items-center justify-content-between collapsed" data-toggle="collapse" data-target="#exec-vechain">
-                                <a href="javascript:void(0)">
-                                    <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>Vechain</span>
-                                </a>
-                            </h5>
-                            <div id="exec-vechain" class="collapse">
-                                <div class="form-group row">
-                                    <label for="exec-from-vechain" class="col-sm-3 col-form-label">From</label>
-                                    <div class="col-sm-9">
-                                        <select id="exec-from-vechain" class="form-control" name="walletId"></select>
+                    <div class="row">
+                        <div class="mb-3 col-lg-6">
+                            <form data-form="execute" data-chain="BITCOIN" class="card bg-light">
+                                <fieldset class="card-body">
+                                    <legend class="card-title">Execute Transaction</legend>
+                                    <div class="form-group row">
+                                        <label for="exec-from-BITCOIN" class="col-sm-5 col-form-label">From</label>
+                                        <div class="col-sm-7">
+                                            <select id="exec-from-BITCOIN" class="form-control" name="walletId"></select>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="exec-to-vechain" class="col-sm-3 col-form-label">To</label>
-                                    <div class="col-sm-9">
-                                        <input type="text" id="exec-to-vechain" class="form-control" name="to" value="0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE"/>
+                                    <div class="form-group row">
+                                        <label for="exec-to-BITCOIN" class="col-sm-5 col-form-label">To</label>
+                                        <div class="col-sm-7">
+                                            <input id="exec-to-BITCOIN" class="form-control" name="to" placeholder="to" value="mvcJQvoqP7QswpC2R9Bjytw8BEyfDtdcfy"/>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="exec-token-address-vechain" class="col-sm-3 col-form-label">Token address (optional)</label>
-                                    <div class="col-sm-9">
-                                        <input id="exec-token-address-vechain" class="form-control" name="tokenAddress" placeholder="Token address"/>
+                                    <div class="form-group row">
+                                        <label for="exec-token-address-BITCOIN" class="col-sm-5 col-form-label">Token address (optional)</label>
+                                        <div class="col-sm-7">
+                                            <input id="exec-token-address-BITCOIN" class="form-control" name="tokenAddress" placeholder="Token address"/>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="exec-amount-vechain" class="col-sm-3 col-form-label">Amount (VET)</label>
-                                    <div class="col-sm-9">
-                                        <input type="text" id="exec-amount-vechain" class="form-control" name="value" value="0.0314"/>
+                                    <div class="form-group row">
+                                        <label for="exec-amount-BITCOIN" class="col-sm-5 col-form-label">Amount (BTC)</label>
+                                        <div class="col-sm-7">
+                                            <input id="exec-amount-BITCOIN" class="form-control" name="value" placeholder="value" value="0.00003141"/>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="exec-data-vechain" class="col-sm-3 col-form-label">Data (optional)</label>
-                                    <div class="col-sm-9">
-                                        <textarea id="exec-data-vechain" class="form-control" name="data" rows="4"></textarea>
+                                    <div class="form-group row">
+                                        <label for="exec-data-BITCOIN" class="col-sm-5 col-form-label">Data (optional)</label>
+                                        <div class="col-sm-7">
+                                            <textarea id="exec-data-BITCOIN" class="form-control" name="data" rows="4"></textarea>
+                                        </div>
                                     </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="offset-sm-3 col-sm-9">
-                                        <button type="submit" class="btn btn-primary">Execute VECHAIN transaction</button>
+                                    <div class="row">
+                                        <div class="offset-5 col-7">
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        </form>
+                                </fieldset>
+                            </form>
+                        </div>
                     </div>
+                </div>
 
-                    <div class="card mb-3">
-                        <form data-form="execute" data-chain="BITCOIN" class="card-body">
-                            <h5 class="card-title d-flex align-items-center justify-content-between collapsed" data-toggle="collapse" data-target="#exec-bitcoin">
-                                <a href="javascript:void(0)">
-                                    <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>Bitcoin</span>
-                                </a>
-                            </h5>
-                            <div id="exec-bitcoin" class="collapse">
-                                <div class="form-group row">
-                                    <label for="exec-from-bitcoin" class="col-sm-3 col-form-label">From</label>
-                                    <div class="col-sm-9">
-                                        <select id="exec-from-bitcoin" class="form-control" name="walletId"></select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="exec-to-bitcoin" class="col-sm-3 col-form-label">To</label>
-                                    <div class="col-sm-9">
-                                        <input type="text" id="exec-to-bitcoin" class="form-control" name="to" value="mvcJQvoqP7QswpC2R9Bjytw8BEyfDtdcfy"/>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="exec-amount-bitcoin" class="col-sm-3 col-form-label">Amount (BTC)</label>
-                                    <div class="col-sm-9">
-                                        <input type="text" id="exec-amount-bitcoin" class="form-control" name="value" value="0.00003141"/>
-                                    </div>
-                                </div>
+                <div class="tab-pane fade p-4 bg-white border" id="nav-LITECOIN" data-chain="LITECOIN" role="tabpanel" aria-labelledby="nav-LITECOIN-tab">
+                    <button type="button" data-chain="LITECOIN" class="btn btn-outline-primary get-wallets mb-3">
+                        Get Wallets
+                    </button>
+                    <button type="button" data-chain="LITECOIN" class="btn btn-outline-primary manage-wallets mb-3">
+                        Manage Wallets
+                    </button>
 
-                                <div class="row">
-                                    <div class="offset-sm-3 col-sm-9">
-                                        <button type="submit" class="btn btn-primary">Execute BITCOIN transaction</button>
+                    <div class="row">
+                        <div class="mb-3 col-lg-6">
+                            <form data-form="execute" data-chain="LITECOIN" class="card bg-light">
+                                <fieldset class="card-body">
+                                    <legend class="card-title">Execute Transaction</legend>
+                                    <div class="form-group row">
+                                        <label for="exec-from-LITECOIN" class="col-sm-5 col-form-label">From</label>
+                                        <div class="col-sm-7">
+                                            <select id="exec-from-LITECOIN" class="form-control" name="walletId"></select>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div class="card mb-3">
-                        <form data-form="execute" data-chain="LITECOIN" class="card-body">
-                            <h5 class="card-title d-flex align-items-center justify-content-between collapsed" data-toggle="collapse" data-target="#exec-litecoin">
-                                <a href="javascript:void(0)">
-                                    <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>Litecoin</span>
-                                </a>
-                            </h5>
-                            <div id="exec-litecoin" class="collapse">
-                                <div class="form-group row">
-                                    <label for="sign-from-vechain" class="col-sm-3 col-form-label">From</label>
-                                    <div class="col-sm-9">
-                                        <select id="exec-from-litecoin" class="form-control" name="walletId"></select>
+                                    <div class="form-group row">
+                                        <label for="exec-to-LITECOIN" class="col-sm-5 col-form-label">To</label>
+                                        <div class="col-sm-7">
+                                            <input id="exec-to-LITECOIN" class="form-control" name="to" placeholder="to" value="LYFYQfkZ4PXp5waKxSpA9H6xXFhTNPRCPe"/>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="exec-to-vechain" class="col-sm-3 col-form-label">To</label>
-                                    <div class="col-sm-9">
-                                        <input type="text" id="exec-to-litecoin" class="form-control" name="to" value="LYFYQfkZ4PXp5waKxSpA9H6xXFhTNPRCPe"/>
+                                    <div class="form-group row">
+                                        <label for="exec-token-address-LITECOIN" class="col-sm-5 col-form-label">Token address (optional)</label>
+                                        <div class="col-sm-7">
+                                            <input id="exec-token-address-LITECOIN" class="form-control" name="tokenAddress" placeholder="Token address"/>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="exec-amount-litecoin" class="col-sm-3 col-form-label">Amount</label>
-                                    <div class="col-sm-9">
-                                        <input type="text" id="exec-amount-litecoin" class="form-control" name="value" value="0.00003142"/>
+                                    <div class="form-group row">
+                                        <label for="exec-amount-LITECOIN" class="col-sm-5 col-form-label">Amount (LTC)</label>
+                                        <div class="col-sm-7">
+                                            <input id="exec-amount-LITECOIN" class="form-control" name="value" placeholder="value" value="0.00003142"/>
+                                        </div>
                                     </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="offset-sm-3 col-sm-9">
-                                        <button type="submit" class="btn btn-primary">Execute LITECOIN transaction</button>
+                                    <div class="form-group row">
+                                        <label for="exec-data-LITECOIN" class="col-sm-5 col-form-label">Data (optional)</label>
+                                        <div class="col-sm-7">
+                                            <textarea id="exec-data-LITECOIN" class="form-control" name="data" rows="4"></textarea>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        </form>
+                                    <div class="row">
+                                        <div class="offset-5 col-7">
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

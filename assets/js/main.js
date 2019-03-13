@@ -17,7 +17,7 @@
                                    });
                   }
               )
-              .catch(reason => app.log(reason));
+              .catch(reason => app.error(reason));
         app.attachLinkEvents();
     };
 
@@ -42,7 +42,6 @@
         window.arkaneConnect.addOnTokenRefreshCallback(app.updateToken);
         app.checkResultRequestParams();
         app.addConnectEvents();
-        app.getWallets();
     };
     app.updateToken = (token) => {
         $('input[name="bearer"]').val(app.auth.token);
@@ -55,7 +54,7 @@
             app.log({status: status, result: app.extractResultFromQueryParams()});
         } else
             if (status === 'ABORTED') {
-                app.log({status, errors: []});
+                app.error({status, errors: []});
             }
     };
 
@@ -81,7 +80,7 @@
                   app.log(result);
               })
               .catch(function(err) {
-                  app.log(err);
+                  app.error(err);
               });
     }
 
@@ -91,7 +90,7 @@
                   app.log(result);
               })
               .catch(function(err) {
-                  app.log(err);
+                  app.error(err);
               });
     }
 
@@ -101,46 +100,48 @@
     //               app.log(result);
     //           })
     //           .catch(function(err) {
-    //               app.log(err);
+    //               app.error(err);
     //           });
     // }
 
     app.addConnectEvents = function() {
-        document.getElementById('get-wallets').addEventListener('click', function() {
-            window.arkaneConnect.api.getWallets().then(function(wallets) {
-                app.log(wallets);
-                document.querySelector('body').dataset.wallets = JSON.stringify(wallets);
-                $('[data-form]').each(function() {
-                    $('select[name="walletId"]', this).find('option').remove();
-                    $('select[name="walletId"]', this).append($('<option>', {
-                        value: '',
-                        text: '-- No Wallet Selected --',
-                        'data-address': '',
-                    }));
-                });
-
-                for (var w of wallets) {
-                    var $form = $('[data-form][data-chain="' + w.secretType.toUpperCase() + '"]');
-                    $form.each(function() {
+        document.querySelectorAll('.get-wallets').forEach(function(el) {
+            el.addEventListener('click', function() {
+                var secretType = this.dataset.chain.toUpperCase();
+                window.arkaneConnect.api.getWallets({secretType: secretType}).then(function(wallets) {
+                    app.log(wallets, 'Wallets ' + secretType);
+                    document.querySelector('body').dataset['wallets-' + secretType] = JSON.stringify(wallets);
+                    var $forms = $('[data-form][data-chain="' + secretType.toUpperCase() + '"]');
+                    $forms.each(function() {
+                        $('select[name="walletId"]', this).find('option').remove();
                         $('select[name="walletId"]', this).append($('<option>', {
-                            value: w.id,
-                            text: w.description ? w.description + ' - ' + w.address : w.address,
-                            'data-address': w.address,
+                            value: '',
+                            text: '-- No Wallet Selected --',
+                            'data-address': '',
                         }));
                     });
-                }
 
-                $('[data-form] select[name="walletId"]').each(function() {
-                    if(this.length > 1) {
-                        this.selectedIndex = 1;
+                    for (var w of wallets) {
+                        $forms.each(function() {
+                            $('select[name="walletId"]', this).append($('<option>', {
+                                value: w.id,
+                                text: w.description ? w.description + ' - ' + w.address : w.address,
+                                'data-address': w.address,
+                            }));
+                        });
                     }
-                });
 
-                $('#sign, #execute').show();
+                    $('select[name="walletId"]', $forms).each(function() {
+                        if(this.length > 1) {
+                            this.selectedIndex = 1;
+                        }
+                    });
+                });
             });
         });
 
         document.querySelectorAll('.manage-wallets').forEach(function(el) {
+
             el.addEventListener('click', function() {
                 window.arkaneConnect.manageWallets(this.dataset.chain, {redirectUri, correlationID: `${Date.now()}`});
             });
@@ -263,7 +264,6 @@
             var to = $('input[name="to"]', formExecEth).val();
             var value = $('input[name="value"]', formExecEth).val();
             var tokenAddress = $('input[name="tokenAddress"]', formExecEth).val();
-            console.log('walletId', walletId);
 
             // Generic transaction
             executeTransaction({
@@ -374,7 +374,7 @@
             var data = $('textarea[name="data"]', formExecTrx).val() || null;
             var walletId = $('select[name="walletId"]', formExecTrx).val();
             var to = $('input[name="to"]', formExecTrx).val();
-            var value = $('input[name="value"]', formExecTrx).val() / Math.pow(10, 18);
+            var value = $('input[name="value"]', formExecTrx).val();
             var tokenAddress = $('input[name="tokenAddress"]', formExecTrx).val();
 
             // Generic transaction
@@ -432,20 +432,28 @@
         });
     };
 
-    app.getWallets = function() {
-        window.arkaneConnect.getWallets().then(function(result) {
-            app.log(result);
-        })
-    };
-
-    app.log = function(txt) {
+    function logger(txt, title, type) {
+        if(typeof type === 'undefined') {
+            type = 'info';
+        }
         if (isObject(txt)) {
             txt = JSON.stringify(txt, null, 2);
         }
         var date = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
-        txt = '---' + date + '---\n' + txt;
+        var result = '<span class="text-'+type+'">';
+        result = result + '[' + date + ']';
+        result = result + (title ? ': <strong >' + title + '</strong>' : '');
+        result = result + '</span>\n' + txt + '\n\n';
         var $appLog = $('#appLog');
-        $appLog.html(txt + '\n\n' + $appLog.html());
+        $appLog.html(result + $appLog.html());
+    }
+
+    app.log = function(txt, title) {
+        logger(txt, title)
+    };
+
+    app.error = function(txt, title) {
+        logger(txt, title, 'danger')
     };
 
     app.clearLog = function() {
