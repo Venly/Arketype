@@ -13,10 +13,10 @@
     <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/assets/css/auth.css"/>
     <link rel="stylesheet" href="/assets/css/arketype.css"/>
-    <script src="/node_modules/@arkane-network/arkane-connect/dist/connect.js?ts=7737"></script>
+    <script src="/node_modules/@arkane-network/arkane-connect/dist/connect.js"></script>
 </head>
 
-<body class="bg-light">
+<body class="bg-light not-logged-in" id="arketype">
 
 <div class="container">
     <div class="py-5 text-center">
@@ -87,6 +87,9 @@
                         <button type="button" data-chain="ETHEREUM" class="btn manage-wallets list-group-item list-group-item-action">
                             Ethereum Wallets
                         </button>
+                        <button type="button" data-chain="GOCHAIN" class="btn manage-wallets list-group-item list-group-item-action">
+                            GoChain Wallets
+                        </button>
                         <button type="button" data-chain="VECHAIN" class="btn manage-wallets list-group-item list-group-item-action">
                             VeChain Wallets
                         </button>
@@ -96,12 +99,15 @@
                         <button type="button" data-chain="BITCOIN" class="btn manage-wallets list-group-item list-group-item-action">
                             Bitcoin Wallets
                         </button>
+                        <button type="button" data-chain="LITECOIN" class="btn manage-wallets list-group-item list-group-item-action">
+                            Litecoin Wallets
+                        </button>
                     </div>
                 </div>
                 <div class="col-12 col-md-4">
                     <h5 class="mb-3">Link Wallets</h5>
                     <div class="list-group">
-                        <button type="button" id="link-wallets" class="btn manage-wallets list-group-item list-group-item-action">
+                        <button type="button" id="link-wallets" class="btn list-group-item list-group-item-action">
                             Link Wallets
                         </button>
                     </div>
@@ -109,7 +115,7 @@
                 <div class="col-12 col-md-4">
                     <h5 class="mb-3">Get Wallets</h5>
                     <div class="list-group">
-                        <button type="button" id="get-wallets" class="btn manage-wallets list-group-item list-group-item-action">
+                        <button type="button" id="get-wallets" class="btn list-group-item list-group-item-action">
                             Get Wallets
                         </button>
                     </div>
@@ -127,7 +133,6 @@
                                 <a href="javascript:void(0)">
                                     <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>Ethereum</span>
                                 </a>
-                                <span class="hide-expanded"><button type="submit" class="btn btn-primary">Sign transaction</button></span>
                             </h5>
                             <div id="sign-eth" class="collapse">
                                 <div class="form-group row">
@@ -143,7 +148,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="sign-amount-eth" class="col-sm-3 col-form-label">Amount</label>
+                                    <label for="sign-amount-eth" class="col-sm-3 col-form-label">Amount  (in WEI)</label>
                                     <div class="col-sm-9">
                                         <input id="sign-amount-eth" class="form-control" name="value" placeholder="value" value="31400000000000000"/>
                                     </div>
@@ -169,7 +174,6 @@
                                 <a href="javascript:void(0)">
                                     <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>Ethereum RAW</span>
                                 </a>
-                                <span class="hide-expanded"><button type="submit" class="btn btn-primary">Sign transaction</button></span>
                             </h5>
                             <div id="sign-eth-raw" class="collapse">
                                 <div class="form-group row">
@@ -188,6 +192,76 @@
                                 <div class="row">
                                     <div class="offset-sm-3 col-sm-9">
                                         <button type="submit" class="btn btn-primary">Sign ETHEREUM RAW transaction</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card mb-3">
+                        <form data-form="sign" data-chain="GOCHAIN" class="card-body">
+                            <h5 class="card-title d-flex align-items-center justify-content-between collapsed" data-toggle="collapse" data-target="#sign-go">
+                                <a href="javascript:void(0)">
+                                    <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>Gochain</span>
+                                </a>
+                            </h5>
+                            <div id="sign-go" class="collapse">
+                                <div class="form-group row">
+                                    <label for="sign-from-go" class="col-sm-3 col-form-label">From</label>
+                                    <div class="col-sm-9">
+                                        <select id="sign-from-go" class="form-control" name="walletId"></select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="sign-to-go" class="col-sm-3 col-form-label">To</label>
+                                    <div class="col-sm-9">
+                                        <input id="sign-to-go" class="form-control" name="to" placeholder="to" value="0xd84aeb36b2a30eDB94e9f0A25A82E94e506ebB15"/>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="sign-amount-go" class="col-sm-3 col-form-label">Amount</label>
+                                    <div class="col-sm-9">
+                                        <input id="sign-amount-go" class="form-control" name="value" placeholder="value" value="32000000000000000"/>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="sign-data-go" class="col-sm-3 col-form-label">Data (optional)</label>
+                                    <div class="col-sm-9">
+                                        <textarea id="sign-data-go" class="form-control" name="data" rows="4"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="offset-3 col-9">
+                                        <button type="submit" class="btn btn-primary">Sign GOCHAIN transaction</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card mb-3">
+                        <form data-form="sign-raw" data-chain="GOCHAIN" class="card-body">
+                            <h5 class="card-title d-flex align-items-center justify-content-between collapsed" data-toggle="collapse" data-target="#sign-go-raw">
+                                <a href="javascript:void(0)">
+                                    <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>Gochain RAW</span>
+                                </a>
+                            </h5>
+                            <div id="sign-go-raw" class="collapse">
+                                <div class="form-group row">
+                                    <label for="sign-from-go-raw" class="col-sm-3 col-form-label">From</label>
+                                    <div class="col-sm-9">
+                                        <select id="sign-from-go-raw" class="form-control" name="walletId"></select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="sign-data-go-raw" class="col-sm-3 col-form-label">Data</label>
+                                    <div class="col-sm-9">
+                                        <textarea id="sign-data-go-raw" class="form-control" name="data" rows="4">123456789ABCDEF</textarea>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="offset-sm-3 col-sm-9">
+                                        <button type="submit" class="btn btn-primary">Sign GOCHAIN RAW transaction</button>
                                     </div>
                                 </div>
                             </div>
@@ -234,7 +308,6 @@
                                 <a href="javascript:void(0)">
                                     <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>Vechain</span>
                                 </a>
-                                <span class="hide-expanded"><button type="submit" class="btn btn-primary">Sign transaction</button></span>
                             </h5>
                             <div id="sign-vechain" class="collapse">
                                 <div class="form-group row">
@@ -250,7 +323,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="sign-amount-vechain" class="col-sm-3 col-form-label">Amount</label>
+                                    <label for="sign-amount-vechain" class="col-sm-3 col-form-label">Amount (in WEI)</label>
                                     <div class="col-sm-9">
                                         <input type="text" id="sign-amount-vechain" class="form-control" name="value" value="31400000000000000"/>
                                     </div>
@@ -284,7 +357,6 @@
                                 <a href="javascript:void(0)">
                                     <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>Ethereum</span>
                                 </a>
-                                <span class="hide-expanded"><button type="submit" class="btn btn-primary">Execute transaction</button></span>
                             </h5>
                             <div id="exec-eth" class="collapse">
                                 <div class="form-group row">
@@ -306,9 +378,9 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="exec-amount-eth" class="col-sm-3 col-form-label">Amount</label>
+                                    <label for="exec-amount-eth" class="col-sm-3 col-form-label">Amount (ETH)</label>
                                     <div class="col-sm-9">
-                                        <input id="exec-amount-eth" class="form-control" name="value" placeholder="value" value="31400000000000000"/>
+                                        <input id="exec-amount-eth" class="form-control" name="value" placeholder="value" value="0.0314"/>
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -321,6 +393,54 @@
                                 <div class="row">
                                     <div class="offset-3 col-9">
                                         <button type="submit" class="btn btn-primary">Execute ETHEREUM transaction</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card mb-3">
+                        <form data-form="execute" data-chain="GOCHAIN" class="card-body">
+                            <h5 class="card-title d-flex align-items-center justify-content-between collapsed" data-toggle="collapse" data-target="#exec-go">
+                                <a href="javascript:void(0)">
+                                    <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>Gochain</span>
+                                </a>
+                            </h5>
+                            <div id="exec-go" class="collapse">
+                                <div class="form-group row">
+                                    <label for="exec-from-go" class="col-sm-3 col-form-label">From</label>
+                                    <div class="col-sm-9">
+                                        <select id="exec-from-go" class="form-control" name="walletId"></select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="exec-to-go" class="col-sm-3 col-form-label">To</label>
+                                    <div class="col-sm-9">
+                                        <input id="exec-to-go" class="form-control" name="to" placeholder="to" value="0xd84aeb36b2a30eDB94e9f0A25A82E94e506ebB15"/>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="exec-token-address-go" class="col-sm-3 col-form-label">Token address (optional)</label>
+                                    <div class="col-sm-9">
+                                        <input id="exec-token-address-go" class="form-control" name="tokenAddress" placeholder="Token address"/>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="exec-amount-go" class="col-sm-3 col-form-label">Amount</label>
+                                    <div class="col-sm-9">
+                                        <input id="exec-amount-go" class="form-control" name="value" placeholder="value" value="0.0321"/>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="exec-data-go" class="col-sm-3 col-form-label">Data (optional)</label>
+                                    <div class="col-sm-9">
+                                        <textarea id="exec-data-go" class="form-control" name="data" rows="4"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="offset-3 col-9">
+                                        <button type="submit" class="btn btn-primary">Execute GOCHAIN transaction</button>
                                     </div>
                                 </div>
                             </div>
@@ -376,7 +496,6 @@
                                 <a href="javascript:void(0)">
                                     <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>Vechain</span>
                                 </a>
-                                <span class="hide-expanded"><button type="submit" class="btn btn-primary">Execute transaction</button></span>
                             </h5>
                             <div id="exec-vechain" class="collapse">
                                 <div class="form-group row">
@@ -398,9 +517,9 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="exec-amount-vechain" class="col-sm-3 col-form-label">Amount</label>
+                                    <label for="exec-amount-vechain" class="col-sm-3 col-form-label">Amount (VET)</label>
                                     <div class="col-sm-9">
-                                        <input type="text" id="exec-amount-vechain" class="form-control" name="value" value="31400000000000000"/>
+                                        <input type="text" id="exec-amount-vechain" class="form-control" name="value" value="0.0314"/>
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -425,31 +544,66 @@
                                 <a href="javascript:void(0)">
                                     <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>Bitcoin</span>
                                 </a>
-                                <span class="hide-expanded"><button type="submit" class="btn btn-primary">Execute transaction</button></span>
                             </h5>
                             <div id="exec-bitcoin" class="collapse">
                                 <div class="form-group row">
-                                    <label for="sign-from-vechain" class="col-sm-3 col-form-label">From</label>
+                                    <label for="exec-from-bitcoin" class="col-sm-3 col-form-label">From</label>
                                     <div class="col-sm-9">
                                         <select id="exec-from-bitcoin" class="form-control" name="walletId"></select>
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="exec-to-vechain" class="col-sm-3 col-form-label">To</label>
+                                    <label for="exec-to-bitcoin" class="col-sm-3 col-form-label">To</label>
                                     <div class="col-sm-9">
                                         <input type="text" id="exec-to-bitcoin" class="form-control" name="to" value="mvcJQvoqP7QswpC2R9Bjytw8BEyfDtdcfy"/>
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="exec-amount-bitcoin" class="col-sm-3 col-form-label">Amount</label>
+                                    <label for="exec-amount-bitcoin" class="col-sm-3 col-form-label">Amount (BTC)</label>
                                     <div class="col-sm-9">
-                                        <input type="text" id="exec-amount-bitcoin" class="form-control" name="value" value="00003141"/>
+                                        <input type="text" id="exec-amount-bitcoin" class="form-control" name="value" value="0.00003141"/>
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="offset-sm-3 col-sm-9">
                                         <button type="submit" class="btn btn-primary">Execute BITCOIN transaction</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card mb-3">
+                        <form data-form="execute" data-chain="LITECOIN" class="card-body">
+                            <h5 class="card-title d-flex align-items-center justify-content-between collapsed" data-toggle="collapse" data-target="#exec-litecoin">
+                                <a href="javascript:void(0)">
+                                    <span class="hide-expanded">+</span><span class="show-expanded">-</span> <span>Litecoin</span>
+                                </a>
+                            </h5>
+                            <div id="exec-litecoin" class="collapse">
+                                <div class="form-group row">
+                                    <label for="sign-from-vechain" class="col-sm-3 col-form-label">From</label>
+                                    <div class="col-sm-9">
+                                        <select id="exec-from-litecoin" class="form-control" name="walletId"></select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="exec-to-vechain" class="col-sm-3 col-form-label">To</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" id="exec-to-litecoin" class="form-control" name="to" value="LYFYQfkZ4PXp5waKxSpA9H6xXFhTNPRCPe"/>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="exec-amount-litecoin" class="col-sm-3 col-form-label">Amount</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" id="exec-amount-litecoin" class="form-control" name="value" value="0.00003142"/>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="offset-sm-3 col-sm-9">
+                                        <button type="submit" class="btn btn-primary">Execute LITECOIN transaction</button>
                                     </div>
                                 </div>
                             </div>
