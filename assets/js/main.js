@@ -6,7 +6,7 @@
     var redirectUri = window.location.origin;
 
     app.initApp = function() {
-        window.arkaneConnect = new ArkaneConnect('Arketype', {environment: 'qa', signUsing: 'REDIRECT'});
+        window.arkaneConnect = new ArkaneConnect('Arketype', {environment: 'qa-local', signUsing: 'REDIRECT'});
         window.arkaneConnect
               .checkAuthenticated()
               .then((result) => {
@@ -104,41 +104,56 @@
     //           });
     // }
 
+    function getWallets(el) {
+        var secretType = el.dataset.chain.toUpperCase();
+        window.arkaneConnect.api.getWallets({secretType: secretType}).then(function(wallets) {
+            el.dataset.success = 'true';
+            app.log(wallets, 'Wallets ' + secretType);
+            const dataSetName = 'wallets' + secretType.charAt(0).toUpperCase() + secretType.slice(1).toLowerCase();
+            document.querySelector('body').dataset[dataSetName] = JSON.stringify(wallets);
+            var $forms = $('[data-form][data-chain="' + secretType.toUpperCase() + '"]');
+            $forms.each(function() {
+                $('select[name="walletId"]', el).find('option').remove();
+                $('select[name="walletId"]', el).append($('<option>', {
+                    value: '',
+                    text: '-- No Wallet Selected --',
+                    'data-address': '',
+                }));
+            });
+
+            for (var w of wallets) {
+                $forms.each(function() {
+                    $('select[name="walletId"]', this).append($('<option>', {
+                        value: w.id,
+                        text: w.description ? w.description + ' - ' + w.address : w.address,
+                        'data-address': w.address,
+                    }));
+                });
+            }
+
+            $('select[name="walletId"]', $forms).each(function() {
+                if (this.length > 1) {
+                    this.selectedIndex = 1;
+                }
+            });
+        });
+    }
+
     app.addConnectEvents = function() {
+        var secretType = (localStorage && localStorage.getItem('arketype.activeChain')) || 'ETHEREUM';
+        $('[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            var button = document.querySelector($(e.target).attr('href') + ' .get-wallets');
+            if(button && button.dataset['success'] !== 'true') {
+                if(localStorage && button.dataset.chain) {
+                    localStorage.setItem('arketype.activeChain', button.dataset.chain);
+                }
+                getWallets(button);
+            }
+        });
+        $('#nav-' + secretType + '-tab').trigger('click');
         document.querySelectorAll('.get-wallets').forEach(function(el) {
             el.addEventListener('click', function() {
-                var secretType = this.dataset.chain.toUpperCase();
-                window.arkaneConnect.api.getWallets({secretType: secretType}).then(function(wallets) {
-                    el.dataset.success = 'true';
-                    app.log(wallets, 'Wallets ' + secretType);
-                    const dataSetName = 'wallets' + secretType.charAt(0).toUpperCase() + secretType.slice(1).toLowerCase();
-                    document.querySelector('body').dataset[dataSetName] = JSON.stringify(wallets);
-                    var $forms = $('[data-form][data-chain="' + secretType.toUpperCase() + '"]');
-                    $forms.each(function() {
-                        $('select[name="walletId"]', this).find('option').remove();
-                        $('select[name="walletId"]', this).append($('<option>', {
-                            value: '',
-                            text: '-- No Wallet Selected --',
-                            'data-address': '',
-                        }));
-                    });
-
-                    for (var w of wallets) {
-                        $forms.each(function() {
-                            $('select[name="walletId"]', this).append($('<option>', {
-                                value: w.id,
-                                text: w.description ? w.description + ' - ' + w.address : w.address,
-                                'data-address': w.address,
-                            }));
-                        });
-                    }
-
-                    $('select[name="walletId"]', $forms).each(function() {
-                        if (this.length > 1) {
-                            this.selectedIndex = 1;
-                        }
-                    });
-                });
+                getWallets(el);
             });
         });
 
@@ -207,14 +222,6 @@
             e.stopPropagation();
             e.preventDefault();
             var formData = getDataFromForm(formExecEth);
-            console.log('formData', {
-                secretType: 'ETHEREUM',
-                walletId: formData.walletId,
-                to: formData.to,
-                value: formData.value,
-                tokenAddress: formData.tokenAddress,
-                data: formData.data
-            });
             // Generic transaction
             executeTransaction({
                                    secretType: 'ETHEREUM',
