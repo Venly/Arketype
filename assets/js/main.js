@@ -6,7 +6,7 @@
     var redirectUri = window.location.origin;
 
     app.initApp = function() {
-        window.arkaneConnect = new ArkaneConnect('Arketype', {environment: 'qa-local', signUsing: 'REDIRECT'});
+        window.arkaneConnect = new ArkaneConnect('Arketype', {environment: 'qa', signUsing: 'REDIRECT'});
         window.arkaneConnect
               .checkAuthenticated()
               .then((result) => {
@@ -52,14 +52,16 @@
         var status = this.getQueryParam('status');
         if (status === 'SUCCESS') {
             app.log({status: status, result: app.extractResultFromQueryParams()});
-        } else
-            if (status === 'ABORTED') {
-                app.error({status, errors: []});
-            }
+        } else if (status === 'ABORTED') {
+            app.error({status, errors: []});
+        } else if (status === 'FAILED') {
+            const errorObject = this.extractResultFromQueryParams();
+            app.error({status: status, errors: [errorObject.error]});
+        }
     };
 
     app.extractResultFromQueryParams = function() {
-        const validResultParams = ['transactionHash', 'signedTransaction', 'r', 's', 'v', 'signature'];
+        const validResultParams = ['transactionHash', 'signedTransaction', 'r', 's', 'v', 'signature', 'error'];
         const result = {};
         const regex = new RegExp(/[\?|\&]([^=]+)\=([^&]+)/g);
         let requestParam = regex.exec(window.location.href);
@@ -94,15 +96,15 @@
               });
     }
 
-    // function executeNativeTransaction(executeData) {
-    //     window.arkaneConnect.createSigner().executeNativeTransaction(executeData)
-    //           .then(function(result) {
-    //               app.log(result);
-    //           })
-    //           .catch(function(err) {
-    //               app.error(err);
-    //           });
-    // }
+    function executeNativeTransaction(executeData) {
+        window.arkaneConnect.createSigner().executeNativeTransaction(executeData)
+              .then(function(result) {
+                  app.log(result);
+              })
+              .catch(function(err) {
+                  app.error(err);
+              });
+    }
 
     function getWallets(el) {
         var secretType = el.dataset.chain.toUpperCase();
