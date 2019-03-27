@@ -35,6 +35,7 @@
 
     app.handleAuthenticated = (auth) => {
         app.auth = auth;
+        app.handleSignerTypeSwitch();
         document.body.classList.remove('not-logged-in');
         document.body.classList.add('logged-in');
         $('#auth-username').text(app.auth.subject);
@@ -455,6 +456,12 @@
                                    to,
                                    value,
                                });
+        });
+    };
+
+    app.handleSignerTypeSwitch = function() {
+        document.getElementById('signer-type').addEventListener('change', function(e) {
+            window.arkaneConnect.signUsing = e.target.value;
         });
     };
 
