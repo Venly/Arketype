@@ -1,0 +1,113 @@
+<div class="tab-pane fade p-4 bg-white border" id="nav-SECRETTYPE" data-chain="SECRETTYPE" role="tabpanel" aria-labelledby="nav-SECRETTYPE-tab">
+    <button type="button" data-chain="SECRETTYPE" class="btn btn-outline-primary get-wallets mb-3">
+        Get Wallets
+    </button>
+    <button type="button" data-chain="SECRETTYPE" class="btn btn-outline-primary manage-wallets mb-3">
+        Manage Wallets
+    </button>
+
+    <div class="row">
+        <div class="mb-3 col-lg-6">
+            <form data-form="sign" data-chain="SECRETTYPE" class="card bg-light">
+                <fieldset class="card-body">
+                    <legend class="card-title">Sign Transaction</legend>
+                    <div class="form-group row">
+                        <label for="sign-from-SECRETTYPE" class="col-sm-5 col-form-label">From</label>
+                        <div class="col-sm-7">
+                            <select id="sign-from-SECRETTYPE" class="form-control" name="walletId"></select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="sign-to-SECRETTYPE" class="col-sm-5 col-form-label">To</label>
+                        <div class="col-sm-7">
+                            <input id="sign-to-SECRETTYPE" class="form-control" name="to" placeholder="to" value="0xd84aeb36b2a30eDB94e9f0A25A82E94e506ebB15"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="sign-amount-SECRETTYPE" class="col-sm-5 col-form-label">Amount</label>
+                        <div class="col-sm-7">
+                            <input id="sign-amount-SECRETTYPE" class="form-control" name="value" placeholder="value" value="32000000000000000"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="sign-data-SECRETTYPE" class="col-sm-5 col-form-label">Data (optional)</label>
+                        <div class="col-sm-7">
+                            <textarea id="sign-data-SECRETTYPE" class="form-control" name="data" rows="4"></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="offset-5 col-7">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        <div class="mb-3 col-lg-6">
+            <form data-form="execute" data-chain="SECRETTYPE" class="card bg-light">
+                <fieldset class="card-body">
+                    <legend class="card-title">Execute Transaction</legend>
+                    <div class="form-group row">
+                        <label for="exec-from-SECRETTYPE" class="col-sm-5 col-form-label">From</label>
+                        <div class="col-sm-7">
+                            <select id="exec-from-SECRETTYPE" class="form-control" name="walletId"></select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="exec-to-SECRETTYPE" class="col-sm-5 col-form-label">To</label>
+                        <div class="col-sm-7">
+                            <input id="exec-to-SECRETTYPE" class="form-control" name="to" placeholder="to" value="0xd84aeb36b2a30eDB94e9f0A25A82E94e506ebB15"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="exec-token-address-SECRETTYPE" class="col-sm-5 col-form-label">Token address (optional)</label>
+                        <div class="col-sm-7">
+                            <input id="exec-token-address-SECRETTYPE" class="form-control" name="tokenAddress" placeholder="Token address"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="exec-amount-SECRETTYPE" class="col-sm-5 col-form-label">Amount</label>
+                        <div class="col-sm-7">
+                            <input id="exec-amount-SECRETTYPE" class="form-control" name="value" placeholder="value" value="0.0321"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="exec-data-SECRETTYPE" class="col-sm-5 col-form-label">Data (optional)</label>
+                        <div class="col-sm-7">
+                            <textarea id="exec-data-SECRETTYPE" class="form-control" name="data" rows="4"></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="offset-5 col-7">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        <div class="mb-3 col-lg-6">
+            <form data-form="sign-raw" data-chain="SECRETTYPE" class="card bg-light">
+                <fieldset class="card-body">
+                    <legend class="card-title">Sign Raw Transaction</legend>
+                    <div class="form-group row">
+                        <label for="sign-from-SECRETTYPE-raw" class="col-sm-5 col-form-label">From</label>
+                        <div class="col-sm-7">
+                            <select id="sign-from-SECRETTYPE-raw" class="form-control" name="walletId"></select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="sign-data-SECRETTYPE-raw" class="col-sm-5 col-form-label">Data</label>
+                        <div class="col-sm-7">
+                            <textarea id="sign-data-SECRETTYPE-raw" class="form-control" name="data" rows="4">123456789ABCDEF</textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="offset-5 col-7">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>

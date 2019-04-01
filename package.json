@@ -1,9 +1,9 @@
 {
-  "name": "Arketype",
-  "version": "0.0.1",
+  "name": "arketype",
+  "version": "0.0.2",
   "description": "",
   "dependencies": {
-    "@arkane-network/arkane-connect": "latest",
+    "@arkane-network/arkane-connect": "develop",
     "axios": "^0.18.0",
     "bootstrap": "^4.2.1",
     "jquery": "^3.3.1",
@@ -11,32 +11,9 @@
   },
   "scripts": {
     "start": "http-server -p 4000 -a localhost -c-1",
-    "start-ext": "http-server -p 4000 -c-1",
-    "test": "bash ./runTests.sh",
-    "testBitcoin": "mocha -r ts-node/register -r tsconfig-paths/register -t 120000 $NODE_DEBUG_OPTION tests/BitcoinTransactionTest.ts",
-    "testEthereum": "mocha -r ts-node/register -r tsconfig-paths/register -t 120000 $NODE_DEBUG_OPTION tests/EthereumTransactionTest.ts",
-    "testGochain": "mocha -r ts-node/register -r tsconfig-paths/register -t 120000 $NODE_DEBUG_OPTION tests/GochainTransactionTest.ts",
-    "testVechain": "mocha -r ts-node/register -r tsconfig-paths/register -t 120000 $NODE_DEBUG_OPTION tests/VechainTransactionTest.ts",
-    "testSingleSuite": "mocha -r ts-node/register -r tsconfig-paths/register -t 120000 $NODE_DEBUG_OPTION tests/EthereumTransactionTest.ts",
-    "testSingleTest1": "mocha -r ts-node/register -r tsconfig-paths/register -t 120000 $NODE_DEBUG_OPTION tests/VechainTransactionTest.ts -g 'checkFor_PREPARE_TRANSACTION_ERROR_TO_NotFoundError'",
-    "testSingleTest2": "mocha -r ts-node/register -r tsconfig-paths/register -t 120000 $NODE_DEBUG_OPTION tests/EthereumTransactionTest.ts -g 'checkFor_NO_WALLET_ID_FoundError'"
+    "start-ext": "http-server -p 4000 -c-1"
   },
   "devDependencies": {
-    "@types/chai": "^4.1.7",
-    "@types/chai-as-promised": "^7.1.0",
-    "@types/mocha": "^5.2.6",
-    "@types/node": "^11.9.3",
-    "@types/selenium-webdriver": "^3.0.14",
-    "browserstack-local": "^1.3.7",
-    "chai": "^4.2.0",
-    "chai-as-promised": "^7.1.1",
-    "http-server": "^0.11.1",
-    "mocha": "^5.2.0",
-    "mocha-typescript": "^1.1.17",
-    "selenium-webdriver": "^4.0.0-alpha.1",
-    "ts-node": "^8.0.2",
-    "tsconfig-paths": "^3.8.0",
-    "tslib": "^1.9.3",
-    "typescript": "^3.3.3"
+    "http-server": "^0.11.1"
   }
 }
