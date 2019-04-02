@@ -113,8 +113,8 @@
             document.querySelector('body').dataset[dataSetName] = JSON.stringify(wallets);
             var $forms = $('[data-form][data-chain="' + secretType.toUpperCase() + '"]');
             $forms.each(function() {
-                $('select[name="walletId"]', el).find('option').remove();
-                $('select[name="walletId"]', el).append($('<option>', {
+                $('select[name="walletId"]', this).find('option').remove();
+                $('select[name="walletId"]', this).append($('<option>', {
                     value: '',
                     text: '-- No Wallet Selected --',
                     'data-address': '',
