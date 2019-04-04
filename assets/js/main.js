@@ -77,8 +77,8 @@
         return result;
     };
 
-    function signTransaction(signData) {
-        window.arkaneConnect.createSigner().signTransaction(signData)
+    function sign(signData) {
+        window.arkaneConnect.createSigner().sign(signData)
               .then(function(result) {
                   app.log(result);
               })
@@ -184,13 +184,20 @@
             var value = $('input[name="value"]', form).val() || null;
             var tokenAddress = $('input[name="tokenAddress"]', form).val() || null;
 
-            return {
+            var result = {
                 walletId,
                 to,
                 value,
                 tokenAddress,
                 data
-            }
+            };
+
+            var $hash = $('input[name="hash"]', form);
+            $hash.length > 0 ? result.hash = $hash.is(':checked') : null;
+            var $prefix = $('input[name="prefix"]', form);
+            $prefix.length > 0 ? result.prefix = $prefix.is(':checked') : null;
+
+            return result;
         }
 
         var formSignEth = document.querySelector('[data-form="sign"][data-chain="ETHEREUM"]');
@@ -198,7 +205,7 @@
             e.stopPropagation();
             e.preventDefault();
             var formData = getDataFromForm(formSignEth);
-            signTransaction({
+            sign({
                                 type: 'ETHEREUM_TRANSACTION',
                                 walletId: formData.walletId,
                                 submit: false,
@@ -213,11 +220,13 @@
             e.stopPropagation();
             e.preventDefault();
             var formData = getDataFromForm(formSignEthRaw);
-            signTransaction({
-                                type: 'ETHEREUM_RAW',
-                                walletId: formData.walletId,
-                                data: formData.data
-                            });
+            sign({
+                type: 'ETHEREUM_RAW',
+                walletId: formData.walletId,
+                data: formData.data,
+                prefix: formData.prefix,
+                hash: formData.prefix ? true : formData.hash,
+            });
         });
 
         var formExecEth = document.querySelector('[data-form="execute"][data-chain="ETHEREUM"]');
@@ -267,7 +276,7 @@
             var walletId = $('select[name="walletId"]', formSignGo).val();
             var to = $('input[name="to"]', formSignGo).val();
             var value = $('input[name="value"]', formSignGo).val();
-            signTransaction({
+            sign({
                                 type: 'GOCHAIN_TRANSACTION',
                                 walletId,
                                 submit: false,
@@ -283,7 +292,7 @@
             e.preventDefault();
             var data = $('textarea[name="data"]', formSignGoRaw).val() || null;
             var walletId = $('select[name="walletId"]', formSignGoRaw).val();
-            signTransaction({
+            sign({
                                 type: 'GOCHAIN_RAW',
                                 walletId,
                                 data
@@ -297,7 +306,7 @@
             var walletId = $('select[name="walletId"]', formSignTrx).val();
             var to = $('input[name="to"]', formSignTrx).val();
             var value = $('input[name="value"]', formSignTrx).val();
-            signTransaction({
+            sign({
                                 type: 'TRON_TRANSACTION',
                                 walletId,
                                 submit: false,
@@ -335,7 +344,7 @@
             var walletId = $('select[name="walletId"]', formSignVechain).val();
             var to = $('input[name="to"]', formSignVechain).val();
             var value = $('input[name="value"]', formSignVechain).val();
-            signTransaction({
+            sign({
                                 type: 'VECHAIN_TRANSACTION',
                                 walletId,
                                 submit: false,
