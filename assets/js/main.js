@@ -314,6 +314,17 @@
                                 value,
                             });
         });
+        var formSignTronRaw = document.querySelector('[data-form="sign-raw"][data-chain="TRON"]');
+        formSignTronRaw.addEventListener('submit', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var formData = getDataFromForm(formSignTronRaw);
+            sign({
+                type: 'TRON_RAW',
+                walletId: formData.walletId,
+                data: formData.data,
+            });
+        });
 
         var formExecTrx = document.querySelector('[data-form="execute"][data-chain="TRON"]');
         formExecTrx.addEventListener('submit', function(e) {
