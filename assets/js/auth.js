@@ -47,7 +47,8 @@
         app.handleSignerTypeSwitch();
         document.body.classList.remove('not-logged-in');
         document.body.classList.add('logged-in');
-        $('#auth-username').text(app.auth.subject);
+        $('#client-id').text(app.clientId);
+        $('#auth-username').html('<strong>' + app.auth.idTokenParsed.name + '</strong><br/>' + app.auth.subject);
         app.updateToken(app.auth.token);
         window.arkaneConnect.addOnTokenRefreshCallback(app.updateToken);
         app.checkResultRequestParams();
