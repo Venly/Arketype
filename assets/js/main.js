@@ -3,51 +3,8 @@
 
     window.app = window.app || {};
     app.auth = {};
-    var redirectUri = window.location.origin;
 
-    app.initApp = function() {
-        window.arkaneConnect = new ArkaneConnect('Arketype', {environment: 'qa', signUsing: 'REDIRECT'});
-        window.arkaneConnect
-              .checkAuthenticated()
-              .then((result) => {
-                        $('input[name=redirect]').val(window.location.href);
-                        return result.authenticated(app.handleAuthenticated)
-                                     .notAuthenticated((auth) => {
-                                         document.body.classList.add('not-logged-in');
-                                     });
-                    }
-              )
-              .catch(reason => app.error(reason));
-        app.attachLinkEvents();
-    };
-
-    app.attachLinkEvents = function() {
-        document.getElementById('auth-loginlink').addEventListener('click', function(e) {
-            e.preventDefault();
-            window.arkaneConnect.authenticate();
-        });
-
-        document.getElementById('auth-logout').addEventListener('click', function(e) {
-            e.preventDefault();
-            window.arkaneConnect.logout();
-        });
-    };
-
-    app.handleAuthenticated = (auth) => {
-        app.auth = auth;
-        app.handleSignerTypeSwitch();
-        document.body.classList.remove('not-logged-in');
-        document.body.classList.add('logged-in');
-        $('#auth-username').text(app.auth.subject);
-        app.updateToken(app.auth.token);
-        window.arkaneConnect.addOnTokenRefreshCallback(app.updateToken);
-        app.checkResultRequestParams();
-        app.addConnectEvents();
-    };
-    app.updateToken = (token) => {
-        $('input[name="bearer"]').val(app.auth.token);
-        $('#auth-token').val(token);
-    };
+    var redirectUri = window.location.href.replace(window.location.search, '');
 
     app.checkResultRequestParams = function() {
         var status = this.getQueryParam('status');
@@ -62,7 +19,7 @@
     };
 
     app.extractResultFromQueryParams = function() {
-        const validResultParams = ['transactionHash', 'signedTransaction', 'r', 's', 'v', 'signature', 'error'];
+        const validResultParams = ['transactionHash', 'signedTransaction', 'r', 's', 'v', 'signature', 'error', 'walletId'];
         const result = {};
         const regex = new RegExp(/[\?|\&]([^=]+)\=([^&]+)/g);
         let requestParam = regex.exec(window.location.href);

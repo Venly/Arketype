@@ -94,14 +94,7 @@
             </div>
         </div>
         <div class="col-md-12 mb-4">
-            <div class="mb-5 row" id="wallet-management">
-                <h4 class="mb-3 col-12">Wallets</h4>
-                <div class="col-12 col-md-6">
-                    <button type="button" id="link-wallets" class="btn btn-outline-primary">
-                        Link Wallets
-                    </button>
-                </div>
-            </div>
+            <h4 class="mb-3">Application Wallets</h4>
             <nav>
                 <div class="nav nav-tabs" id="nav-tab" role="tablist">
                     <a class="nav-item nav-link" id="nav-ETHEREUM-tab" data-toggle="tab" href=".tab-pane#tab-ETHEREUM" role="tab" aria-controls="tab-ETHEREUM"
@@ -119,8 +112,8 @@
                     <button type="button" data-chain="ETHEREUM" class="btn btn-outline-primary get-wallets mb-3">
                         Refresh Wallets
                     </button>
-                    <button type="button" data-chain="ETHEREUM" class="btn btn-outline-primary manage-wallets mb-3">
-                        Manage Wallets
+                    <button type="button" data-chain="ETHEREUM" class="btn btn-outline-primary create-app-wallet mb-3">
+                        Create New Application Wallet
                     </button>
 
                     <div class="row">
@@ -250,8 +243,8 @@
                     <button type="button" data-chain="GOCHAIN" class="btn btn-outline-primary get-wallets mb-3">
                         Refresh Wallets
                     </button>
-                    <button type="button" data-chain="GOCHAIN" class="btn btn-outline-primary manage-wallets mb-3">
-                        Manage Wallets
+                    <button type="button" data-chain="GOCHAIN" class="btn btn-outline-primary create-app-wallet mb-3">
+                        Create New Application Wallet
                     </button>
 
                     <div class="row">
@@ -365,8 +358,8 @@
                     <button type="button" data-chain="VECHAIN" class="btn btn-outline-primary get-wallets mb-3">
                         Refresh Wallets
                     </button>
-                    <button type="button" data-chain="VECHAIN" class="btn btn-outline-primary manage-wallets mb-3">
-                        Manage Wallets
+                    <button type="button" data-chain="VECHAIN" class="btn btn-outline-primary create-app-wallet mb-3">
+                        Create New Application Wallet
                     </button>
 
                     <div class="row">
@@ -456,51 +449,15 @@
                     <button type="button" data-chain="TRON" class="btn btn-outline-primary get-wallets mb-3">
                         Refresh Wallets
                     </button>
-                    <button type="button" data-chain="TRON" class="btn btn-outline-primary manage-wallets mb-3">
-                        Manage Wallets
+                    <button type="button" data-chain="TRON" class="btn btn-outline-primary create-app-wallet mb-3">
+                        Create New Application Wallet
                     </button>
 
                     <div class="row">
                         <div class="mb-3 col-lg-6">
-                            <form data-form="sign" data-chain="TRON" class="card bg-light">
+                            <form data-form="request" data-chain="TRON" class="card bg-light">
                                 <fieldset class="card-body">
-                                    <legend class="card-title">Sign Transaction</legend>
-                                    <div class="form-group row">
-                                        <label for="sign-from-TRON" class="col-sm-5 col-form-label">From</label>
-                                        <div class="col-sm-7">
-                                            <select id="sign-from-TRON" class="form-control" data-from="true" name="walletId"></select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="sign-to-TRON" class="col-sm-5 col-form-label">To</label>
-                                        <div class="col-sm-7">
-                                            <input id="sign-to-TRON" class="form-control" data-to="true" name="to" placeholder="to" value="TAwwCCoa6cTjtKJVTSpnKbkDimgALcAXfb"/>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="sign-amount-TRON" class="col-sm-5 col-form-label">Amount</label>
-                                        <div class="col-sm-7">
-                                            <input id="sign-amount-TRON" class="form-control" data-amount="true" name="value" placeholder="value" value="31400000000000000"/>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="sign-data-TRON" class="col-sm-5 col-form-label">Data (optional)</label>
-                                        <div class="col-sm-7">
-                                            <textarea id="sign-data-TRON" class="form-control" data-data="true" name="data" rows="4"></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="offset-5 col-7">
-                                            <button type="submit" class="btn btn-primary">Submit</button>
-                                        </div>
-                                    </div>
-                                </fieldset>
-                            </form>
-                        </div>
-                        <div class="mb-3 col-lg-6">
-                            <form data-form="execute" data-chain="TRON" class="card bg-light">
-                                <fieldset class="card-body">
-                                    <legend class="card-title">Execute Transaction</legend>
+                                    <legend class="card-title">Request Transaction</legend>
                                     <div class="form-group row">
                                         <label for="exec-from-TRON" class="col-sm-5 col-form-label">From</label>
                                         <div class="col-sm-7">
@@ -545,8 +502,8 @@
                     <button type="button" data-chain="BITCOIN" class="btn btn-outline-primary get-wallets mb-3">
                         Refresh Wallets
                     </button>
-                    <button type="button" data-chain="BITCOIN" class="btn btn-outline-primary manage-wallets mb-3">
-                        Manage Wallets
+                    <button type="button" data-chain="BITCOIN" class="btn btn-outline-primary create-app-wallet mb-3">
+                        Create New Application Wallet
                     </button>
 
                     <div class="row">
@@ -598,8 +555,8 @@
                     <button type="button" data-chain="LITECOIN" class="btn btn-outline-primary get-wallets mb-3">
                         Refresh Wallets
                     </button>
-                    <button type="button" data-chain="LITECOIN" class="btn btn-outline-primary manage-wallets mb-3">
-                        Manage Wallets
+                    <button type="button" data-chain="LITECOIN" class="btn btn-outline-primary create-app-wallet mb-3">
+                        Create New Application Wallet
                     </button>
 
                     <div class="row">
@@ -656,7 +613,7 @@
 <script src="/assets/js/vendor/modernizr-custom.js"></script>
 <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
 <script src="/assets/js/plugins.js"></script>
-<script src="/assets/js/main.js"></script>
+<script src="/assets/js/app-wallets.js"></script>
 <script src="/assets/js/auth.js"></script>
 
 </body>
