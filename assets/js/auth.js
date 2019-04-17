@@ -4,17 +4,18 @@
     window.app = window.app || {};
 
     app.env = 'tst1';
+    app.clientId = 'Arketype';
+    app.isLocal = false;
     app.environment = {
         env: app.env,
-        // connect: app.env,
-        connect: app.env + '-local',
+        connect: app.env + (app.isLocal ? '-local' : ''),
         api: 'https://api-' + app.env + '.arkane.network',
         login: 'https://login-' + app.env + '.arkane.network',
-        arketypeClientSecret: 'fd8eaade-c0c3-43b8-928f-94ef6a793e0c',
+        arketypeClientSecret: 'fd8eaade-c0c3-43b8-928f-94ef6a793e0c', // Only visible for demo purpose, this secret should be configured in application backend
     };
 
     app.initApp = function() {
-        window.arkaneConnect = new ArkaneConnect('Arketype', {environment: app.environment.connect, signUsing: 'REDIRECT'});
+        window.arkaneConnect = new ArkaneConnect(app.clientId, {environment: app.environment.connect, signUsing: 'REDIRECT'});
         window.arkaneConnect
               .checkAuthenticated()
               .then((result) => {
@@ -52,6 +53,7 @@
         app.checkResultRequestParams();
         app.addConnectEvents();
     };
+
     app.updateToken = (token) => {
         $('input[name="bearer"]').val(app.auth.token);
         $('#auth-token').val(token);
