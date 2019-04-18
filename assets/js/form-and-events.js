@@ -91,7 +91,6 @@
         txRequest.open("POST", `${app.environment.api}/api/transactions`);
         txRequest.setRequestHeader("Content-Type", "application/json");
         txRequest.setRequestHeader("Authorization", "Bearer " + token.access_token);
-        console.log('request transaction', JSON.stringify(request));
         txRequest.send(JSON.stringify(request));
     }
 
@@ -297,7 +296,6 @@
         });
 
         $(app).on(eventNames.applicationTokenRequested, function(event, eventData) {
-            console.log('event', eventData);
             requestTransaction(
                 eventData.token,
                 {
