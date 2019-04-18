@@ -5,7 +5,7 @@
 
     app.env = 'tst1';
     app.clientId = 'Arketype';
-    app.isLocal = false;
+    app.isLocal = true;
     app.environment = {
         env: app.env,
         connect: app.env + (app.isLocal ? '-local' : ''),
@@ -52,7 +52,7 @@
         app.updateToken(app.auth.token);
         window.arkaneConnect.addOnTokenRefreshCallback(app.updateToken);
         app.checkResultRequestParams();
-        app.addConnectEvents();
+        $(app).trigger('authenticated');
     };
 
     app.updateToken = (token) => {

@@ -5,6 +5,13 @@
 
     app.redirectUri = window.location.href.replace(window.location.search, '');
 
+    app.copySelectDataAddress = function(selector) {
+        var $select = $(selector);
+        var value = $select.val();
+        var address = $select.find('option[value="'+value+'"]').data('address');
+        copyToClipboard(address);
+    };
+
     app.handleSignerTypeSwitch = function() {
         document.getElementById('signer-type').addEventListener('change', function(e) {
             window.arkaneConnect.signUsing = e.target.value;
@@ -38,6 +45,14 @@
         }
         return result;
     };
+
+    function copyToClipboard(text) {
+        var $temp = $("<input>");
+        $("body").append($temp);
+        $temp.val(text).select();
+        document.execCommand("copy");
+        $temp.remove();
+    }
 
     function logger(txt, title, type) {
         if (typeof type === 'undefined') {
