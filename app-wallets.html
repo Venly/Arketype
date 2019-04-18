@@ -13,7 +13,8 @@
     <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/assets/css/auth.css"/>
     <link rel="stylesheet" href="/assets/css/arketype.css"/>
-    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <script src="/node_modules/@arkane-network/arkane-connect/dist/connect.js"></script>
 </head>
 
@@ -29,11 +30,11 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="/index.html">Wallets <span class="sr-only">(current)</span></a>
-                    </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/app-wallets">App Wallets</a>
+                        <a class="nav-link" href="/index.html">Wallets </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/app-wallets">App Wallets <span class="sr-only">(current)</span></a>
                     </li>
                 </ul>
             </div>
@@ -127,14 +128,7 @@
                 </div>
             </div>
             <div class="col-md-12 mb-4">
-                <div class="mb-5 row" id="wallet-management">
-                    <h4 class="mb-3 col-12">Wallets</h4>
-                    <div class="col-12 col-md-6">
-                        <button type="button" id="link-wallets" class="btn btn-outline-primary">
-                            Link Wallets
-                        </button>
-                    </div>
-                </div>
+                <h4 class="mb-3">Application Wallets</h4>
                 <nav>
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
                         <a class="nav-item nav-link" id="nav-ETHEREUM-tab" data-toggle="tab" href=".tab-pane#tab-ETHEREUM" role="tab" aria-controls="tab-ETHEREUM"
@@ -153,61 +147,28 @@
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
                     <div class="tab-pane fade p-4 bg-white border" id="tab-ETHEREUM" data-chain="ETHEREUM" role="tabpanel" aria-labelledby="nav-ETHEREUM-tab">
-                        <button type="button" data-chain="ETHEREUM" class="btn btn-outline-primary get-wallets mb-3">
+                        <button type="button" data-chain="ETHEREUM" class="btn btn-outline-primary get-app-wallets mb-3">
                             Refresh Wallets
                         </button>
-                        <button type="button" data-chain="ETHEREUM" class="btn btn-outline-primary manage-wallets mb-3">
-                            Manage Wallets
+                        <button type="button" data-chain="ETHEREUM" class="btn btn-outline-primary create-app-wallet mb-3">
+                            Create New Application Wallet
                         </button>
 
                         <div class="row">
                             <div class="mb-3 col-lg-6">
-                                <form data-form="sign" data-chain="ETHEREUM" class="card bg-light">
+                                <form data-form="request" data-chain="ETHEREUM" class="card bg-light">
                                     <fieldset class="card-body">
-                                        <legend class="card-title">Sign Transaction</legend>
-                                        <div class="form-group row">
-                                            <label for="sign-from-ETHEREUM" class="col-sm-5 col-form-label">From</label>
-                                            <div class="col-sm-7">
-                                                <select id="sign-from-ETHEREUM" class="form-control" data-from="true" name="walletId"></select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="sign-to-ETHEREUM" class="col-sm-5 col-form-label">To</label>
-                                            <div class="col-sm-7">
-                                                <input id="sign-to-ETHEREUM" class="form-control" data-to="true" name="to" placeholder="to"
-                                                       value="0xf147cA0b981C0CD0955D1323DB9980F4B43e9FED"/>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="sign-amount-ETHEREUM" class="col-sm-5 col-form-label">Amount (in WEI)</label>
-                                            <div class="col-sm-7">
-                                                <input id="sign-amount-ETHEREUM" class="form-control" data-amount="true" name="value" placeholder="value"
-                                                       value="31400000000000000"/>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="sign-data-ETHEREUM" class="col-sm-5 col-form-label">Data (optional)</label>
-                                            <div class="col-sm-7">
-                                                <textarea id="sign-data-ETHEREUM" class="form-control" data-data="true" name="data" rows="4"></textarea>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="offset-5 col-7">
-                                                <button type="submit" class="btn btn-primary">Submit</button>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                </form>
-                            </div>
-                            <div class="mb-3 col-lg-6">
-                                <form data-form="execute" data-chain="ETHEREUM" class="card bg-light">
-                                    <fieldset class="card-body">
-                                        <legend class="card-title">Execute Transaction</legend>
+                                        <legend class="card-title">Request Transaction</legend>
                                         <div class="form-group row">
                                             <label for="exec-from-ETHEREUM" class="col-sm-5 col-form-label">From</label>
                                             <div class="col-sm-7">
-                                                <select id="exec-from-ETHEREUM" class="form-control" data-from="true" name="walletId"></select>
+                                                <div class="input-group">
+                                                    <select id="exec-from-ETHEREUM" class="form-control" data-from="true" name="walletId"></select>
+                                                    <div class="input-group-append">
+                                                        <button type="button" class="btn btn-outline-secondary" onclick="app.copySelectDataAddress('#exec-from-ETHEREUM')"><i
+                                                            class="fa fa-copy"></i></button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -225,7 +186,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label for="exec-amount-ETHEREUM" class="col-sm-5 col-form-label">Amount (ETH)</label>
+                                            <label for="exec-amount-ETHEREUM" class="col-sm-5 col-form-label">Amount</label>
                                             <div class="col-sm-7">
                                                 <input id="exec-amount-ETHEREUM" class="form-control" data-amount="true" name="value" placeholder="value" value="0.0314"/>
                                             </div>
@@ -236,47 +197,8 @@
                                                 <textarea id="exec-data-ETHEREUM" class="form-control" data-data="true" name="data" rows="4"></textarea>
                                             </div>
                                         </div>
-
                                         <div class="row">
                                             <div class="offset-5 col-7">
-                                                <button type="submit" class="btn btn-primary">Submit</button>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                </form>
-                            </div>
-                            <div class="mb-3 col-lg-6">
-                                <form data-form="sign-raw" data-chain="ETHEREUM" class="card bg-light">
-                                    <fieldset class="card-body">
-                                        <legend class="card-title">Sign Raw Transaction</legend>
-                                        <div class="form-group row">
-                                            <label for="sign-from-ETHEREUM-raw" class="col-sm-5 col-form-label">From</label>
-                                            <div class="col-sm-7">
-                                                <select id="sign-from-ETHEREUM-raw" class="form-control" data-from="true" name="walletId"></select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="sign-data-ETHEREUM-raw" class="col-sm-5 col-form-label">Data</label>
-                                            <div class="col-sm-7">
-                                                <textarea id="sign-data-ETHEREUM-raw" class="form-control" data-data="true" name="data" rows="4">123456789ABCDEF</textarea>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="sign-prefix-ETHEREUM-raw" class="col-sm-5 col-form-label">Prefix</label>
-                                            <div class="col-sm-7">
-                                                <input id="sign-prefix-ETHEREUM-raw" class="form-control" data-prefix="true" name="prefix" type="checkbox" checked>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="sign-hash-ETHEREUM-raw" class="col-sm-5 col-form-label">Hash</label>
-                                            <div class="col-sm-7">
-                                                <input id="sign-hash-ETHEREUM-raw" class="form-control" data-hash="true" name="hash" type="checkbox" checked>
-                                                <small class="form-text text-muted">When prefix is checked, hash will always be set to 'true'</small>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="offset-sm-5 col-sm-7">
                                                 <button type="submit" class="btn btn-primary">Submit</button>
                                             </div>
                                         </div>
@@ -289,8 +211,8 @@
                         <button type="button" data-chain="GOCHAIN" class="btn btn-outline-primary get-wallets mb-3">
                             Refresh Wallets
                         </button>
-                        <button type="button" data-chain="GOCHAIN" class="btn btn-outline-primary manage-wallets mb-3">
-                            Manage Wallets
+                        <button type="button" data-chain="GOCHAIN" class="btn btn-outline-primary create-app-wallet mb-3">
+                            Create New Application Wallet
                         </button>
 
                         <div class="row">
@@ -405,8 +327,8 @@
                         <button type="button" data-chain="VECHAIN" class="btn btn-outline-primary get-wallets mb-3">
                             Refresh Wallets
                         </button>
-                        <button type="button" data-chain="VECHAIN" class="btn btn-outline-primary manage-wallets mb-3">
-                            Manage Wallets
+                        <button type="button" data-chain="VECHAIN" class="btn btn-outline-primary create-app-wallet mb-3">
+                            Create New Application Wallet
                         </button>
 
                         <div class="row">
@@ -494,58 +416,28 @@
                         </div>
                     </div>
                     <div class="tab-pane fade p-4 bg-white border" id="tab-TRON" data-chain="TRON" role="tabpanel" aria-labelledby="nav-TRON-tab">
-                        <button type="button" data-chain="TRON" class="btn btn-outline-primary get-wallets mb-3">
+                        <button type="button" data-chain="TRON" class="btn btn-outline-primary get-app-wallets mb-3">
                             Refresh Wallets
                         </button>
-                        <button type="button" data-chain="TRON" class="btn btn-outline-primary manage-wallets mb-3">
-                            Manage Wallets
+                        <button type="button" data-chain="TRON" class="btn btn-outline-primary create-app-wallet mb-3">
+                            Create New Application Wallet
                         </button>
 
                         <div class="row">
                             <div class="mb-3 col-lg-6">
-                                <form data-form="sign" data-chain="TRON" class="card bg-light">
+                                <form data-form="request" data-chain="TRON" class="card bg-light">
                                     <fieldset class="card-body">
-                                        <legend class="card-title">Sign Transaction</legend>
-                                        <div class="form-group row">
-                                            <label for="sign-from-TRON" class="col-sm-5 col-form-label">From</label>
-                                            <div class="col-sm-7">
-                                                <select id="sign-from-TRON" class="form-control" data-from="true" name="walletId"></select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="sign-to-TRON" class="col-sm-5 col-form-label">To</label>
-                                            <div class="col-sm-7">
-                                                <input id="sign-to-TRON" class="form-control" data-to="true" name="to" placeholder="to" value="TAwwCCoa6cTjtKJVTSpnKbkDimgALcAXfb"/>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="sign-amount-TRON" class="col-sm-5 col-form-label">Amount</label>
-                                            <div class="col-sm-7">
-                                                <input id="sign-amount-TRON" class="form-control" data-amount="true" name="value" placeholder="value" value="31400000000000000"/>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="sign-data-TRON" class="col-sm-5 col-form-label">Data (optional)</label>
-                                            <div class="col-sm-7">
-                                                <textarea id="sign-data-TRON" class="form-control" data-data="true" name="data" rows="4"></textarea>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="offset-5 col-7">
-                                                <button type="submit" class="btn btn-primary">Submit</button>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                </form>
-                            </div>
-                            <div class="mb-3 col-lg-6">
-                                <form data-form="execute" data-chain="TRON" class="card bg-light">
-                                    <fieldset class="card-body">
-                                        <legend class="card-title">Execute Transaction</legend>
+                                        <legend class="card-title">Request Transaction</legend>
                                         <div class="form-group row">
                                             <label for="exec-from-TRON" class="col-sm-5 col-form-label">From</label>
                                             <div class="col-sm-7">
-                                                <select id="exec-from-TRON" class="form-control" data-from="true" name="walletId"></select>
+                                                <div class="input-group">
+                                                    <select id="exec-from-TRON" class="form-control" data-from="true" name="walletId"></select>
+                                                    <div class="input-group-append">
+                                                        <button type="button" class="btn btn-outline-secondary" onclick="app.copySelectDataAddress('#exec-from-TRON')"><i
+                                                            class="fa fa-copy"></i></button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -580,14 +472,25 @@
                                     </fieldset>
                                 </form>
                             </div>
+
+                            <div class="mb-3 col-lg-6">
+                                <form class="card bg-light">
+                                    <fieldset class="card-body">
+                                        <legend class="card-title">Sign Requests</legend>
+                                        <ul class="list-group" data-list="sign-request" data-chain="TRON">
+                                            <li class="list-group-item" data-empty>No Requests Available</li>
+                                        </ul>
+                                    </fieldset>
+                                </form>
+                            </div>
                         </div>
                     </div>
                     <div class="tab-pane fade p-4 bg-white border" id="tab-BITCOIN" data-chain="BITCOIN" role="tabpanel" aria-labelledby="nav-BITCOIN-tab">
                         <button type="button" data-chain="BITCOIN" class="btn btn-outline-primary get-wallets mb-3">
                             Refresh Wallets
                         </button>
-                        <button type="button" data-chain="BITCOIN" class="btn btn-outline-primary manage-wallets mb-3">
-                            Manage Wallets
+                        <button type="button" data-chain="BITCOIN" class="btn btn-outline-primary create-app-wallet mb-3">
+                            Create New Application Wallet
                         </button>
 
                         <div class="row">
@@ -641,8 +544,8 @@
                         <button type="button" data-chain="LITECOIN" class="btn btn-outline-primary get-wallets mb-3">
                             Refresh Wallets
                         </button>
-                        <button type="button" data-chain="LITECOIN" class="btn btn-outline-primary manage-wallets mb-3">
-                            Manage Wallets
+                        <button type="button" data-chain="LITECOIN" class="btn btn-outline-primary create-app-wallet mb-3">
+                            Create New Application Wallet
                         </button>
 
                         <div class="row">
@@ -701,7 +604,8 @@
 <div class="bg-dark mt-auto">
     <div class="container">
         <nav class="row navbar navbar-expand-sm navbar-dark bg-dark">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarBottomCollapse" aria-controls="navbarBottomCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarBottomCollapse" aria-controls="navbarBottomCollapse" aria-expanded="false"
+                    aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarBottomCollapse">
@@ -722,7 +626,7 @@
 <script src="/assets/js/form-and-events.js"></script>
 <script src="/assets/js/main.js"></script>
 <script src="/assets/js/auth.js"></script>
-<script src="/assets/js/arketype-wallets.js"></script>
+<script src="/assets/js/arketype-app-wallets.js"></script>
 
 </body>
 

@@ -23,3 +23,13 @@ form.card {
 .ckcontent, .tibrr-cookie-consent-container {
     display: none !important;
 }
+
+.bg-light-gray {
+    background-color: #eaeaea;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
