@@ -2,6 +2,8 @@
     'use strict';
 
     window.app = window.app || {};
+    app.localStorageKeys = app.localStorageKeys  || {};
+    app.localStorageKeys.windowMode = 'arketype.windowMode';
 
     app.redirectUri = window.location.href.replace(window.location.search, '');
 
@@ -12,9 +14,23 @@
         copyToClipboard(address);
     };
 
-    app.handleSignerTypeSwitch = function() {
-        document.getElementById('signer-type').addEventListener('change', function(e) {
+    app.getWindowMode = function() {
+        return document.getElementById('window-mode').value;
+    };
+
+    app.handleWindowModeTypeSwitch = function() {
+        var windowModeSelect = document.getElementById('window-mode');
+        var value = windowModeSelect.value;
+        if(localStorage) {
+            value = localStorage.getItem(app.localStorageKeys.windowMode) || value;
+            windowModeSelect.value = value;
+        }
+        window.arkaneConnect.signUsing = value;
+        windowModeSelect.addEventListener('change', function(e) {
             window.arkaneConnect.signUsing = e.target.value;
+            if(localStorage) {
+                localStorage.setItem(app.localStorageKeys.windowMode, e.target.value);
+            }
         });
     };
 
