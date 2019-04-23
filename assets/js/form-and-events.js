@@ -174,7 +174,6 @@
     app.page.initEthereum = function() {
         var formSignEth = document.querySelector('[data-form="sign"][data-chain="ETHEREUM"]');
         formSignEth && formSignEth.addEventListener('submit', function(e) {
-            console.log('test');
             e.stopPropagation();
             e.preventDefault();
             var formData = getDataFromForm(formSignEth);
