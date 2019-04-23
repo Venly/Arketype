@@ -37,7 +37,7 @@
             el.addEventListener('click', function() {
                 var chain = this.dataset.chain;
                 if(app.getWindowMode() === 'POPUP') {
-                    window.arkaneConnect.manageWalletsPopup(chain).then((result) => {
+                    window.arkaneConnect.manageWallets(chain).then((result) => {
                         app.log(result, 'manage-wallets finished');
                         getWalletsBySecretType(this.dataset.chain.toUpperCase());
                     }).catch((result) => {
@@ -53,7 +53,7 @@
     function initLinkWalletsEvent() {
         document.getElementById('link-wallets').addEventListener('click', function() {
             if(app.getWindowMode() === 'POPUP') {
-                window.arkaneConnect.linkWalletsPopup().then((result) => {
+                window.arkaneConnect.linkWallets().then((result) => {
                     app.log(result, 'link-wallets finished');
                     var chain = document.querySelector('#nav-tabContent > .active').dataset.chain;
                     getWalletsBySecretType(chain.toUpperCase());

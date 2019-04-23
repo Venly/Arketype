@@ -25,8 +25,10 @@
             value = localStorage.getItem(app.localStorageKeys.windowMode) || value;
             windowModeSelect.value = value;
         }
+        window.arkaneConnect.windowMode = value;
         window.arkaneConnect.signUsing = value;
         windowModeSelect.addEventListener('change', function(e) {
+            window.arkaneConnect.windowMode = value;
             window.arkaneConnect.signUsing = e.target.value;
             if(localStorage) {
                 localStorage.setItem(app.localStorageKeys.windowMode, e.target.value);
