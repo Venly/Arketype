@@ -44,7 +44,7 @@
 
     app.handleAuthenticated = (auth) => {
         app.auth = auth;
-        app.handleSignerTypeSwitch();
+        app.handleWindowModeTypeSwitch();
         document.body.classList.remove('not-logged-in');
         document.body.classList.add('logged-in');
         $('#client-id').text(app.clientId);
