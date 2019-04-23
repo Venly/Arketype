@@ -19,3 +19,17 @@ form.card {
 .tab-content > .tab-pane {
     margin-top: -1px;
 }
+
+.ckcontent, .tibrr-cookie-consent-container {
+    display: none !important;
+}
+
+.bg-light-gray {
+    background-color: #eaeaea;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
