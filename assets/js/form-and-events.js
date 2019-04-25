@@ -3,7 +3,8 @@
 
     window.app = window.app || {};
     app.page = app.page || {};
-    app.activeChainLocalStorageKey = 'arketype.activeChain';
+    app.localStorageKeys = app.localStorageKeys  || {};
+    app.localStorageKeys.activeChain = 'arketype.activeChain';
 
     var eventNames = {
         applicationTokenRequested: 'applicationTokenRequested',
@@ -127,7 +128,7 @@
     app.page.setActiveTab = function(secretType, selectTab) {
         if(typeof secretType !== 'undefined') {
             if(localStorage) {
-                localStorage.setItem(app.activeChainLocalStorageKey, secretType);
+                localStorage.setItem(app.localStorageKeys.activeChain, secretType);
             }
             if(selectTab) {
                 $('#nav-' + secretType + '-tab').trigger('click');
@@ -136,7 +137,7 @@
     };
 
     app.page.getActiveTab = function() {
-        return (localStorage && localStorage.getItem(app.activeChainLocalStorageKey)) || 'ETHEREUM';
+        return (localStorage && localStorage.getItem(app.localStorageKeys.activeChain)) || 'ETHEREUM';
     };
 
     app.page.initGetProfileEvent = function() {
@@ -147,7 +148,7 @@
         });
     };
 
-    function getDataFromForm() {
+    function getDataFromForm(form) {
         var data = $('textarea[name="data"]', form).val() || null;
         var walletId = $('select[name="walletId"]', form).val() || null;
         var to = $('input[name="to"]', form).val() || null;

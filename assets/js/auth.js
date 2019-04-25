@@ -3,7 +3,7 @@
 
     window.app = window.app || {};
 
-    app.env = '';
+    app.env = 'qa';
     app.clientId = 'Arketype';
     app.isLocal = false;
     app.environment = {
@@ -16,6 +16,7 @@
 
     app.initApp = function() {
         window.arkaneConnect = new ArkaneConnect(app.clientId, {environment: app.environment.connect, signUsing: 'REDIRECT'});
+        app.handleWindowModeTypeSwitch();
         window.arkaneConnect
               .checkAuthenticated()
               .then((result) => {
@@ -33,7 +34,13 @@
     app.attachLinkEvents = function() {
         document.getElementById('auth-loginlink').addEventListener('click', function(e) {
             e.preventDefault();
-            window.arkaneConnect.authenticate();
+            var windowMode = app.getWindowMode();
+            window.arkaneConnect.authenticate({windowMode: windowMode}).then((result) => {
+                return result.authenticated(app.handleAuthenticated)
+                             .notAuthenticated((auth) => {
+                                 document.body.classList.add('not-logged-in');
+                             });
+            });
         });
 
         document.getElementById('auth-logout').addEventListener('click', function(e) {
@@ -44,7 +51,6 @@
 
     app.handleAuthenticated = (auth) => {
         app.auth = auth;
-        app.handleSignerTypeSwitch();
         document.body.classList.remove('not-logged-in');
         document.body.classList.add('logged-in');
         $('#client-id').text(app.clientId);
