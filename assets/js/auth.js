@@ -3,7 +3,7 @@
 
     window.app = window.app || {};
 
-    app.env = '';
+    app.env = 'qa';
     app.clientId = 'Arketype';
     app.isLocal = false;
     app.environment = {
@@ -35,7 +35,7 @@
         document.getElementById('auth-loginlink').addEventListener('click', function(e) {
             e.preventDefault();
             var windowMode = app.getWindowMode();
-            window.arkaneConnect.authenticate({ windowMode: windowMode}).then((result) => {
+            window.arkaneConnect.authenticate({windowMode: windowMode}).then((result) => {
                 return result.authenticated(app.handleAuthenticated)
                              .notAuthenticated((auth) => {
                                  document.body.classList.add('not-logged-in');
