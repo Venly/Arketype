@@ -128,378 +128,78 @@
                     <button class="btn btn-secondary" onclick="app.clearLog()">Clear logs</button>
                 </div>
             </div>
+
             <div class="col-md-12 mb-4">
-                <h4 class="mb-3">Application Wallets</h4>
-                <nav>
-                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <a class="nav-item nav-link" id="nav-ETHEREUM-tab" data-toggle="tab" href=".tab-pane#tab-ETHEREUM" role="tab" aria-controls="tab-ETHEREUM"
-                           aria-selected="true">Ethereum</a>
-                        <a class="nav-item nav-link" id="nav-GOCHAIN-tab" data-toggle="tab" href=".tab-pane#tab-GOCHAIN" role="tab" aria-controls="tab-GOCHAIN"
-                           aria-selected="false">GoChain</a>
-                        <a class="nav-item nav-link" id="nav-VECHAIN-tab" data-toggle="tab" href=".tab-pane#tab-VECHAIN" role="tab" aria-controls="tab-VECHAIN"
-                           aria-selected="false">VeChain</a>
-                        <a class="nav-item nav-link" id="nav-TRON-tab" data-toggle="tab" href=".tab-pane#tab-TRON" role="tab" aria-controls="tab-TRON"
-                           aria-selected="false">Tron</a>
-                        <a class="nav-item nav-link" id="nav-BITCOIN-tab" data-toggle="tab" href=".tab-pane#tab-BITCOIN" role="tab" aria-controls="tab-BITCOIN"
-                           aria-selected="false">Bitcoin</a>
-                        <a class="nav-item nav-link" id="nav-LITECOIN-tab" data-toggle="tab" href=".tab-pane#tab-LITECOIN" role="tab" aria-controls="tab-LITECOIN"
-                           aria-selected="false">Litecoin</a>
-                    </div>
-                </nav>
-                <div class="tab-content" id="nav-tabContent">
-                    <div class="tab-pane fade p-4 bg-white border" id="tab-ETHEREUM" data-chain="ETHEREUM" role="tabpanel" aria-labelledby="nav-ETHEREUM-tab">
-                        <button type="button" data-chain="ETHEREUM" class="btn btn-outline-primary get-app-wallets mb-3">
-                            Refresh Wallets
-                        </button>
-                        <button type="button" data-chain="ETHEREUM" class="btn btn-outline-primary create-app-wallet mb-3">
-                            Create New Application Wallet
-                        </button>
-
-                        <div class="row">
-                            <div class="mb-3 col-lg-6">
-                                <form data-form="request" data-chain="ETHEREUM" class="card bg-light">
-                                    <fieldset class="card-body">
-                                        <legend class="card-title">WIP: Request Transaction</legend>
-                                        <div class="form-group row">
-                                            <label for="exec-from-ETHEREUM" class="col-sm-5 col-form-label">From</label>
-                                            <div class="col-sm-7">
-                                                <div class="input-group">
-                                                    <select id="exec-from-ETHEREUM" class="form-control" data-from="true" name="walletId"></select>
-                                                    <div class="input-group-append">
-                                                        <button type="button" class="btn btn-outline-secondary" onclick="app.copySelectDataAddress('#exec-from-ETHEREUM')"><i
-                                                            class="fa fa-copy"></i></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="exec-to-ETHEREUM" class="col-sm-5 col-form-label">To</label>
-                                            <div class="col-sm-7">
-                                                <input id="exec-to-ETHEREUM" class="form-control" data-to="true" name="to" placeholder="to" value=""/>
-                                            </div>
-                                        </div>
-                                        <!--                                        <div class="form-group row">-->
-                                        <!--                                            <label for="exec-token-address-ETHEREUM" class="col-sm-5 col-form-label">Token address (optional)</label>-->
-                                        <!--                                            <div class="col-sm-7">-->
-                                        <!--                                                <input id="exec-token-address-ETHEREUM" class="form-control" data-token-address="true" name="tokenAddress" placeholder="Token address"/>-->
-                                        <!--                                            </div>-->
-                                        <!--                                        </div>-->
-                                        <div class="form-group row">
-                                            <label for="exec-amount-ETHEREUM" class="col-sm-5 col-form-label">Amount</label>
-                                            <div class="col-sm-7">
-                                                <input id="exec-amount-ETHEREUM" class="form-control" data-amount="true" name="value" placeholder="value" value="0.0314"/>
-                                            </div>
-                                        </div>
-                                        <!--                                        <div class="form-group row">-->
-                                        <!--                                            <label for="exec-data-ETHEREUM" class="col-sm-5 col-form-label">Data (optional)</label>-->
-                                        <!--                                            <div class="col-sm-7">-->
-                                        <!--                                                <textarea id="exec-data-ETHEREUM" class="form-control" data-data="true" name="data" rows="4"></textarea>-->
-                                        <!--                                            </div>-->
-                                        <!--                                        </div>-->
-<!--                                        <div class="row">-->
-<!--                                            <div class="offset-5 col-7">-->
-<!--                                                <button type="submit" class="btn btn-primary">Submit</button>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-                                    </fieldset>
-                                </form>
+                <h4 class="mb-3">Request Transaction</h4>
+                <div class="row">
+                    <div class="mb-3 col-lg-12">
+                        <form data-form="request">
+                            <div class="form-group row">
+                                <label for="exec-type" class="col-sm-5 col-form-label">Type</label>
+                                <div class="col-sm-7">
+                                    <div class="input-group">
+                                        <select id="exec-type" class="form-control" name="type">
+                                            <option value="">Please select a type</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-
-                            <div class="mb-3 col-lg-6">
-                                <form class="card bg-light">
-                                    <fieldset class="card-body">
-                                        <legend class="card-title">Sign Requests</legend>
-                                        <ul class="list-group" data-list="sign-request" data-chain="TRON">
-                                            <li class="list-group-item" data-empty>No Requests Available</li>
-                                        </ul>
-                                    </fieldset>
-                                </form>
+                            <div class="form-group row">
+                                <label for="exec-from" class="col-sm-5 col-form-label">From</label>
+                                <div class="col-sm-7">
+                                    <div class="input-group">
+                                        <select id="exec-from" class="form-control" data-from="true" name="walletId"></select>
+                                        <div class="input-group-append">
+                                            <button type="button" class="btn btn-outline-primary create-app-wallet" title="Create a new application wallet">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary get-app-wallets" title="Refresh application wallets">
+                                                <i class="fa fa-refresh"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary" onclick="app.copySelectDataAddress('#exec-from')" title="Copy address">
+                                                <i class="fa fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade p-4 bg-white border" id="tab-GOCHAIN" data-chain="GOCHAIN" role="tabpanel" aria-labelledby="nav-GOCHAIN-tab">
-                        <button type="button" data-chain="GOCHAIN" class="btn btn-outline-primary get-app-wallets mb-3">
-                            Refresh Wallets
-                        </button>
-                        <button type="button" data-chain="GOCHAIN" class="btn btn-outline-primary create-app-wallet mb-3">
-                            Create New Application Wallet
-                        </button>
-
-                        <div class="row">
-                            <div class="mb-5 col-lg-6">
-                                <form data-form="request" data-chain="GOCHAIN" class="card bg-light">
-                                    <fieldset class="card-body">
-                                        <legend class="card-title">WIP: Request Transaction</legend>
-                                        <div class="form-group row">
-                                            <label for="exec-from-GOCHAIN" class="col-sm-5 col-form-label">From</label>
-                                            <div class="col-sm-7">
-                                                <div class="input-group">
-                                                    <select id="exec-from-GOCHAIN" class="form-control" data-from="true" name="walletId"></select>
-                                                    <div class="input-group-append">
-                                                        <button type="button" class="btn btn-outline-secondary" onclick="app.copySelectDataAddress('#exec-from-GOCHAIN')"><i
-                                                            class="fa fa-copy"></i></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="exec-to-GOCHAIN" class="col-sm-5 col-form-label">To</label>
-                                            <div class="col-sm-7">
-                                                <input id="exec-to-GOCHAIN" class="form-control" data-to="true" name="to" placeholder="to" value=""/>
-                                            </div>
-                                        </div>
-                                        <!--                                        <div class="form-group row">-->
-                                        <!--                                            <label for="exec-token-address-GOCHAIN" class="col-sm-5 col-form-label">Token address (optional)</label>-->
-                                        <!--                                            <div class="col-sm-7">-->
-                                        <!--                                                <input id="exec-token-address-GOCHAIN" class="form-control" data-token-address="true" name="tokenAddress" placeholder="Token address"/>-->
-                                        <!--                                            </div>-->
-                                        <!--                                        </div>-->
-                                        <div class="form-group row">
-                                            <label for="exec-amount-GOCHAIN" class="col-sm-5 col-form-label">Amount</label>
-                                            <div class="col-sm-7">
-                                                <input id="exec-amount-GOCHAIN" class="form-control" data-amount="true" name="value" placeholder="value" value="0.0314"/>
-                                            </div>
-                                        </div>
-                                        <!--                                        <div class="form-group row">-->
-                                        <!--                                            <label for="exec-data-GOCHAIN" class="col-sm-5 col-form-label">Data (optional)</label>-->
-                                        <!--                                            <div class="col-sm-7">-->
-                                        <!--                                                <textarea id="exec-data-GOCHAIN" class="form-control" data-data="true" name="data" rows="4"></textarea>-->
-                                        <!--                                            </div>-->
-                                        <!--                                        </div>-->
-<!--                                        <div class="row">-->
-<!--                                            <div class="offset-5 col-7">-->
-<!--                                                <button type="submit" class="btn btn-primary">Submit</button>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-                                    </fieldset>
-                                </form>
+                            <div class="form-group row">
+                                <label for="exec-to" class="col-sm-5 col-form-label">To</label>
+                                <div class="col-sm-7">
+                                    <input id="exec-to" class="form-control" data-to="true" name="to" placeholder="to" value="TAwwCCoa6cTjtKJVTSpnKbkDimgALcAXfb"/>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade p-4 bg-white border" id="tab-VECHAIN" data-chain="VECHAIN" role="tabpanel" aria-labelledby="nav-VECHAIN-tab">
-                        <button type="button" data-chain="VECHAIN" class="btn btn-outline-primary get-app-wallets mb-3">
-                            Refresh Wallets
-                        </button>
-                        <button type="button" data-chain="VECHAIN" class="btn btn-outline-primary create-app-wallet mb-3">
-                            Create New Application Wallet
-                        </button>
-
-                        <div class="row">
-                            <div class="mb-3 col-lg-6">
-                                <form data-form="request" data-chain="VECHAIN" class="card bg-light">
-                                    <fieldset class="card-body">
-                                        <legend class="card-title">WIP: Request Transaction</legend>
-                                        <div class="form-group row">
-                                            <label for="exec-from-VECHAIN" class="col-sm-5 col-form-label">From</label>
-                                            <div class="col-sm-7">
-                                                <div class="input-group">
-                                                    <select id="exec-from-VECHAIN" class="form-control" data-from="true" name="walletId"></select>
-                                                    <div class="input-group-append">
-                                                        <button type="button" class="btn btn-outline-secondary" onclick="app.copySelectDataAddress('#exec-from-VECHAIN')"><i
-                                                            class="fa fa-copy"></i></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="exec-to-VECHAIN" class="col-sm-5 col-form-label">To</label>
-                                            <div class="col-sm-7">
-                                                <input id="exec-to-VECHAIN" class="form-control" data-to="true" name="to" placeholder="to" value=""/>
-                                            </div>
-                                        </div>
-                                        <!--                                        <div class="form-group row">-->
-                                        <!--                                            <label for="exec-token-address-VECHAIN" class="col-sm-5 col-form-label">Token address (optional)</label>-->
-                                        <!--                                            <div class="col-sm-7">-->
-                                        <!--                                                <input id="exec-token-address-VECHAIN" class="form-control" data-token-address="true" name="tokenAddress" placeholder="Token address"/>-->
-                                        <!--                                            </div>-->
-                                        <!--                                        </div>-->
-                                        <div class="form-group row">
-                                            <label for="exec-amount-VECHAIN" class="col-sm-5 col-form-label">Amount</label>
-                                            <div class="col-sm-7">
-                                                <input id="exec-amount-VECHAIN" class="form-control" data-amount="true" name="value" placeholder="value" value="0.0314"/>
-                                            </div>
-                                        </div>
-                                        <!--                                        <div class="form-group row">-->
-                                        <!--                                            <label for="exec-data-VECHAIN" class="col-sm-5 col-form-label">Data (optional)</label>-->
-                                        <!--                                            <div class="col-sm-7">-->
-                                        <!--                                                <textarea id="exec-data-VECHAIN" class="form-control" data-data="true" name="data" rows="4"></textarea>-->
-                                        <!--                                            </div>-->
-                                        <!--                                        </div>-->
-<!--                                        <div class="row">-->
-<!--                                            <div class="offset-5 col-7">-->
-<!--                                                <button type="submit" class="btn btn-primary">Submit</button>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-                                    </fieldset>
-                                </form>
+                            <div class="form-group row">
+                                <label for="exec-token-address" class="col-sm-5 col-form-label">Token address (optional)</label>
+                                <div class="col-sm-7">
+                                    <input id="exec-token-address" class="form-control" data-token-address="true" name="tokenAddress" placeholder="Token address"/>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade p-4 bg-white border" id="tab-TRON" data-chain="TRON" role="tabpanel" aria-labelledby="nav-TRON-tab">
-                        <button type="button" data-chain="TRON" class="btn btn-outline-primary get-app-wallets mb-3">
-                            Refresh Wallets
-                        </button>
-                        <button type="button" data-chain="TRON" class="btn btn-outline-primary create-app-wallet mb-3">
-                            Create New Application Wallet
-                        </button>
-
-                        <div class="row">
-                            <div class="mb-3 col-lg-6">
-                                <form data-form="request" data-chain="TRON" class="card bg-light">
-                                    <fieldset class="card-body">
-                                        <legend class="card-title">Request Transaction</legend>
-                                        <div class="form-group row">
-                                            <label for="exec-from-TRON" class="col-sm-5 col-form-label">From</label>
-                                            <div class="col-sm-7">
-                                                <div class="input-group">
-                                                    <select id="exec-from-TRON" class="form-control" data-from="true" name="walletId"></select>
-                                                    <div class="input-group-append">
-                                                        <button type="button" class="btn btn-outline-secondary" onclick="app.copySelectDataAddress('#exec-from-TRON')"><i
-                                                            class="fa fa-copy"></i></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="exec-to-TRON" class="col-sm-5 col-form-label">To</label>
-                                            <div class="col-sm-7">
-                                                <input id="exec-to-TRON" class="form-control" data-to="true" name="to" placeholder="to" value="TAwwCCoa6cTjtKJVTSpnKbkDimgALcAXfb"/>
-                                            </div>
-                                        </div>
-<!--                                        <div class="form-group row">-->
-<!--                                            <label for="exec-token-address-TRON" class="col-sm-5 col-form-label">Token address (optional)</label>-->
-<!--                                            <div class="col-sm-7">-->
-<!--                                                <input id="exec-token-address-TRON" class="form-control" data-token-address="true" name="tokenAddress" placeholder="Token address"/>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-                                        <div class="form-group row">
-                                            <label for="exec-amount-TRON" class="col-sm-5 col-form-label">Amount</label>
-                                            <div class="col-sm-7">
-                                                <input id="exec-amount-TRON" class="form-control" data-amount="true" name="value" placeholder="value" value="0.0314"/>
-                                            </div>
-                                        </div>
-<!--                                        <div class="form-group row">-->
-<!--                                            <label for="exec-data-TRON" class="col-sm-5 col-form-label">Data (optional)</label>-->
-<!--                                            <div class="col-sm-7">-->
-<!--                                                <textarea id="exec-data-TRON" class="form-control" data-data="true" name="data" rows="4"></textarea>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-                                        <div class="row">
-                                            <div class="offset-5 col-7">
-                                                <button type="submit" class="btn btn-primary">Submit</button>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                </form>
+                            <div class="form-group row">
+                                <label for="exec-amount" class="col-sm-5 col-form-label">Amount</label>
+                                <div class="col-sm-7">
+                                    <input id="exec-amount" class="form-control" data-amount="true" name="value" placeholder="value" value="0.0314"/>
+                                </div>
                             </div>
-
-                            <div class="mb-3 col-lg-6">
-                                <form class="card bg-light">
-                                    <fieldset class="card-body">
-                                        <legend class="card-title">Sign Requests</legend>
-                                        <ul class="list-group" data-list="sign-request" data-chain="TRON">
-                                            <li class="list-group-item" data-empty>No Requests Available</li>
-                                        </ul>
-                                    </fieldset>
-                                </form>
+                            <div class="form-group row">
+                                <label for="exec-data" class="col-sm-5 col-form-label">Data (optional)</label>
+                                <div class="col-sm-7">
+                                    <textarea id="exec-data" class="form-control" data-data="true" name="data" rows="4"></textarea>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade p-4 bg-white border" id="tab-BITCOIN" data-chain="BITCOIN" role="tabpanel" aria-labelledby="nav-BITCOIN-tab">
-                        <button type="button" data-chain="BITCOIN" class="btn btn-outline-primary get-wallets mb-3">
-                            Refresh Wallets
-                        </button>
-                        <button type="button" data-chain="BITCOIN" class="btn btn-outline-primary create-app-wallet mb-3">
-                            Create New Application Wallet
-                        </button>
-
-                        <div class="row">
-                            <div class="mb-3 col-lg-6">
-                                <form data-form="request" data-chain="BITCOIN" class="card bg-light">
-                                    <fieldset class="card-body">
-                                        <legend class="card-title">WIP: Request Transaction</legend>
-                                        <div class="form-group row">
-                                            <label for="exec-from-BITCOIN" class="col-sm-5 col-form-label">From</label>
-                                            <div class="col-sm-7">
-                                                <div class="input-group">
-                                                    <select id="exec-from-BITCOIN" class="form-control" data-from="true" name="walletId"></select>
-                                                    <div class="input-group-append">
-                                                        <button type="button" class="btn btn-outline-secondary" onclick="app.copySelectDataAddress('#exec-from-BITCOIN')"><i
-                                                            class="fa fa-copy"></i></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="exec-to-BITCOIN" class="col-sm-5 col-form-label">To</label>
-                                            <div class="col-sm-7">
-                                                <input id="exec-to-BITCOIN" class="form-control" data-to="true" name="to" placeholder="to" value=""/>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="exec-amount-BITCOIN" class="col-sm-5 col-form-label">Amount</label>
-                                            <div class="col-sm-7">
-                                                <input id="exec-amount-BITCOIN" class="form-control" data-amount="true" name="value" placeholder="value" value="0.00003142"/>
-                                            </div>
-                                        </div>
-<!--                                        <div class="row">-->
-<!--                                            <div class="offset-5 col-7">-->
-<!--                                                <button type="submit" class="btn btn-primary">Submit</button>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-                                    </fieldset>
-                                </form>
+                            <div class="row">
+                                <div class="offset-5 col-7">
+                                    <button type="submit" class="btn btn-primary">Request Transaction</button>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade p-4 bg-white border" id="tab-LITECOIN" data-chain="LITECOIN" role="tabpanel" aria-labelledby="nav-LITECOIN-tab">
-                        <button type="button" data-chain="LITECOIN" class="btn btn-outline-primary get-wallets mb-3">
-                            Refresh Wallets
-                        </button>
-                        <button type="button" data-chain="LITECOIN" class="btn btn-outline-primary create-app-wallet mb-3">
-                            Create New Application Wallet
-                        </button>
-
-                        <div class="row">
-                            <div class="mb-3 col-lg-6">
-                                <form data-form="request" data-chain="LITECOIN" class="card bg-light">
-                                    <fieldset class="card-body">
-                                        <legend class="card-title">WIP: Request Transaction</legend>
-                                        <div class="form-group row">
-                                            <label for="exec-from-LITECOIN" class="col-sm-5 col-form-label">From</label>
-                                            <div class="col-sm-7">
-                                                <div class="input-group">
-                                                    <select id="exec-from-LITECOIN" class="form-control" data-from="true" name="walletId"></select>
-                                                    <div class="input-group-append">
-                                                        <button type="button" class="btn btn-outline-secondary" onclick="app.copySelectDataAddress('#exec-from-LITECOIN')"><i
-                                                            class="fa fa-copy"></i></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="exec-to-LITECOIN" class="col-sm-5 col-form-label">To</label>
-                                            <div class="col-sm-7">
-                                                <input id="exec-to-LITECOIN" class="form-control" data-to="true" name="to" placeholder="to" value=""/>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="exec-amount-LITECOIN" class="col-sm-5 col-form-label">Amount</label>
-                                            <div class="col-sm-7">
-                                                <input id="exec-amount-LITECOIN" class="form-control" data-amount="true" name="value" placeholder="value" value="0.00003142"/>
-                                            </div>
-                                        </div>
-                                        <!--                                        <div class="row">-->
-                                        <!--                                            <div class="offset-5 col-7">-->
-                                        <!--                                                <button type="submit" class="btn btn-primary">Submit</button>-->
-                                        <!--                                            </div>-->
-                                        <!--                                        </div>-->
-                                    </fieldset>
-                                </form>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
+            </div>
+
+            <div class="col-md-12 mb-4">
+                <h4 class="mb-3">Pending Transaction Requests</h4>
+                <div data-list="pending-transactions"></div>
             </div>
         </div>
     </div>
@@ -508,7 +208,8 @@
 <div class="bg-dark mt-auto">
     <div class="container">
         <nav class="row navbar navbar-expand-sm navbar-dark bg-dark">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarBottomCollapse" aria-controls="navbarBottomCollapse" aria-expanded="false"
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarBottomCollapse" aria-controls="navbarBottomCollapse"
+                    aria-expanded="false"
                     aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>

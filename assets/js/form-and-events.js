@@ -6,10 +6,6 @@
     app.localStorageKeys = app.localStorageKeys  || {};
     app.localStorageKeys.activeChain = 'arketype.activeChain';
 
-    var eventNames = {
-        applicationTokenRequested: 'applicationTokenRequested',
-        transactionRequested: 'transactionRequested',
-    };
 
     app.page.addConnectEvents = function(getWalletsButtonSelector, getWalletsCallback) {
         app.page.initTabChangeEvent(getWalletsButtonSelector, getWalletsCallback);
@@ -25,10 +21,10 @@
     };
 
     app.page.initTabChangeEvent = function(selector, callback) {
-        $('[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        $('[data-toggle="tab"]').on('shown.bs.tab', function(e) {
             var button = document.querySelector($(e.target).attr('href') + ' ' + selector);
-            if(button && button.dataset['success'] !== 'true') {
-                if(localStorage && button.dataset.chain) {
+            if (button && button.dataset['success'] !== 'true') {
+                if (localStorage && button.dataset.chain) {
                     app.page.setActiveTab(button.dataset.chain, false);
                 }
                 callback(button);
@@ -66,35 +62,6 @@
               });
     }
 
-    function requestApplicationBearerToken(eventData) {
-        var tokenRequest = new XMLHttpRequest();
-        tokenRequest.withCredentials = true;
-        tokenRequest.addEventListener('readystatechange', function() {
-            if (this.readyState === 4) {
-                const response = JSON.parse(this.responseText);
-                app.log(response, 'Application token requested');
-                $(app).trigger(eventNames.applicationTokenRequested, { token: response, ...eventData });
-            }
-        });
-        tokenRequest.open('POST', `${app.environment.login}/auth/realms/Arkane/protocol/openid-connect/token`);
-        tokenRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        tokenRequest.send(`grant_type=client_credentials&client_id=Arketype_app&client_secret=${app.environment.arketypeClientSecret}`);
-    }
-
-    function requestTransaction(token, request) {
-        var txRequest = new XMLHttpRequest();
-        // txRequest.withCredentials = true;
-        txRequest.addEventListener("readystatechange", function() {
-            if (this.readyState === 4) {
-                $(app).trigger(eventNames.transactionRequested, (JSON.parse(this.responseText)));
-            }
-        });
-        txRequest.open("POST", `${app.environment.api}/api/transactions`);
-        txRequest.setRequestHeader("Content-Type", "application/json");
-        txRequest.setRequestHeader("Authorization", "Bearer " + token.access_token);
-        txRequest.send(JSON.stringify(request));
-    }
-
     app.page.updateWallets = function(wallets, secretType) {
         const dataSetName = 'wallets' + secretType.charAt(0).toUpperCase() + secretType.slice(1).toLowerCase();
         document.querySelector('body').dataset[dataSetName] = JSON.stringify(wallets);
@@ -126,11 +93,11 @@
     };
 
     app.page.setActiveTab = function(secretType, selectTab) {
-        if(typeof secretType !== 'undefined') {
-            if(localStorage) {
+        if (typeof secretType !== 'undefined') {
+            if (localStorage) {
                 localStorage.setItem(app.localStorageKeys.activeChain, secretType);
             }
-            if(selectTab) {
+            if (selectTab) {
                 $('#nav-' + secretType + '-tab').trigger('click');
             }
         }
@@ -289,60 +256,6 @@
                                    data
                                });
         });
-
-        var formRequestTrx = document.querySelector('[data-form="request"][data-chain="TRON"]');
-        formRequestTrx && formRequestTrx.addEventListener('submit', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-
-            var data = $('textarea[name="data"]', formRequestTrx).val() || null;
-            var walletId = $('select[name="walletId"]', formRequestTrx).val();
-            var to = $('input[name="to"]', formRequestTrx).val();
-            var value = $('input[name="value"]', formRequestTrx).val() * 100000;
-            // var tokenAddress = $('input[name="tokenAddress"]', formExecTrx).val();
-            // tokenAddress,
-            // data
-
-            requestApplicationBearerToken( {
-                data, walletId, to, value
-            });
-        });
-
-        $(app).on(eventNames.applicationTokenRequested, function(event, eventData) {
-            requestTransaction(
-                eventData.token,
-                {
-                    type: 'TRX_TRANSACTION',
-                    walletId: eventData.walletId,
-                    to: eventData.to,
-                    value: eventData.value,
-                }
-            )
-        });
-
-        $(app).on(eventNames.transactionRequested, function(event, response) {
-            app.log(response, 'Transaction requested');
-            if (response.success) {
-                var template = '<li class="list-group-item" id="##TRANSACTION_REQUEST_ID##"><div class="input-group"><input class="form-control" type="text" disabled value="##TRANSACTION_REQUEST_ID##" /><div class="input-group-append"><button type="button" onclick="app.page.submitTronRequest(\'##TRANSACTION_REQUEST_ID##\')" class="btn btn-primary">Submit</button></div></div></li>';
-                var listItem = template.replace(/##TRANSACTION_REQUEST_ID##/g, response.result.transactionRequestId);
-                var $list = $('[data-list="sign-request"][data-chain="TRON"]');
-                $list.find('[data-empty]').remove();
-                $list.append($(listItem));
-            } else {
-                app.error(response.errors, 'Transaction request Failed');
-            }
-        });
-
-        app.page.submitTronRequest = function(transactionRequestId) {
-            const signer = window.arkaneConnect.createSigner();
-            signer.executeTransaction(transactionRequestId)
-                  .then(function(result) {
-                      app.log(result);
-                  })
-                  .catch(function(err) {
-                      app.error(err);
-                  });
-        };
     };
 
     app.page.initGo = function() {
