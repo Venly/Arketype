@@ -20,7 +20,7 @@
     function getWalletsBySecretType(secretType) {
         return window.arkaneConnect.api.getWallets({secretType: secretType}).then(function(wallets) {
             app.log(wallets, 'Wallets ' + secretType);
-            app.page.updateWallets(wallets, secretType)
+            app.page.updateWallets(wallets, secretType);
         });
     }
 
