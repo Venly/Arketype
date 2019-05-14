@@ -15,7 +15,7 @@
     };
 
     app.initApp = function() {
-        window.arkaneConnect = new ArkaneConnect(app.clientId, {environment: app.environment.connect, signUsing: 'REDIRECT'});
+        window.arkaneConnect = new ArkaneConnect(app.clientId, {environment: app.environment.connect, windowMode: 'REDIRECT'});
         app.handleWindowModeTypeSwitch();
         window.arkaneConnect
               .checkAuthenticated()
