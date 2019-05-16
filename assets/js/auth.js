@@ -11,7 +11,7 @@
         connect: app.env + (app.isLocal ? '-local' : ''),
         api: 'https://api-' + app.env + '.arkane.network',
         login: 'https://login-' + app.env + '.arkane.network',
-        arketypeClientSecret: 'fd8eaade-c0c3-43b8-928f-94ef6a793e0c', // Only visible for demo purpose, this secret should be configured in application backend
+        arketypeClientSecret: '02053a9d-8293-43c4-a201-f8669f1329af', // Only visible for demo purpose, this secret should be configured in application backend
     };
 
     app.initApp = function() {
