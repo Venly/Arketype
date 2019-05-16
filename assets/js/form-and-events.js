@@ -12,6 +12,7 @@
         app.page.setActiveTab(app.page.getActiveTab(), true);
         app.page.initGetProfileEvent();
 
+        app.page.initAeternity();
         app.page.initEthereum();
         app.page.initTron();
         app.page.initGo();
@@ -429,33 +430,33 @@
     };
 
     app.page.initAeternity = function() {
-        var formSign = document.querySelector('[data-form="sign"][data-chain="AETERNITY"]');
-        formSign && formSign.addEventListener('submit', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            var data = $('textarea[name="data"]', formSign).val() || null;
-            var walletId = $('select[name="walletId"]', formSign).val();
-            var to = $('input[name="to"]', formSign).val();
-            var value = $('input[name="value"]', formSign).val();
-            sign({
-                     type: 'AETERNITY_TRANSACTION',
-                     walletId,
-                     submit: false,
-                     to,
-                     value,
-                     data
-                 });
-        });
+        // var formSign = document.querySelector('[data-form="sign"][data-chain="AETERNITY"]');
+        // formSign && formSign.addEventListener('submit', function(e) {
+        //     e.stopPropagation();
+        //     e.preventDefault();
+        //     var data = $('textarea[name="data"]', formSign).val() || null;
+        //     var walletId = $('select[name="walletId"]', formSign).val();
+        //     var to = $('input[name="to"]', formSign).val();
+        //     var value = $('input[name="value"]', formSign).val();
+        //     sign({
+        //              type: 'AETERNITY_TRANSACTION',
+        //              walletId,
+        //              submit: false,
+        //              to,
+        //              value,
+        //              data
+        //          });
+        // });
 
         var formExec = document.querySelector('[data-form="execute"][data-chain="AETERNITY"]');
         formExec && formExec.addEventListener('submit', function(e) {
             e.stopPropagation();
             e.preventDefault();
-            var data = $('textarea[name="data"]', formExec).val() || null;
+            // var data = $('textarea[name="data"]', formExec).val() || null;
             var walletId = $('select[name="walletId"]', formExec).val();
             var to = $('input[name="to"]', formExec).val();
             var value = $('input[name="value"]', formExec).val();
-            var tokenAddress = $('input[name="tokenAddress"]', formExec).val();
+            // var tokenAddress = $('input[name="tokenAddress"]', formExec).val();
 
             // Generic transaction
             executeTransaction({
@@ -463,8 +464,8 @@
                                    walletId,
                                    to,
                                    value,
-                                   tokenAddress,
-                                   data
+                                   // tokenAddress,
+                                   // data
                                });
         });
     };

@@ -731,42 +731,42 @@
                         </button>
 
                         <div class="row">
-                            <div class="mb-3 col-lg-6">
-                                <form data-form="sign" data-chain="AETERNITY" class="card bg-light">
-                                    <fieldset class="card-body">
-                                        <legend class="card-title">Sign Transaction</legend>
-                                        <div class="form-group row">
-                                            <label for="sign-from-AETERNITY" class="col-sm-5 col-form-label">From</label>
-                                            <div class="col-sm-7">
-                                                <select id="sign-from-AETERNITY" class="form-control" name="walletId"></select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="sign-to-AETERNITY" class="col-sm-5 col-form-label">To</label>
-                                            <div class="col-sm-7">
-                                                <input id="sign-to-AETERNITY" class="form-control" name="to" placeholder="to" value=""/>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="sign-amount-AETERNITY" class="col-sm-5 col-form-label">Amount</label>
-                                            <div class="col-sm-7">
-                                                <input id="sign-amount-AETERNITY" class="form-control" name="value" placeholder="value" value=""/>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="sign-data-AETERNITY" class="col-sm-5 col-form-label">Data (optional)</label>
-                                            <div class="col-sm-7">
-                                                <textarea id="sign-data-AETERNITY" class="form-control" name="data" rows="4"></textarea>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="offset-5 col-7">
-                                                <button type="submit" class="btn btn-primary">Submit</button>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                </form>
-                            </div>
+<!--                            <div class="mb-3 col-lg-6">-->
+<!--                                <form data-form="sign" data-chain="AETERNITY" class="card bg-light">-->
+<!--                                    <fieldset class="card-body">-->
+<!--                                        <legend class="card-title">Sign Transaction</legend>-->
+<!--                                        <div class="form-group row">-->
+<!--                                            <label for="sign-from-AETERNITY" class="col-sm-5 col-form-label">From</label>-->
+<!--                                            <div class="col-sm-7">-->
+<!--                                                <select id="sign-from-AETERNITY" class="form-control" name="walletId"></select>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="form-group row">-->
+<!--                                            <label for="sign-to-AETERNITY" class="col-sm-5 col-form-label">To</label>-->
+<!--                                            <div class="col-sm-7">-->
+<!--                                                <input id="sign-to-AETERNITY" class="form-control" name="to" placeholder="to" value=""/>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="form-group row">-->
+<!--                                            <label for="sign-amount-AETERNITY" class="col-sm-5 col-form-label">Amount</label>-->
+<!--                                            <div class="col-sm-7">-->
+<!--                                                <input id="sign-amount-AETERNITY" class="form-control" name="value" placeholder="value" value=""/>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="form-group row">-->
+<!--                                            <label for="sign-data-AETERNITY" class="col-sm-5 col-form-label">Data (optional)</label>-->
+<!--                                            <div class="col-sm-7">-->
+<!--                                                <textarea id="sign-data-AETERNITY" class="form-control" name="data" rows="4"></textarea>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="row">-->
+<!--                                            <div class="offset-5 col-7">-->
+<!--                                                <button type="submit" class="btn btn-primary">Submit</button>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </fieldset>-->
+<!--                                </form>-->
+<!--                            </div>-->
                             <div class="mb-3 col-lg-6">
                                 <form data-form="execute" data-chain="AETERNITY" class="card bg-light">
                                     <fieldset class="card-body">
@@ -775,6 +775,18 @@
                                             <label for="exec-from-AETERNITY" class="col-sm-5 col-form-label">From</label>
                                             <div class="col-sm-7">
                                                 <select id="exec-from-AETERNITY" class="form-control" name="walletId"></select>
+                                                <button type="button" class="btn btn-outline-secondary" onclick="app.copySelectDataAddress('#exec-from-AETERNITY')" title="Copy address">
+                                                    <i class="fa fa-copy"></i>
+                                                </button>
+
+                                                <div class="input-group">
+                                                    <select id="exec-from-AETERNITY" class="form-control" name="walletId"></select>
+                                                    <div class="input-group-append">
+                                                        <button type="button" class="btn btn-outline-secondary" onclick="app.copySelectDataAddress('#exec-from-AETERNITY')" title="Copy address">
+                                                            <i class="fa fa-copy"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -783,24 +795,24 @@
                                                 <input id="exec-to-AETERNITY" class="form-control" name="to" placeholder="to" value=""/>
                                             </div>
                                         </div>
-                                        <div class="form-group row">
-                                            <label for="exec-token-address-AETERNITY" class="col-sm-5 col-form-label">Token address (optional)</label>
-                                            <div class="col-sm-7">
-                                                <input id="exec-token-address-AETERNITY" class="form-control" name="tokenAddress" placeholder="Token address"/>
-                                            </div>
-                                        </div>
+<!--                                        <div class="form-group row">-->
+<!--                                            <label for="exec-token-address-AETERNITY" class="col-sm-5 col-form-label">Token address (optional)</label>-->
+<!--                                            <div class="col-sm-7">-->
+<!--                                                <input id="exec-token-address-AETERNITY" class="form-control" name="tokenAddress" placeholder="Token address"/>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
                                         <div class="form-group row">
                                             <label for="exec-amount-AETERNITY" class="col-sm-5 col-form-label">Amount</label>
                                             <div class="col-sm-7">
                                                 <input id="exec-amount-AETERNITY" class="form-control" name="value" placeholder="value" value=""/>
                                             </div>
                                         </div>
-                                        <div class="form-group row">
-                                            <label for="exec-data-AETERNITY" class="col-sm-5 col-form-label">Data (optional)</label>
-                                            <div class="col-sm-7">
-                                                <textarea id="exec-data-AETERNITY" class="form-control" name="data" rows="4"></textarea>
-                                            </div>
-                                        </div>
+<!--                                        <div class="form-group row">-->
+<!--                                            <label for="exec-data-AETERNITY" class="col-sm-5 col-form-label">Data (optional)</label>-->
+<!--                                            <div class="col-sm-7">-->
+<!--                                                <textarea id="exec-data-AETERNITY" class="form-control" name="data" rows="4"></textarea>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
                                         <div class="row">
                                             <div class="offset-5 col-7">
                                                 <button type="submit" class="btn btn-primary">Submit</button>
