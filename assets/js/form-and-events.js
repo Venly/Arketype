@@ -3,7 +3,7 @@
 
     window.app = window.app || {};
     app.page = app.page || {};
-    app.localStorageKeys = app.localStorageKeys  || {};
+    app.localStorageKeys = app.localStorageKeys || {};
     app.localStorageKeys.activeChain = 'arketype.activeChain';
 
 
@@ -12,6 +12,7 @@
         app.page.setActiveTab(app.page.getActiveTab(), true);
         app.page.initGetProfileEvent();
 
+        app.page.initAeternity();
         app.page.initEthereum();
         app.page.initTron();
         app.page.initGo();
@@ -139,11 +140,11 @@
     }
 
     app.page.initEthereum = function() {
-        var formSignEth = document.querySelector('[data-form="sign"][data-chain="ETHEREUM"]');
-        formSignEth && formSignEth.addEventListener('submit', function(e) {
+        var formSign = document.querySelector('[data-form="sign"][data-chain="ETHEREUM"]');
+        formSign && formSign.addEventListener('submit', function(e) {
             e.stopPropagation();
             e.preventDefault();
-            var formData = getDataFromForm(formSignEth);
+            var formData = getDataFromForm(formSign);
             sign({
                      type: 'ETHEREUM_TRANSACTION',
                      walletId: formData.walletId,
@@ -154,11 +155,11 @@
                  });
         });
 
-        var formSignEthRaw = document.querySelector('[data-form="sign-raw"][data-chain="ETHEREUM"]');
-        formSignEthRaw && formSignEthRaw.addEventListener('submit', function(e) {
+        var formSignRaw = document.querySelector('[data-form="sign-raw"][data-chain="ETHEREUM"]');
+        formSignRaw && formSignRaw.addEventListener('submit', function(e) {
             e.stopPropagation();
             e.preventDefault();
-            var formData = getDataFromForm(formSignEthRaw);
+            var formData = getDataFromForm(formSignRaw);
             sign({
                      type: 'ETHEREUM_RAW',
                      walletId: formData.walletId,
@@ -168,11 +169,11 @@
                  });
         });
 
-        var formExecEth = document.querySelector('[data-form="execute"][data-chain="ETHEREUM"]');
-        formExecEth && formExecEth.addEventListener('submit', function(e) {
+        var formExec = document.querySelector('[data-form="execute"][data-chain="ETHEREUM"]');
+        formExec && formExec.addEventListener('submit', function(e) {
             e.stopPropagation();
             e.preventDefault();
-            var formData = getDataFromForm(formExecEth);
+            var formData = getDataFromForm(formExec);
             // Generic transaction
             executeTransaction({
                                    secretType: 'ETHEREUM',
@@ -208,13 +209,13 @@
     };
 
     app.page.initTron = function() {
-        var formSignTrx = document.querySelector('[data-form="sign"][data-chain="TRON"]');
-        formSignTrx && formSignTrx.addEventListener('submit', function(e) {
+        var formSign = document.querySelector('[data-form="sign"][data-chain="TRON"]');
+        formSign && formSign.addEventListener('submit', function(e) {
             e.stopPropagation();
             e.preventDefault();
-            var walletId = $('select[name="walletId"]', formSignTrx).val();
-            var to = $('input[name="to"]', formSignTrx).val();
-            var value = $('input[name="value"]', formSignTrx).val();
+            var walletId = $('select[name="walletId"]', formSign).val();
+            var to = $('input[name="to"]', formSign).val();
+            var value = $('input[name="value"]', formSign).val();
             sign({
                      type: 'TRON_TRANSACTION',
                      walletId,
@@ -224,11 +225,11 @@
                  });
         });
 
-        var formSignTronRaw = document.querySelector('[data-form="sign-raw"][data-chain="TRON"]');
-        formSignTronRaw && formSignTronRaw.addEventListener('submit', function(e) {
+        var formSignRaw = document.querySelector('[data-form="sign-raw"][data-chain="TRON"]');
+        formSignRaw && formSignRaw.addEventListener('submit', function(e) {
             e.stopPropagation();
             e.preventDefault();
-            var formData = getDataFromForm(formSignTronRaw);
+            var formData = getDataFromForm(formSignRaw);
             sign({
                      type: 'TRON_RAW',
                      walletId: formData.walletId,
@@ -236,15 +237,15 @@
                  });
         });
 
-        var formExecTrx = document.querySelector('[data-form="execute"][data-chain="TRON"]');
-        formExecTrx && formExecTrx.addEventListener('submit', function(e) {
+        var formExec = document.querySelector('[data-form="execute"][data-chain="TRON"]');
+        formExec && formExec.addEventListener('submit', function(e) {
             e.stopPropagation();
             e.preventDefault();
-            var data = $('textarea[name="data"]', formExecTrx).val() || null;
-            var walletId = $('select[name="walletId"]', formExecTrx).val();
-            var to = $('input[name="to"]', formExecTrx).val();
-            var value = $('input[name="value"]', formExecTrx).val();
-            var tokenAddress = $('input[name="tokenAddress"]', formExecTrx).val();
+            var data = $('textarea[name="data"]', formExec).val() || null;
+            var walletId = $('select[name="walletId"]', formExec).val();
+            var to = $('input[name="to"]', formExec).val();
+            var value = $('input[name="value"]', formExec).val();
+            var tokenAddress = $('input[name="tokenAddress"]', formExec).val();
 
             // Generic transaction
             executeTransaction({
@@ -259,14 +260,14 @@
     };
 
     app.page.initGo = function() {
-        var formSignGo = document.querySelector('[data-form="sign"][data-chain="GOCHAIN"]');
-        formSignGo && formSignGo.addEventListener('submit', function(e) {
+        var formSign = document.querySelector('[data-form="sign"][data-chain="GOCHAIN"]');
+        formSign && formSign.addEventListener('submit', function(e) {
             e.stopPropagation();
             e.preventDefault();
-            var data = $('textarea[name="data"]', formSignGo).val() || null;
-            var walletId = $('select[name="walletId"]', formSignGo).val();
-            var to = $('input[name="to"]', formSignGo).val();
-            var value = $('input[name="value"]', formSignGo).val();
+            var data = $('textarea[name="data"]', formSign).val() || null;
+            var walletId = $('select[name="walletId"]', formSign).val();
+            var to = $('input[name="to"]', formSign).val();
+            var value = $('input[name="value"]', formSign).val();
             sign({
                      type: 'GOCHAIN_TRANSACTION',
                      walletId,
@@ -277,12 +278,12 @@
                  });
         });
 
-        var formSignGoRaw = document.querySelector('[data-form="sign-raw"][data-chain="GOCHAIN"]');
-        formSignGoRaw && formSignGoRaw.addEventListener('submit', function(e) {
+        var formSignRaw = document.querySelector('[data-form="sign-raw"][data-chain="GOCHAIN"]');
+        formSignRaw && formSignRaw.addEventListener('submit', function(e) {
             e.stopPropagation();
             e.preventDefault();
-            var data = $('textarea[name="data"]', formSignGoRaw).val() || null;
-            var walletId = $('select[name="walletId"]', formSignGoRaw).val();
+            var data = $('textarea[name="data"]', formSignRaw).val() || null;
+            var walletId = $('select[name="walletId"]', formSignRaw).val();
             sign({
                      type: 'GOCHAIN_RAW',
                      walletId,
@@ -290,15 +291,15 @@
                  });
         });
 
-        var formExecGo = document.querySelector('[data-form="execute"][data-chain="GOCHAIN"]');
-        formExecGo && formExecGo.addEventListener('submit', function(e) {
+        var formExec = document.querySelector('[data-form="execute"][data-chain="GOCHAIN"]');
+        formExec && formExec.addEventListener('submit', function(e) {
             e.stopPropagation();
             e.preventDefault();
-            var data = $('textarea[name="data"]', formExecGo).val() || null;
-            var walletId = $('select[name="walletId"]', formExecGo).val();
-            var to = $('input[name="to"]', formExecGo).val();
-            var value = $('input[name="value"]', formExecGo).val();
-            var tokenAddress = $('input[name="tokenAddress"]', formExecGo).val();
+            var data = $('textarea[name="data"]', formExec).val() || null;
+            var walletId = $('select[name="walletId"]', formExec).val();
+            var to = $('input[name="to"]', formExec).val();
+            var value = $('input[name="value"]', formExec).val();
+            var tokenAddress = $('input[name="tokenAddress"]', formExec).val();
 
             // Generic transaction
             executeTransaction({
@@ -313,14 +314,14 @@
     };
 
     app.page.initVechain = function() {
-        var formSignVechain = document.querySelector('[data-form="sign"][data-chain="VECHAIN"]');
-        formSignVechain && formSignVechain.addEventListener('submit', function(e) {
+        var formSign = document.querySelector('[data-form="sign"][data-chain="VECHAIN"]');
+        formSign && formSign.addEventListener('submit', function(e) {
             e.stopPropagation();
             e.preventDefault();
-            var data = $('textarea[name="data"]', formSignVechain).val() || null;
-            var walletId = $('select[name="walletId"]', formSignVechain).val();
-            var to = $('input[name="to"]', formSignVechain).val();
-            var value = $('input[name="value"]', formSignVechain).val();
+            var data = $('textarea[name="data"]', formSign).val() || null;
+            var walletId = $('select[name="walletId"]', formSign).val();
+            var to = $('input[name="to"]', formSign).val();
+            var value = $('input[name="value"]', formSign).val();
             sign({
                      type: 'VECHAIN_TRANSACTION',
                      walletId,
@@ -333,15 +334,15 @@
                  });
         });
 
-        var formExecVechain = document.querySelector('[data-form="execute"][data-chain="VECHAIN"]');
-        formExecVechain && formExecVechain.addEventListener('submit', function(e) {
+        var formExec = document.querySelector('[data-form="execute"][data-chain="VECHAIN"]');
+        formExec && formExec.addEventListener('submit', function(e) {
             e.stopPropagation();
             e.preventDefault();
-            var data = $('textarea[name="data"]', formExecVechain).val() || null;
-            var walletId = $('select[name="walletId"]', formExecVechain).val();
-            var to = $('input[name="to"]', formExecVechain).val();
-            var value = $('input[name="value"]', formExecVechain).val();
-            var tokenAddress = $('input[name="tokenAddress"]', formExecVechain).val();
+            var data = $('textarea[name="data"]', formExec).val() || null;
+            var walletId = $('select[name="walletId"]', formExec).val();
+            var to = $('input[name="to"]', formExec).val();
+            var value = $('input[name="value"]', formExec).val();
+            var tokenAddress = $('input[name="tokenAddress"]', formExec).val();
 
             // Generic transaction
             executeTransaction({
@@ -382,13 +383,13 @@
     };
 
     app.page.initBitcoin = function() {
-        var formExecBitcoin = document.querySelector('[data-form="execute"][data-chain="BITCOIN"]');
-        formExecBitcoin && formExecBitcoin.addEventListener('submit', function(e) {
+        var formExec = document.querySelector('[data-form="execute"][data-chain="BITCOIN"]');
+        formExec && formExec.addEventListener('submit', function(e) {
             e.stopPropagation();
             e.preventDefault();
-            var walletId = $('select[name="walletId"]', formExecBitcoin).val();
-            var to = $('input[name="to"]', formExecBitcoin).val();
-            var value = $('input[name="value"]', formExecBitcoin).val();
+            var walletId = $('select[name="walletId"]', formExec).val();
+            var to = $('input[name="to"]', formExec).val();
+            var value = $('input[name="value"]', formExec).val();
 
             // Generic transaction
             executeTransaction({
@@ -410,13 +411,13 @@
     };
 
     app.page.initLitecoin = function() {
-        var formExecLitecoin = document.querySelector('[data-form="execute"][data-chain="LITECOIN"]');
-        formExecLitecoin && formExecLitecoin.addEventListener('submit', function(e) {
+        var formExec = document.querySelector('[data-form="execute"][data-chain="LITECOIN"]');
+        formExec && formExec.addEventListener('submit', function(e) {
             e.stopPropagation();
             e.preventDefault();
-            var walletId = $('select[name="walletId"]', formExecLitecoin).val();
-            var to = $('input[name="to"]', formExecLitecoin).val();
-            var value = $('input[name="value"]', formExecLitecoin).val() / Math.pow(10, 8);
+            var walletId = $('select[name="walletId"]', formExec).val();
+            var to = $('input[name="to"]', formExec).val();
+            var value = $('input[name="value"]', formExec).val() / Math.pow(10, 8);
 
             // Generic transaction
             executeTransaction({
@@ -428,4 +429,44 @@
         });
     };
 
+    app.page.initAeternity = function() {
+        // var formSign = document.querySelector('[data-form="sign"][data-chain="AETERNITY"]');
+        // formSign && formSign.addEventListener('submit', function(e) {
+        //     e.stopPropagation();
+        //     e.preventDefault();
+        //     var data = $('textarea[name="data"]', formSign).val() || null;
+        //     var walletId = $('select[name="walletId"]', formSign).val();
+        //     var to = $('input[name="to"]', formSign).val();
+        //     var value = $('input[name="value"]', formSign).val();
+        //     sign({
+        //              type: 'AETERNITY_TRANSACTION',
+        //              walletId,
+        //              submit: false,
+        //              to,
+        //              value,
+        //              data
+        //          });
+        // });
+
+        var formExec = document.querySelector('[data-form="execute"][data-chain="AETERNITY"]');
+        formExec && formExec.addEventListener('submit', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            // var data = $('textarea[name="data"]', formExec).val() || null;
+            var walletId = $('select[name="walletId"]', formExec).val();
+            var to = $('input[name="to"]', formExec).val();
+            var value = $('input[name="value"]', formExec).val();
+            // var tokenAddress = $('input[name="tokenAddress"]', formExec).val();
+
+            // Generic transaction
+            executeTransaction({
+                                   secretType: 'AETERNITY',
+                                   walletId,
+                                   to,
+                                   value,
+                                   // tokenAddress,
+                                   // data
+                               });
+        });
+    };
 })();
