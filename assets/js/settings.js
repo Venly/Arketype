@@ -3,9 +3,9 @@
 
     window.app = window.app || {};
 
-    app.env = 'tst1';
+    app.env = 'qa';
     app.clientId = 'Arketype';
-    app.isLocal = true;
+    app.isLocal = false;
     app.environment = {
         env: app.env,
         connect: app.env + (app.isLocal ? '-local' : ''),
