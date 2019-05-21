@@ -37,14 +37,14 @@
             el.addEventListener('click', function() {
                 var chain = this.dataset.chain;
                 if(app.getWindowMode() === 'POPUP') {
-                    window.arkaneConnect.manageWallets(chain).then((result) => {
+                    window.arkaneConnect.flows.manageWallets(chain).then((result) => {
                         app.log(result, 'manage-wallets finished');
                         getWalletsBySecretType(this.dataset.chain.toUpperCase());
                     }).catch((result) => {
                         app.error(result, 'manage-wallets');
                     });
                 } else {
-                    window.arkaneConnect.manageWallets(chain, {redirectUri: app.redirectUri, correlationID: `${Date.now()}`});
+                    window.arkaneConnect.flows.manageWallets(chain, {redirectUri: app.redirectUri, correlationID: `${Date.now()}`});
                 }
             });
         });
@@ -53,7 +53,7 @@
     function initLinkWalletsEvent() {
         document.getElementById('link-wallets').addEventListener('click', function() {
             if(app.getWindowMode() === 'POPUP') {
-                window.arkaneConnect.linkWallets().then((result) => {
+                window.arkaneConnect.flows.linkWallets().then((result) => {
                     app.log(result, 'link-wallets finished');
                     var chain = document.querySelector('#nav-tabContent > .active').dataset.chain;
                     getWalletsBySecretType(chain.toUpperCase());
@@ -61,7 +61,7 @@
                     app.error(result, 'link-wallets');
                 });
             } else {
-                window.arkaneConnect.linkWallets({redirectUri: app.redirectUri});
+                window.arkaneConnect.flows.linkWallets({redirectUri: app.redirectUri});
             }
         });
     }
