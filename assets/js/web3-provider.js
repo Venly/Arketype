@@ -20,6 +20,7 @@
                 app.log(wallets, 'Wallets');
                 updateWallets(wallets);
             });
+            initLogout();
             initWalletControls();
             initRequestTransactionForm();
         });
@@ -35,6 +36,12 @@
         window.web3.eth.getAccounts(function(err, wallets) {
             app.log(wallets, 'Wallets');
             updateWallets(wallets);
+        });
+    }
+
+    function initLogout() {
+        $('#auth-logout').click(() => {
+            window.Arkane.arkaneConnect().logout();
         });
     }
 
@@ -136,66 +143,3 @@
         }
     }
 })();
-
-
-//
-//     $('#sign-ETHEREUM-form').submit((e) => {
-//         e.preventDefault();
-//
-//         var rawTransaction = {
-//             "from": $("#sign-ETHEREUM-form select[name='walletId']").val(),
-//             "to": $("#sign-ETHEREUM-form input[name='to']").val(),
-//             "value": $("#sign-ETHEREUM-form input[name='value']").val(),
-//             "gas": 21000
-//         };
-//
-//         window.web3.eth.sendTransaction(rawTransaction, (err, result) => {
-//             if (err) {
-//                 app.log("error: " + err);
-//             } else {
-//                 app.log(result);
-//             }
-//         });
-//     });
-//
-//     $('#sign-ETHEREUM-RAW-form').submit((e) => {
-//         e.preventDefault();
-//
-//         window.web3.eth.sign($("#sign-ETHEREUM-RAW-form select[name='walletId']").val(), $("#sign-ETHEREUM-RAW-form textarea[name='data']").val(), (err, result) => {
-//             if (err) {
-//                 app.log("error: " + err);
-//             } else {
-//                 app.log(result);
-//             }
-//         });
-//     });
-// };
-//
-// app.getWallets = () => {
-//     window.Arkane.arkaneConnect().getWallets().then((result) => {
-//         app.log(result);
-//     })
-// };
-//
-// app.log = (txt) => {
-//     if (isObject(txt)) {
-//         txt = JSON.stringify(txt, null, 2);
-//     }
-//     const date = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
-//     txt = '---' + date + '---\n' + txt;
-//     $('#appLog').html(txt + '\n\n' + $('#appLog').html());
-// };
-//
-// app.getQueryParam = (name) => {
-//     var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-//     if (results == null) {
-//         return null;
-//     }
-//     return decodeURIComponent(results[1]) || 0;
-// };
-//
-// function isObject(obj) {
-//     return obj === Object(obj);
-// }
-//
-// app.initApp();
