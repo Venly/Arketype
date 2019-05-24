@@ -3,7 +3,7 @@
 
     window.app = window.app || {};
 
-    app.env = 'qa';
+    app.env = 'tst1';
     app.clientId = 'Arketype';
     app.isLocal = false;
     app.environment = {
