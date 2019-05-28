@@ -3,7 +3,7 @@
 
     window.app = window.app || {};
 
-    app.env = 'staging';
+    app.env = 'tst1';
     app.clientId = 'Arketype';
     app.isLocal = false;
     app.environment = {
@@ -48,7 +48,7 @@
             window.arkaneConnect
                   .logout()
                   .then(() => {
-                      app.handleNotAuthenticated();
+                      app.handleLogout();
                   });
         });
     };
@@ -65,13 +65,14 @@
         $(app).trigger('authenticated');
     };
 
-    app.handleNotAuthenticated = () => {
+    app.handleLogout = () => {
         document.body.classList.remove('logged-in');
         document.body.classList.add('not-logged-in');
         $('#client-id').text('');
         $('#auth-username').html('<strong></strong>');
         app.updateToken('');
         window.arkaneConnect.addOnTokenRefreshCallback((token) => {});
+        $(app).trigger('logout');
     };
 
     app.updateToken = (token) => {
