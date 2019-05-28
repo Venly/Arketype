@@ -45,7 +45,11 @@
 
         document.getElementById('auth-logout').addEventListener('click', function(e) {
             e.preventDefault();
-            window.arkaneConnect.logout();
+            window.arkaneConnect
+                  .logout()
+                  .then(() => {
+                      app.handleNotAuthenticated();
+                  });
         });
     };
 
@@ -59,6 +63,15 @@
         window.arkaneConnect.addOnTokenRefreshCallback(app.updateToken);
         app.checkResultRequestParams();
         $(app).trigger('authenticated');
+    };
+
+    app.handleNotAuthenticated = () => {
+        document.body.classList.remove('logged-in');
+        document.body.classList.add('not-logged-in');
+        $('#client-id').text('');
+        $('#auth-username').html('<strong></strong>');
+        app.updateToken('');
+        window.arkaneConnect.addOnTokenRefreshCallback((token) => {});
     };
 
     app.updateToken = (token) => {
