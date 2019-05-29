@@ -56,12 +56,14 @@
                   .then(function(wallets) {
                       app.log(wallets, 'Application wallets');
                       app.page.appWallets = wallets;
-                      app.page.addConnectEvents('.get-app-wallets', getAppWallets);
                       updateWallets(wallets);
-
-                      initGetAppWalletEvent();
-                      initCreateAppWalletEvent();
-                      initRequestTransactionForm();
+                      if (!app.page.initialised) {
+                        app.page.addConnectEvents('.get-app-wallets', getAppWallets);
+                        initGetAppWalletEvent();
+                        initCreateAppWalletEvent();
+                        initRequestTransactionForm();
+                        app.page.initialised = true;
+                      }
                       refreshTransactionRequests();
                   });
         });
