@@ -3,10 +3,12 @@
 
     $(function() {
         $(app).on('authenticated', function() {
-            app.page.addConnectEvents('.get-wallets', getWallets);
-            initGetWalletEvent();
-            initManageWalletsEvent();
-            initLinkWalletsEvent();
+            if (!app.page.initialised) {
+                app.page.addConnectEvents('.get-wallets', getWallets);
+                initGetWalletEvent();
+                initManageWalletsEvent();
+                initLinkWalletsEvent();
+            }
         });
     });
 

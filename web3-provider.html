@@ -1,0 +1,285 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Next generation blockchain wallet provider - Arkane</title>
+    <meta name="description" content="Arkane.Network : Next generation blockchain wallet provider">
+    <meta name="keywords" content="arkane, wallet, ico, kyc, blockchain, wallet provider">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/assets/css/auth.css"/>
+    <link rel="stylesheet" href="/assets/css/arketype.css"/>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <script src="/node_modules/@arkane-network/web3-arkane-provider/dist/web3-arkane-provider.js"></script>
+</head>
+
+<body class="bg-light-gray not-logged-in" id="arketype">
+
+<header class="bg-light">
+    <div class="container">
+        <nav class="row navbar navbar-expand-md navbar-light">
+            <a class="navbar-brand" href="/index.html"><img src="/assets/img/Arketype-thumbnail.png" alt="" width="32" height="32"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/index.html">Wallets </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/app-wallets">App Wallets</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/simple-get-wallets">Simple Connect Example</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/web3-provider">Web3 Provider<span class="sr-only">(current)</span></a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12 py-5 text-center">
+            <img class="d-block mx-auto mb-4" src="/assets/img/logo-arkane-a-light.svg" alt="" width="72" height="72">
+            <h2>Arkane Network</h2>
+            <div class="lead">
+                <p class="mb-1"><span>Demo project</span><img class="d-inline mx-1" src="/assets/img/Arketype-thumbnail.png" alt="" width="32" height="32"><span>Arketype</span>
+                </p>
+                <p>Source code available on <a href="https://github.com/ArkaneNetwork/arketype" target="_blank">GitHub</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row auth-not-logged-in">
+        <div class="form-group col-12 text-center">
+            <div>
+                <button class="btn btn-primary" id="auth-loginlink">Connect to Arkane</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-light py-5 auth-logged-in">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 mb-4">
+                <div class="mb-5 row">
+                    <h4 class="mb-3 col-12">Actions</h4>
+                    <div class="col-12 col-md-6">
+                        <button type="button" class="btn btn-primary" id="auth-logout">Logout</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 mb-4">
+                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-muted">Logs</span>
+                    <span class="badge badge-secondary badge-pill"></span>
+                </h4>
+                <div id="appLog" class="form-control"></div>
+
+                <div class="card p-2">
+                    <button class="btn btn-secondary" onclick="app.clearLog()">Clear logs</button>
+                </div>
+            </div>
+
+            <div class="col-md-12 mb-4">
+                <div class="mb-5 row" id="wallet-management">
+                    <h4 class="mb-3 col-12">Wallets</h4>
+                    <div class="col-12 col-md-6">
+                        <button type="button" id="link-wallets" class="btn btn-outline-primary">
+                            Link Wallets
+                        </button>
+                        <button type="button" id="manage-wallets" class="btn btn-outline-primary">
+                            Manage Wallets
+                        </button>
+                        <button type="button" id="refresh-wallets" class="btn btn-outline-primary">
+                            Refresh Wallets
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 p-4 bg-white border">
+                <div class="row">
+                    <div class="mb-3 col-lg-6">
+                        <form id="sign-form" data-form="request" class="card bg-light">
+                            <fieldset class="card-body">
+                                <legend class="card-title">Sign transaction</legend>
+
+                                <div class="form-group row">
+                                    <label for="sign-from" class="col-sm-5 col-form-label">From</label>
+                                    <div class="col-sm-7">
+                                        <div class="input-group">
+                                            <select id="sign-from" class="form-control" data-from="true" name="from"></select>
+                                            <div class="input-group-append">
+                                                <button type="button" class="btn btn-outline-secondary" onclick="app.copySelectDataAddress('#sign-from')" title="Copy address">
+                                                    <i class="fa fa-copy"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="sign-to" class="col-sm-5 col-form-label">To</label>
+                                    <div class="col-sm-7">
+                                        <input id="sign-to" class="form-control" data-to="true" name="to" placeholder="To"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="sign-amount" class="col-sm-5 col-form-label">Value (in wei, optional)</label>
+                                    <div class="col-sm-7">
+                                        <input id="sign-amount" class="form-control" data-amount="true" name="value" placeholder="value" value="314000000000000000"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="sign-gas" class="col-sm-5 col-form-label">Gas (optional)</label>
+                                    <div class="col-sm-7">
+                                        <input id="sign-gas" type="number" class="form-control" data-gas="true" name="gas" placeholder="Gas"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="sign-gas-price" class="col-sm-5 col-form-label">Gas Price (in wei, optional)</label>
+                                    <div class="col-sm-7">
+                                        <input id="sign-gas-price" type="number" class="form-control" data-gas-price="true" name="gas-price" placeholder="Gas Price"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="sign-gas-price" class="col-sm-5 col-form-label">Nonce (optional)</label>
+                                    <div class="col-sm-7">
+                                        <input id="sign-nonce" type="number" class="form-control" data-nonce="true" name="nonce" placeholder="Nonce"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="sign-data" class="col-sm-5 col-form-label">Data (optional)</label>
+                                    <div class="col-sm-7">
+                                        <textarea id="sign-data" class="form-control" data-data="true" name="data" rows="4"></textarea>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="offset-5 col-7">
+                                        <button type="submit" value="sign" class="btn btn-primary">Sign Transaction</button>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                    <div class="mb-3 col-lg-6">
+                        <form id="execute-form" data-form="request" class="card bg-light">
+                            <fieldset class="card-body">
+                                <legend class="card-title">Execute transaction</legend>
+
+                                <div class="form-group row">
+                                    <label for="exec-from" class="col-sm-5 col-form-label">From</label>
+                                    <div class="col-sm-7">
+                                        <div class="input-group">
+                                            <select id="exec-from" class="form-control" data-from="true" name="from"></select>
+                                            <div class="input-group-append">
+                                                <button type="button" class="btn btn-outline-secondary" onclick="app.copySelectDataAddress('#exec-from')" title="Copy address">
+                                                    <i class="fa fa-copy"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="exec-to" class="col-sm-5 col-form-label">To</label>
+                                    <div class="col-sm-7">
+                                        <input id="exec-to" class="form-control" data-to="true" name="to" placeholder="To"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="exec-amount" class="col-sm-5 col-form-label">Value (in wei, optional)</label>
+                                    <div class="col-sm-7">
+                                        <input id="exec-amount" class="form-control" data-amount="true" name="value" placeholder="value" value="314000000000000000"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="exec-gas" class="col-sm-5 col-form-label">Gas (optional)</label>
+                                    <div class="col-sm-7">
+                                        <input id="exec-gas" type="number" class="form-control" data-gas="true" name="gas" placeholder="Gas"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="exec-gas-price" class="col-sm-5 col-form-label">Gas Price (in wei, optional)</label>
+                                    <div class="col-sm-7">
+                                        <input id="exec-gas-price" type="number" class="form-control" data-gas-price="true" name="gas-price" placeholder="Gas Price"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="exec-gas-price" class="col-sm-5 col-form-label">Nonce (optional)</label>
+                                    <div class="col-sm-7">
+                                        <input id="exec-nonce" type="number" class="form-control" data-nonce="true" name="nonce" placeholder="Nonce"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="exec-data" class="col-sm-5 col-form-label">Data (optional)</label>
+                                    <div class="col-sm-7">
+                                        <textarea id="exec-data" class="form-control" data-data="true" name="data" rows="4"></textarea>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="offset-5 col-7">
+                                        <button type="submit" value="execute" class="btn btn-primary">Execute Transaction</button>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-dark mt-auto">
+    <div class="container">
+        <nav class="row navbar navbar-expand-sm navbar-dark bg-dark">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarBottomCollapse" aria-controls="navbarBottomCollapse" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarBottomCollapse">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a href="https://arkane.network" class="nav-link">Powered by Arkane.Network</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</div>
+
+<script src="/node_modules/jquery/dist/jquery.min.js"></script>
+<script src="/assets/js/vendor/modernizr-custom.js"></script>
+<script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+<script src="/assets/js/plugins.js"></script>
+<script src="/assets/js/settings.js"></script>
+<script src="/assets/js/main.js"></script>
+<script src="/assets/js/web3-provider.js"></script>
+
+</body>
+
+</html>
