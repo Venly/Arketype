@@ -19,6 +19,7 @@
         app.page.initVechain();
         app.page.initBitcoin();
         app.page.initLitecoin();
+        app.page.initialised = true;
     };
 
     app.page.initTabChangeEvent = function(selector, callback) {
