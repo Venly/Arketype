@@ -177,7 +177,6 @@
     };
 
     app.page.initVechain = function() {
-
         createSignForm('VECHAIN', 'VECHAIN_TRANSACTION', {
             walletId: {type: 'select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: '0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE', clause: true},
@@ -198,7 +197,7 @@
         createSignForm('BITCOIN', 'BITCOIN_TRANSACTION', {
             walletId: {type: 'select', label: 'From'},
             to: {type: 'input', label: 'To'},
-            value: {type: 'input', label: 'Amount (in BTC)', defaultValue: '0.00003141'},
+            value: {type: 'input', label: 'Amount', defaultValue: '314100'},
         });
 
         createExecuteForm('BITCOIN', {
@@ -212,7 +211,7 @@
         createSignForm('LITECOIN', 'LITECOIN_TRANSACTION', {
             walletId: {type: 'select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'LYFYQfkZ4PXp5waKxSpA9H6xXFhTNPRCPe'},
-            value: {type: 'input', label: 'Amount', defaultValue: '0.00003142'},
+            value: {type: 'input', label: 'Amount', defaultValue: '314100'},
         });
 
         createExecuteForm('LITECOIN', {
