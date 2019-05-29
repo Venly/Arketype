@@ -2,6 +2,7 @@
     'use strict';
 
     app.initApp = function() {
+        app.page = app.page || {};
         $('#auth-loginlink').on('click', function(event) {
             Arkane.createArkaneProviderEngine({
                                                   clientId: 'Arketype',
@@ -12,7 +13,7 @@
                       window.web3 = new Web3(provider);
                       handleAuthenticated();
                   })
-                  .catch(reason => app.error(reason));
+                  .catch(reason => app.error(reason, 'Authentication error'));
         });
 
         $(app).on('authenticated', function() {
@@ -20,9 +21,13 @@
                 app.log(wallets, 'Wallets');
                 updateWallets(wallets);
             });
-            initLogout();
-            initWalletControls();
-            initRequestTransactionForm();
+
+            if (!app.page.initialised) {
+                initLogout();
+                initWalletControls();
+                initRequestTransactionForm();
+                app.page.initialised = true;
+            }
         });
     };
 
@@ -41,7 +46,13 @@
 
     function initLogout() {
         $('#auth-logout').click(() => {
-            window.Arkane.arkaneConnect().logout();
+            window.Arkane.arkaneConnect().logout()
+                  .then(() => {
+                      document.body.classList.remove('logged-in');
+                      document.body.classList.add('not-logged-in');
+                      app.clearLog();
+                      clearWallets();
+                  });
         });
     }
 
@@ -141,5 +152,10 @@
                 {value: wallet, text: wallet, 'data-address': wallet}
             )));
         }
+    }
+
+    function clearWallets() {
+        const walletsSelect = $('select[name="from"]');
+        walletsSelect && walletsSelect.empty();
     }
 })();
