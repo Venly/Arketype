@@ -13,7 +13,7 @@
                       window.web3 = new Web3(provider);
                       handleAuthenticated();
                   })
-                  .catch(reason => app.error(reason, 'Authentication error'));
+                  .catch((reason) => console.log('Not Authenticated', reason));
         });
 
         $(app).on('authenticated', function() {
