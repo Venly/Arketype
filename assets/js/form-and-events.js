@@ -375,8 +375,10 @@
     function createForm(title, secretType, formType, fields, transactionFunction, defaultData) {
         var fieldSet = createHtmlFieldSet(title, formType, secretType, fields);
         var formSign = document.querySelector('[data-form="' + formType + '"][data-chain="' + secretType + '"]');
-        formSign.appendChild(fieldSet);
-        addFormSubmitListener(formSign, fields, defaultData, transactionFunction);
+        if (formSign) {
+            formSign.appendChild(fieldSet);
+            addFormSubmitListener(formSign, fields, defaultData, transactionFunction);
+        }
     }
 
     function createSignForm(secretType, transactionType, fields) {
