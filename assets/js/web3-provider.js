@@ -13,7 +13,22 @@
                       window.web3 = new Web3(provider);
                       handleAuthenticated();
                   })
-                  .catch((reason) => console.log('Not Authenticated', reason));
+                  .catch((reason) => {
+                      if (reason) {
+                          switch (reason) {
+                              case 'not-authenticated':
+                                  console.log('Not Authenticated', reason);
+                                  break;
+                              case 'no-wallet-linked':
+                                  console.log('No wallet was linked to this application', reason);
+                                  break;
+                              default:
+                                  console.log('Something went wrong while creating the Arkane provider', reason);
+                          }
+                      } else {
+                          console.log('Something went wrong while creating the Arkane provider');
+                      }
+                  });
         });
 
         $(app).on('authenticated', function() {
