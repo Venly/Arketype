@@ -3,7 +3,7 @@
 
     window.app = window.app || {};
     app.page = app.page || {};
-    app.localStorageKeys = app.localStorageKeys  || {};
+    app.localStorageKeys = app.localStorageKeys || {};
     app.localStorageKeys.activeChain = 'arketype.activeChain';
 
 
@@ -12,6 +12,7 @@
         app.page.setActiveTab(app.page.getActiveTab(), true);
         app.page.initGetProfileEvent();
 
+        app.page.initAeternity();
         app.page.initEthereum();
         app.page.initTron();
         app.page.initGo();
@@ -116,317 +117,286 @@
         });
     };
 
-    function getDataFromForm(form) {
-        var data = $('textarea[name="data"]', form).val() || null;
-        var walletId = $('select[name="walletId"]', form).val() || null;
-        var to = $('input[name="to"]', form).val() || null;
-        var value = $('input[name="value"]', form).val() || null;
-        var tokenAddress = $('input[name="tokenAddress"]', form).val() || null;
-
-        var result = {
-            walletId,
-            to,
-            value,
-            tokenAddress,
-            data
-        };
-
-        var $hash = $('input[name="hash"]', form);
-        $hash.length > 0 ? result.hash = $hash.is(':checked') : null;
-        var $prefix = $('input[name="prefix"]', form);
-        $prefix.length > 0 ? result.prefix = $prefix.is(':checked') : null;
-
-        return result;
-    }
-
     app.page.initEthereum = function() {
-        var formSignEth = document.querySelector('[data-form="sign"][data-chain="ETHEREUM"]');
-        formSignEth && formSignEth.addEventListener('submit', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            var formData = getDataFromForm(formSignEth);
-            sign({
-                     type: 'ETHEREUM_TRANSACTION',
-                     walletId: formData.walletId,
-                     submit: false,
-                     to: formData.to,
-                     value: formData.value,
-                     data: formData.data
-                 });
+        var fieldsSign = {
+            walletId: {type: 'select', label: 'From'},
+            to: {type: 'input', label: 'To', defaultValue: '0x680800Dd4913021821A9C08D569eF4338dB8E9f6'},
+            value: {type: 'input', label: 'Amount (in WEI)', defaultValue: '31400000000000000'},
+            data: {type: 'textarea', label: 'Data (optional)', defaultValue: 'Some test data'},
+        };
+        createSignForm('ETHEREUM', 'ETHEREUM_TRANSACTION', fieldsSign);
+
+        createSignRawForm('ETHEREUM', 'ETHEREUM_RAW', {
+            walletId: fieldsSign.walletId,
+            data: fieldsSign.data,
+            prefix: {type: 'checkbox', checked: true, label: 'Prefix'},
+            hash: {type: 'checkbox', checked: true, label: 'Hash', info: 'When prefix is checked, hash will always be set to \'true\''}
         });
 
-        var formSignEthRaw = document.querySelector('[data-form="sign-raw"][data-chain="ETHEREUM"]');
-        formSignEthRaw && formSignEthRaw.addEventListener('submit', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            var formData = getDataFromForm(formSignEthRaw);
-            sign({
-                     type: 'ETHEREUM_RAW',
-                     walletId: formData.walletId,
-                     data: formData.data,
-                     prefix: formData.prefix,
-                     hash: formData.prefix ? true : formData.hash,
-                 });
-        });
-
-        var formExecEth = document.querySelector('[data-form="execute"][data-chain="ETHEREUM"]');
-        formExecEth && formExecEth.addEventListener('submit', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            var formData = getDataFromForm(formExecEth);
-            // Generic transaction
-            executeTransaction({
-                                   secretType: 'ETHEREUM',
-                                   walletId: formData.walletId,
-                                   to: formData.to,
-                                   value: formData.value,
-                                   tokenAddress: formData.tokenAddress,
-                                   data: formData.data
-                               });
-
-            // Native ETH transaction
-            // executeTransaction (
-            //           {
-            //               type: 'ETH_TRANSACTION',
-            //               walletId: $("#execute-ETHEREUM-form select[name='walletId']").val(),
-            //               to: $("#execute-ETHEREUM-form input[name='to']").val(),
-            //               value: $("#execute-ETHEREUM-form input[name='value']").val(),
-            //               data: data === "" ? null : data,
-            //           },
-            //       )
-
-            // Native ERC20 transaction
-            // executeNativeTransaction (
-            //           {
-            //               type: 'ETHEREUM_ERC20_TRANSACTION',
-            //               walletId: $("#execute-ETHEREUM-form select[name='walletId']").val(),
-            //               to: $("#execute-ETHEREUM-form input[name='to']").val(),
-            //               value: $("#execute-ETHEREUM-form input[name='value']").val(),
-            //               tokenAddress: '0x02f96ef85cad6639500ca1cc8356f0b5ca5bf1d2',
-            //           },
-            //       );
-        });
+        var fieldsExecute = fieldsSign;
+        fieldsExecute.value.label = 'Amount (in ETH)';
+        fieldsExecute.value.defaultValue = '0.0314';
+        createExecuteForm('ETHEREUM', fieldsExecute);
     };
 
     app.page.initTron = function() {
-        var formSignTrx = document.querySelector('[data-form="sign"][data-chain="TRON"]');
-        formSignTrx && formSignTrx.addEventListener('submit', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            var walletId = $('select[name="walletId"]', formSignTrx).val();
-            var to = $('input[name="to"]', formSignTrx).val();
-            var value = $('input[name="value"]', formSignTrx).val();
-            sign({
-                     type: 'TRON_TRANSACTION',
-                     walletId,
-                     submit: false,
-                     to,
-                     value,
-                 });
+        var signFields = {
+            walletId: {type: 'select', label: 'From'},
+            to: {type: 'input', label: 'To', defaultValue: 'TAwwCCoa6cTjtKJVTSpnKbkDimgALcAXfb'},
+            value: {type: 'input', label: 'Amount', defaultValue: '31400'},
+            data: {type: 'textarea', label: 'Data (optional)', defaultValue: 'Some test data'}
+        };
+        createSignForm('TRON', 'TRON_TRANSACTION', signFields);
+
+        createSignRawForm('TRON', 'TRON_RAW', {
+            walletId: signFields.walletId,
+            data: signFields.data,
         });
 
-        var formSignTronRaw = document.querySelector('[data-form="sign-raw"][data-chain="TRON"]');
-        formSignTronRaw && formSignTronRaw.addEventListener('submit', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            var formData = getDataFromForm(formSignTronRaw);
-            sign({
-                     type: 'TRON_RAW',
-                     walletId: formData.walletId,
-                     data: formData.data,
-                 });
-        });
 
-        var formExecTrx = document.querySelector('[data-form="execute"][data-chain="TRON"]');
-        formExecTrx && formExecTrx.addEventListener('submit', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            var data = $('textarea[name="data"]', formExecTrx).val() || null;
-            var walletId = $('select[name="walletId"]', formExecTrx).val();
-            var to = $('input[name="to"]', formExecTrx).val();
-            var value = $('input[name="value"]', formExecTrx).val();
-            var tokenAddress = $('input[name="tokenAddress"]', formExecTrx).val();
-
-            // Generic transaction
-            executeTransaction({
-                                   secretType: 'TRON',
-                                   walletId,
-                                   to,
-                                   value,
-                                   tokenAddress,
-                                   data
-                               });
-        });
+        var executeFields = signFields;
+        executeFields.value.defaultValue = '0.0314';
+        createExecuteForm('TRON', executeFields);
     };
 
     app.page.initGo = function() {
-        var formSignGo = document.querySelector('[data-form="sign"][data-chain="GOCHAIN"]');
-        formSignGo && formSignGo.addEventListener('submit', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            var data = $('textarea[name="data"]', formSignGo).val() || null;
-            var walletId = $('select[name="walletId"]', formSignGo).val();
-            var to = $('input[name="to"]', formSignGo).val();
-            var value = $('input[name="value"]', formSignGo).val();
-            sign({
-                     type: 'GOCHAIN_TRANSACTION',
-                     walletId,
-                     submit: false,
-                     to,
-                     value,
-                     data
-                 });
+        var signFields = {
+            walletId: {type: 'select', label: 'From'},
+            to: {type: 'input', label: 'To', defaultValue: '0xd84aeb36b2a30eDB94e9f0A25A82E94e506ebB15'},
+            value: {type: 'input', label: 'Amount', defaultValue: '32000000000000000'},
+            data: {type: 'textarea', label: 'Data (optional)', defaultValue: 'Some test data'}
+        };
+        createSignForm('GOCHAIN', 'GOCHAIN_TRANSACTION', signFields);
+        createSignRawForm('GOCHAIN', 'GOCHAIN_RAW', {
+            walletId: signFields.walletId,
+            data: signFields.data,
         });
 
-        var formSignGoRaw = document.querySelector('[data-form="sign-raw"][data-chain="GOCHAIN"]');
-        formSignGoRaw && formSignGoRaw.addEventListener('submit', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            var data = $('textarea[name="data"]', formSignGoRaw).val() || null;
-            var walletId = $('select[name="walletId"]', formSignGoRaw).val();
-            sign({
-                     type: 'GOCHAIN_RAW',
-                     walletId,
-                     data
-                 });
-        });
-
-        var formExecGo = document.querySelector('[data-form="execute"][data-chain="GOCHAIN"]');
-        formExecGo && formExecGo.addEventListener('submit', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            var data = $('textarea[name="data"]', formExecGo).val() || null;
-            var walletId = $('select[name="walletId"]', formExecGo).val();
-            var to = $('input[name="to"]', formExecGo).val();
-            var value = $('input[name="value"]', formExecGo).val();
-            var tokenAddress = $('input[name="tokenAddress"]', formExecGo).val();
-
-            // Generic transaction
-            executeTransaction({
-                                   secretType: 'GOCHAIN',
-                                   walletId,
-                                   to,
-                                   value,
-                                   tokenAddress,
-                                   data
-                               });
-        });
+        var executeFields = signFields;
+        executeFields.value.defaultValue = '0.0321';
+        createExecuteForm('GOCHAIN', executeFields);
     };
 
     app.page.initVechain = function() {
-        var formSignVechain = document.querySelector('[data-form="sign"][data-chain="VECHAIN"]');
-        formSignVechain && formSignVechain.addEventListener('submit', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            var data = $('textarea[name="data"]', formSignVechain).val() || null;
-            var walletId = $('select[name="walletId"]', formSignVechain).val();
-            var to = $('input[name="to"]', formSignVechain).val();
-            var value = $('input[name="value"]', formSignVechain).val();
-            sign({
-                     type: 'VECHAIN_TRANSACTION',
-                     walletId,
-                     submit: false,
-                     clauses: [{
-                         to,
-                         amount: value,
-                         data: data,
-                     }]
-                 });
+        createSignForm('VECHAIN', 'VECHAIN_TRANSACTION', {
+            walletId: {type: 'select', label: 'From'},
+            to: {type: 'input', label: 'To', defaultValue: '0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE', clause: true},
+            amount: {type: 'input', label: 'Amount (GWEI)', defaultValue: '31400000000000000', clause: true},
+            data: {type: 'textarea', label: 'Data (optional)', clause: true, defaultValue: 'Some test data'},
         });
 
-        var formExecVechain = document.querySelector('[data-form="execute"][data-chain="VECHAIN"]');
-        formExecVechain && formExecVechain.addEventListener('submit', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            var data = $('textarea[name="data"]', formExecVechain).val() || null;
-            var walletId = $('select[name="walletId"]', formExecVechain).val();
-            var to = $('input[name="to"]', formExecVechain).val();
-            var value = $('input[name="value"]', formExecVechain).val();
-            var tokenAddress = $('input[name="tokenAddress"]', formExecVechain).val();
-
-            // Generic transaction
-            executeTransaction({
-                                   secretType: 'VECHAIN',
-                                   walletId,
-                                   to,
-                                   value,
-                                   tokenAddress,
-                                   data
-                               });
-
-            // Native VET transaction
-            // executeNativeTransaction(
-            //     {
-            //         type: 'VET_TRANSACTION',
-            //         walletId: $("#execute-VECHAIN-form select[name='walletId']").val(),
-            //         clauses: [{
-            //             to: $("#execute-VECHAIN-form input[name='to']").val(),
-            //             amount: $("#execute-VECHAIN-form input[name='value']").val(),
-            //             data: data ? data : null,
-            //         }]
-            //     }
-            // );
-
-            // Native VIP180 transaction
-            // executeNativeTransaction(
-            //     {
-            //         type: 'VECHAIN_VIP180_TRANSACTION',
-            //         walletId: $("#execute-VECHAIN-form select[name='walletId']").val(),
-            //         clauses: [{
-            //             to: $("#execute-VECHAIN-form input[name='to']").val(),
-            //             amount: $("#execute-VECHAIN-form input[name='value']").val(),
-            //             tokenAddress: '0x9c6e62b3334294d70c8e410941f52d482557955b',
-            //         }]
-            //     }
-            // );
+        createExecuteForm('VECHAIN', {
+            walletId: {type: 'select', label: 'From'},
+            to: {type: 'input', label: 'To', defaultValue: '0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE'},
+            value: {type: 'input', label: 'Amount', defaultValue: '0.0314'},
+            tokenAddress: {type: 'input', label: 'Token Address (optional)'},
+            data: {type: 'textarea', label: 'Data (optional)', defaultValue: 'Some test data'},
         });
     };
 
     app.page.initBitcoin = function() {
-        var formExecBitcoin = document.querySelector('[data-form="execute"][data-chain="BITCOIN"]');
-        formExecBitcoin && formExecBitcoin.addEventListener('submit', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            var walletId = $('select[name="walletId"]', formExecBitcoin).val();
-            var to = $('input[name="to"]', formExecBitcoin).val();
-            var value = $('input[name="value"]', formExecBitcoin).val();
+        createSignForm('BITCOIN', 'BITCOIN_TRANSACTION', {
+            walletId: {type: 'select', label: 'From'},
+            to: {type: 'input', label: 'To'},
+            value: {type: 'input', label: 'Amount', defaultValue: '314100'},
+        });
 
-            // Generic transaction
-            executeTransaction({
-                                   secretType: 'BITCOIN',
-                                   walletId,
-                                   to,
-                                   value,
-                               });
-
-
-            // Native BITCOIN transaction
-            // executeNativeTransaction({
-            //     type: 'BTC_TRANSACTION',
-            //     walletId: $('#execute-BITCOIN-form select[name=\'walletId\']').val(),
-            //     to: $('#execute-BITCOIN-form input[name=\'to\']').val(),
-            //     value: $('#execute-BITCOIN-form input[name=\'value\']').val(),
-            // });
+        createExecuteForm('BITCOIN', {
+            walletId: {type: 'select', label: 'From'},
+            to: {type: 'input', label: 'To'},
+            value: {type: 'input', label: 'Amount (in BTC)', defaultValue: '0.00003141'},
         });
     };
 
     app.page.initLitecoin = function() {
-        var formExecLitecoin = document.querySelector('[data-form="execute"][data-chain="LITECOIN"]');
-        formExecLitecoin && formExecLitecoin.addEventListener('submit', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            var walletId = $('select[name="walletId"]', formExecLitecoin).val();
-            var to = $('input[name="to"]', formExecLitecoin).val();
-            var value = $('input[name="value"]', formExecLitecoin).val() / Math.pow(10, 8);
+        createSignForm('LITECOIN', 'LITECOIN_TRANSACTION', {
+            walletId: {type: 'select', label: 'From'},
+            to: {type: 'input', label: 'To', defaultValue: 'LYFYQfkZ4PXp5waKxSpA9H6xXFhTNPRCPe'},
+            value: {type: 'input', label: 'Amount', defaultValue: '314100'},
+        });
 
-            // Generic transaction
-            executeTransaction({
-                                   secretType: 'LITECOIN',
-                                   walletId,
-                                   to,
-                                   value,
-                               });
+        createExecuteForm('LITECOIN', {
+            walletId: {type: 'select', label: 'From'},
+            to: {type: 'input', label: 'To', defaultValue: 'LYFYQfkZ4PXp5waKxSpA9H6xXFhTNPRCPe'},
+            value: {type: 'input', label: 'Amount', defaultValue: '0.00003142'},
         });
     };
 
+    app.page.initAeternity = function() {
+        createSignForm('AETERNITY', 'AETERNITY_TRANSACTION', {
+            walletId: {type: 'select', label: 'From'},
+            to: {type: 'input', label: 'To', defaultValue: 'TAwwCCoa6cTjtKJVTSpnKbkDimgALcAXfb'},
+            value: {type: 'input', label: 'Amount', defaultValue: '14000'},
+        });
+
+        createExecuteForm('AETERNITY', {
+            walletId: {type: 'select', label: 'From'},
+            to: {type: 'input', label: 'To', defaultValue: 'TAwwCCoa6cTjtKJVTSpnKbkDimgALcAXfb'},
+            value: {type: 'input', label: 'Amount', defaultValue: '14000'},
+        });
+    };
+
+    function createFormField(id, label, field) {
+        var htmlGroup = document.createElement('div');
+        htmlGroup.className = 'form-group row';
+        var htmlLabel = document.createElement('label');
+        htmlLabel.htmlFor = id;
+        htmlLabel.innerHTML = label;
+        htmlLabel.className = 'col-sm-5 col-form-label';
+        var htmlFieldCol = document.createElement('div');
+        htmlFieldCol.className = 'col-sm-7';
+
+        var htmlField;
+
+        switch (field.type.toLowerCase()) {
+            case 'textarea':
+                htmlField = document.createElement('textarea');
+                htmlField.rows = '4';
+                htmlFieldCol.appendChild(htmlField);
+                break;
+            case 'select':
+                htmlField = document.createElement('select');
+                var htmlInputGroup = document.createElement('div');
+                htmlInputGroup.className = 'input-group';
+                var htmlInputGroupAppend = document.createElement('div');
+                htmlInputGroupAppend.className = 'input-group-append';
+                var htmlCopyButton = document.createElement('button');
+                htmlCopyButton.type = 'button';
+                htmlCopyButton.dataset.id = id;
+                htmlCopyButton.className = 'btn btn-outline-secondary';
+                htmlCopyButton.title = 'Copy';
+                htmlCopyButton.addEventListener('click', function(e) {
+                    app.copySelectDataAddress('#' + id);
+                });
+                var htmlCopyIcon = document.createElement('i');
+                htmlCopyIcon.className = 'fa fa-copy';
+                htmlCopyButton.appendChild(htmlCopyIcon);
+                htmlInputGroupAppend.appendChild(htmlCopyButton);
+                htmlInputGroup.appendChild(htmlField);
+                htmlInputGroup.appendChild(htmlInputGroupAppend);
+                htmlFieldCol.appendChild(htmlInputGroup);
+                break;
+            case 'checkbox':
+                htmlField = document.createElement('input');
+                htmlField.type = 'checkbox';
+                if (field.checked) {
+                    htmlField.setAttribute('checked', 'checked');
+                }
+                htmlFieldCol.appendChild(htmlField);
+                break;
+            default:
+                htmlField = document.createElement(field.type);
+                htmlFieldCol.appendChild(htmlField);
+                break;
+        }
+
+        htmlField.className = 'form-control';
+        htmlField.name = field.name;
+        htmlField.id = id;
+        htmlField.placeholder = field.name;
+        htmlField.value = field.defaultValue;
+
+        if (field.info) {
+            var htmlInfo = document.createElement('small');
+            htmlInfo.className = 'form-text text-muted';
+            htmlInfo.innerHTML = field.info;
+            htmlFieldCol.appendChild(htmlInfo);
+        }
+
+        htmlGroup.appendChild(htmlLabel);
+        htmlGroup.appendChild(htmlFieldCol);
+        return htmlGroup;
+    }
+
+    function createHtmlFieldSet(title, prefix, secretType, fields) {
+        var fieldSet = document.createElement('fieldset');
+        fieldSet.className = 'card-body';
+        var htmlLegend = document.createElement('legend');
+        htmlLegend.className = 'card-title';
+        htmlLegend.innerHTML = title;
+        fieldSet.appendChild(htmlLegend);
+
+        var keys = Object.keys(fields);
+        for (var keyIndex in keys) {
+            var name = keys[keyIndex];
+            var fieldId = prefix + '-' + secretType + '-' + name;
+
+            var htmlField = createFormField(fieldId, fields[name].label, {
+                type: fields[name].type,
+                name,
+                defaultValue: fields[name].defaultValue || '',
+                checked: fields[name].checked || false,
+                info: fields[name].info || false,
+            });
+            fieldSet.appendChild(htmlField);
+        }
+        $(fieldSet).append($('<div class="row"><div class="offset-5 col-7"><button type="submit" class="btn btn-primary">Submit</button></div></div>'));
+        return fieldSet;
+    }
+
+    function addFormSubmitListener(form, fields, defaultData, transactionFunction) {
+        var keys = Object.keys(fields);
+        form.addEventListener('submit', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var data = defaultData;
+            var clause = {};
+            for (var keyIndex in keys) {
+                var key = keys[keyIndex];
+                var name = key;
+                var type = fields[name].type;
+                var $element = $('[name="' + name + '"]', form);
+                var value;
+
+                if (type.toLowerCase() === 'checkbox') {
+                    value = $element.length > 0 ? $element.is(':checked') : null;
+                } else {
+                    value = $element.val() || null;
+                }
+
+                if (name === 'hash') {
+                    var $prefix = $('[name="prefix"]', form);
+                    value = $prefix.length > 0 && $prefix.is(':checked') ? true : value;
+                }
+
+                if (fields[name].clause) {
+                    clause[name] = value;
+                } else {
+                    data[name] = value;
+                }
+            }
+            if (Object.keys(clause).length > 0) {
+                data.clauses = [clause];
+            }
+            transactionFunction(data);
+        });
+    }
+
+    function createForm(title, secretType, formType, fields, transactionFunction, defaultData) {
+        var fieldSet = createHtmlFieldSet(title, formType, secretType, fields);
+        var formSign = document.querySelector('[data-form="' + formType + '"][data-chain="' + secretType + '"]');
+        if (formSign) {
+            formSign.appendChild(fieldSet);
+            addFormSubmitListener(formSign, fields, defaultData, transactionFunction);
+        }
+    }
+
+    function createSignForm(secretType, transactionType, fields) {
+        createForm('Sign Transaction', secretType, 'sign', fields, sign, {
+            type: transactionType,
+            submit: false,
+        });
+    }
+
+    function createSignRawForm(secretType, transactionType, fields) {
+        createForm('Sign Raw Transaction', secretType, 'sign-raw', fields, sign, {
+            type: transactionType,
+        });
+    }
+
+    function createExecuteForm(secretType, fields) {
+        createForm('Execute Transaction', secretType, 'execute', fields, executeTransaction, {
+            secretType,
+        });
+    }
 })();

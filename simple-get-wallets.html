@@ -1,0 +1,113 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Next generation blockchain wallet provider - Arkane</title>
+    <meta name="description" content="Arkane.Network : Next generation blockchain wallet provider">
+    <meta name="keywords" content="arkane, wallet, ico, kyc, blockchain, wallet provider">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/assets/css/auth.css"/>
+    <link rel="stylesheet" href="/assets/css/arketype.css"/>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <script src="/node_modules/@arkane-network/arkane-connect/dist/connect.js"></script>
+</head>
+
+<body class="bg-light-gray not-logged-in" id="arketype">
+
+<header class="bg-light">
+    <div class="container">
+        <nav class="row navbar navbar-expand-md navbar-light">
+            <a class="navbar-brand" href="/index.html"><img src="/assets/img/Arketype-thumbnail.png" alt="" width="32" height="32"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/index.html">Wallets</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/app-wallets">App Wallets</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/simple-get-wallets">Simple Connect Example</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/web3-provider">Web3 Provider</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12 py-5 text-center">
+            <img class="d-block mx-auto mb-4" src="/assets/img/logo-arkane-a-light.svg" alt="" width="72" height="72">
+            <h2>Arkane Network</h2>
+            <div class="lead">
+                <p class="mb-1"><span>Demo project</span><img class="d-inline mx-1" src="/assets/img/Arketype-thumbnail.png" alt="" width="32" height="32"><span>Arketype</span>
+                </p>
+                <p>Source code available on <a href="https://github.com/ArkaneNetwork/arketype" target="_blank">GitHub</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row auth-not-logged-in">
+        <div class="form-group col-12 text-center">
+            <div>
+                <button class="btn btn-primary" id="connect-with-arkane">Connect With Arkane</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-6 mb-4">
+    <h4 class="d-flex justify-content-between align-items-center mb-3">
+        <span class="text-muted">Logs</span>
+        <span class="badge badge-secondary badge-pill"></span>
+    </h4>
+    <div id="appLog" class="form-control"></div>
+
+    <div class="card p-2">
+        <button class="btn btn-secondary" onclick="app.clearLog()">Clear logs</button>
+    </div>
+</div>
+
+<div class="bg-dark mt-auto">
+    <div class="container">
+        <nav class="row navbar navbar-expand-sm navbar-dark bg-dark">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarBottomCollapse" aria-controls="navbarBottomCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarBottomCollapse">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a href="https://arkane.network" class="nav-link">Powered by Arkane.Network</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</div>
+
+<script src="/node_modules/jquery/dist/jquery.min.js"></script>
+<script src="/assets/js/vendor/modernizr-custom.js"></script>
+<script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+<script src="/assets/js/settings.js"></script>
+<script src="/assets/js/plugins.js"></script>
+<script src="/assets/js/main.js"></script>
+<script src="/assets/js/simple-get-wallets.js"></script>
+
+</body>
+
+</html>
+
+

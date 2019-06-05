@@ -7,7 +7,7 @@
         '       <div class="row">' +
         '           <div class="col-sm-2">' +
         '               <button type="button" data-btn="confirm" class="btn btn-primary mb-1 btn-block">Confirm Transaction</button>' +
-        // '               <button type="button" data-btn="delete" class="btn btn-secondary mb-1 btn-block">Delete Transaction</button>' +
+        '               <button type="button" data-btn="delete" class="btn btn-secondary mb-1 btn-block">Delete Transaction</button>' +
         '           </div>' +
         '           <div class="col-sm-5">' +
         '               <dl class="row" data-row="tx-id">' +
@@ -212,6 +212,10 @@
         confirmButton.on('click', function() {
             submitRequest(transactionRequest.id);
         });
+        const deleteButton = $('[data-btn="delete"]', txRequestCard);
+        deleteButton.on('click', function() {
+            deleteRequest(transactionRequest.id);
+        });
         return txRequestCard;
     }
 
@@ -227,13 +231,22 @@
               });
     }
 
+    function deleteRequest(transactionRequestId) {
+        window.arkaneConnect.api.deleteTransaction(transactionRequestId)
+              .then(function(result) {
+                  refreshTransactionRequests();
+              })
+              .catch(function(err) {
+                  app.error(err);
+              });
+    }
+
     function buildWalletLabel(wallet) {
         return wallet.description ? wallet.description + ' - ' + wallet.address : wallet.address;
     }
 
     function requestApplicationBearerToken(eventData) {
         var tokenRequest = new XMLHttpRequest();
-        tokenRequest.withCredentials = true;
         tokenRequest.addEventListener('readystatechange', function() {
             if (this.readyState === 4) {
                 const response = JSON.parse(this.responseText);
@@ -249,7 +262,6 @@
 
     function requestTransaction(token, request) {
         var txRequest = new XMLHttpRequest();
-        // txRequest.withCredentials = true;
         txRequest.addEventListener("readystatechange", function() {
             if (this.readyState === 4) {
                 $(app).trigger(eventNames.transactionRequested, (JSON.parse(this.responseText)));
