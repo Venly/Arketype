@@ -295,6 +295,12 @@
         htmlField.id = id;
         htmlField.placeholder = field.name;
         htmlField.value = field.defaultValue;
+        if(field.dataName) {
+            htmlField.dataset[field.dataName] = true;
+        } else {
+            var cleanLabel = label.toLowerCase().split(' ')[0];
+            htmlField.dataset[cleanLabel] = true;
+        }
 
         if (field.info) {
             var htmlInfo = document.createElement('small');
@@ -327,6 +333,7 @@
                 defaultValue: fields[name].defaultValue || '',
                 checked: fields[name].checked || false,
                 info: fields[name].info || false,
+                dataName: fields[name].dataName,
             });
             fieldSet.appendChild(htmlField);
         }
