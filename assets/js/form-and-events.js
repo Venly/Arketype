@@ -225,13 +225,13 @@
     app.page.initAeternity = function() {
         createSignForm('AETERNITY', 'AETERNITY_TRANSACTION', {
             walletId: {type: 'select', label: 'From'},
-            to: {type: 'input', label: 'To', defaultValue: 'TAwwCCoa6cTjtKJVTSpnKbkDimgALcAXfb'},
+            to: {type: 'input', label: 'To', defaultValue: 'ak_v3Sj6XxFKodf2VddPHjPdcQHPRsPVkhSLTN9KKrBkx8aFzg1h'},
             value: {type: 'input', label: 'Amount', defaultValue: '14000'},
         });
 
         createExecuteForm('AETERNITY', {
             walletId: {type: 'select', label: 'From'},
-            to: {type: 'input', label: 'To', defaultValue: 'TAwwCCoa6cTjtKJVTSpnKbkDimgALcAXfb'},
+            to: {type: 'input', label: 'To', defaultValue: 'ak_v3Sj6XxFKodf2VddPHjPdcQHPRsPVkhSLTN9KKrBkx8aFzg1h'},
             value: {type: 'input', label: 'Amount', defaultValue: '14000'},
         });
     };
