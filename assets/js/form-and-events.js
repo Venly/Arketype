@@ -182,7 +182,7 @@
             walletId: {type: 'select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: '0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE', clause: true},
             amount: {type: 'input', label: 'Amount (GWEI)', defaultValue: '31400000000000000', clause: true},
-            data: {type: 'textarea', label: 'Data (optional)', clause: true, defaultValue: 'Some test data'},
+            data: {type: 'textarea', label: 'Data (optional)', clause: true, defaultValue: ''},
         });
 
         createExecuteForm('VECHAIN', {
@@ -190,7 +190,7 @@
             to: {type: 'input', label: 'To', defaultValue: '0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE'},
             value: {type: 'input', label: 'Amount', defaultValue: '0.0314'},
             tokenAddress: {type: 'input', label: 'Token Address (optional)'},
-            data: {type: 'textarea', label: 'Data (optional)', defaultValue: 'Some test data'},
+            data: {type: 'textarea', label: 'Data (optional)', defaultValue: ''},
         });
     };
 
