@@ -197,13 +197,13 @@
     app.page.initBitcoin = function() {
         createSignForm('BITCOIN', 'BITCOIN_TRANSACTION', {
             walletId: {type: 'select', label: 'From'},
-            to: {type: 'input', label: 'To'},
+            to: {type: 'input', label: 'To', defaultValue: 'mikjaeFSKYe6VEC3pQgpYCEwTMYK9Eo5pj'},
             value: {type: 'input', label: 'Amount', defaultValue: '314100'},
         });
 
         createExecuteForm('BITCOIN', {
             walletId: {type: 'select', label: 'From'},
-            to: {type: 'input', label: 'To'},
+            to: {type: 'input', label: 'To', defaultValue: 'mikjaeFSKYe6VEC3pQgpYCEwTMYK9Eo5pj'},
             value: {type: 'input', label: 'Amount (in BTC)', defaultValue: '0.00003141'},
         });
     };
