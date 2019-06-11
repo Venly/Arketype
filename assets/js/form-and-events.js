@@ -125,15 +125,15 @@
             walletId: {type: 'select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: '0x680800Dd4913021821A9C08D569eF4338dB8E9f6'},
             value: {type: 'input', label: 'Amount (in WEI)', defaultValue: '31400000000000000'},
-            data: {type: 'textarea', label: 'Data (optional)', defaultValue: 'Some test data'},
-            name: {type: 'input', label: 'Network name', network: true},
-            nodeUrl: {type: 'input', label: 'Network node URL', network: true},
+            data: {type: 'textarea', label: 'Data (optional)', placeholder: 'Some test data'},
+            name: {type: 'input', label: 'Network name', placeholder: 'e.g. Rinkeby', network: true},
+            nodeUrl: {type: 'input', label: 'Network node URL', placeholder: 'e.g. https://rinkeby.infura.io', network: true},
         };
         createSignForm('ETHEREUM', 'ETHEREUM_TRANSACTION', fieldsSign);
 
         createSignRawForm('ETHEREUM', 'ETHEREUM_RAW', {
             walletId: fieldsSign.walletId,
-            data: fieldsSign.data,
+            data: Object.assign({}, fieldsSign.data, { defaultValue: 'Some test data'}),
             prefix: {type: 'checkbox', checked: true, label: 'Prefix'},
             hash: {type: 'checkbox', checked: true, label: 'Hash', info: 'When prefix is checked, hash will always be set to \'true\''}
         });
@@ -149,13 +149,13 @@
             walletId: {type: 'select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'TAwwCCoa6cTjtKJVTSpnKbkDimgALcAXfb'},
             value: {type: 'input', label: 'Amount', defaultValue: '31400'},
-            data: {type: 'textarea', label: 'Data (optional)', defaultValue: 'Some test data'}
+            data: {type: 'textarea', label: 'Data (optional)', placeholder: 'Some test data'},
         };
         createSignForm('TRON', 'TRON_TRANSACTION', signFields);
 
         createSignRawForm('TRON', 'TRON_RAW', {
             walletId: signFields.walletId,
-            data: signFields.data,
+            data: Object.assign({}, signFields.data, { defaultValue: 'Some test data'}),
         });
 
 
@@ -169,12 +169,12 @@
             walletId: {type: 'select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: '0xd84aeb36b2a30eDB94e9f0A25A82E94e506ebB15'},
             value: {type: 'input', label: 'Amount', defaultValue: '32000000000000000'},
-            data: {type: 'textarea', label: 'Data (optional)', defaultValue: 'Some test data'}
+            data: {type: 'textarea', label: 'Data (optional)', placeholder: 'Some test data'},
         };
         createSignForm('GOCHAIN', 'GOCHAIN_TRANSACTION', signFields);
         createSignRawForm('GOCHAIN', 'GOCHAIN_RAW', {
             walletId: signFields.walletId,
-            data: signFields.data,
+            data: Object.assign({}, signFields.data, { defaultValue: 'Some test data'}),
         });
 
         var executeFields = signFields;
@@ -187,7 +187,7 @@
             walletId: {type: 'select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: '0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE', clause: true},
             amount: {type: 'input', label: 'Amount (GWEI)', defaultValue: '31400000000000000', clause: true},
-            data: {type: 'textarea', label: 'Data (optional)', clause: true, defaultValue: ''},
+            data: {type: 'textarea', label: 'Data (optional)', clause: true, placeholder: ''},
         });
 
         createExecuteForm('VECHAIN', {
@@ -195,7 +195,7 @@
             to: {type: 'input', label: 'To', defaultValue: '0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE'},
             value: {type: 'input', label: 'Amount', defaultValue: '0.0314'},
             tokenAddress: {type: 'input', label: 'Token Address (optional)'},
-            data: {type: 'textarea', label: 'Data (optional)', defaultValue: ''},
+            data: {type: 'textarea', label: 'Data (optional)', placeholder: ''},
         });
     };
 
@@ -298,7 +298,7 @@
         htmlField.className = 'form-control';
         htmlField.name = field.name;
         htmlField.id = id;
-        htmlField.placeholder = field.name;
+        htmlField.placeholder = field.placeholder;
         htmlField.value = field.defaultValue;
         if(field.dataName) {
             htmlField.dataset[field.dataName] = true;
@@ -339,6 +339,7 @@
                 checked: fields[name].checked || false,
                 info: fields[name].info || false,
                 dataName: fields[name].dataName,
+                placeholder: fields[name].placeholder || name,
             });
             fieldSet.appendChild(htmlField);
         }
