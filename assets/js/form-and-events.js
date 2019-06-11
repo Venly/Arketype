@@ -35,6 +35,7 @@
     };
 
     function sign(signData) {
+        console.debug('Signing', signData);
         window.arkaneConnect.createSigner().sign(signData)
               .then(function(result) {
                   app.log(result);
@@ -45,6 +46,7 @@
     }
 
     function executeTransaction(executeData) {
+        console.debug('Executing transaction', executeData);
         window.arkaneConnect.createSigner().executeTransaction(executeData)
               .then(function(result) {
                   app.log(result);
@@ -55,6 +57,7 @@
     }
 
     function executeNativeTransaction(executeData) {
+        console.debug('Executing native transaction', executeData);
         window.arkaneConnect.createSigner().executeNativeTransaction(executeData)
               .then(function(result) {
                   app.log(result);
@@ -123,6 +126,8 @@
             to: {type: 'input', label: 'To', defaultValue: '0x680800Dd4913021821A9C08D569eF4338dB8E9f6'},
             value: {type: 'input', label: 'Amount (in WEI)', defaultValue: '31400000000000000'},
             data: {type: 'textarea', label: 'Data (optional)', defaultValue: 'Some test data'},
+            name: {type: 'input', label: 'Network name', network: true},
+            nodeUrl: {type: 'input', label: 'Network node URL', network: true},
         };
         createSignForm('ETHEREUM', 'ETHEREUM_TRANSACTION', fieldsSign);
 
@@ -348,6 +353,7 @@
             e.preventDefault();
             var data = defaultData;
             var clause = {};
+            var network = {};
             for (var keyIndex in keys) {
                 var key = keys[keyIndex];
                 var name = key;
@@ -368,12 +374,17 @@
 
                 if (fields[name].clause) {
                     clause[name] = value;
+                } else if (fields[name].network && value) {
+                    network[name] = value;
                 } else {
                     data[name] = value;
                 }
             }
             if (Object.keys(clause).length > 0) {
                 data.clauses = [clause];
+            }
+            if (Object.keys(network).length > 0) {
+                data.network = network;
             }
             transactionFunction(data);
         });
