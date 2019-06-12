@@ -231,7 +231,7 @@
         createSignForm('AETERNITY', 'AETERNITY_TRANSACTION', {
             walletId: {type: 'select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'ak_v3Sj6XxFKodf2VddPHjPdcQHPRsPVkhSLTN9KKrBkx8aFzg1h'},
-            value: {type: 'input', label: 'Amount', defaultValue: '14000'},
+            value: {type: 'input', label: 'Amount', defaultValue: '14000000000000000000000'},
         });
 
         createExecuteForm('AETERNITY', {
