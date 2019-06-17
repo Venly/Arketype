@@ -83,8 +83,10 @@
     }
 
     function initNetworkControls() {
-        $('#network-mgmt-rpc-name').val(Arkane.arkaneSubProvider.network.name);
-        $('#network-mgmt-endpoint').val(Arkane.arkaneSubProvider.network.nodeUrl);
+        if(Arkane.arkaneSubProvider.network) {
+            $('#network-mgmt-rpc-name').val(Arkane.arkaneSubProvider.network.name);
+            $('#network-mgmt-endpoint').val(Arkane.arkaneSubProvider.network.nodeUrl);
+        }
     }
 
     function initLinkWallets() {
