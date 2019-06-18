@@ -4,9 +4,13 @@
     app.initApp = function() {
         app.page = app.page || {};
         $('#auth-loginlink').on('click', function(event) {
+
             Arkane.createArkaneProviderEngine({
                                                   clientId: 'Arketype',
-                                                  rpcUrl: 'https://kovan.infura.io',
+                                                  network: {
+                                                      name : $('#settings-rpc-name').val() || "Kovan",
+                                                      nodeUrl : $('#settings-rpc-endpoint').val() || 'https://kovan.infura.io'
+                                                  },
                                                   environment: app.env,
                                               })
                   .then(function(provider) {
@@ -40,6 +44,7 @@
             if (!app.page.initialised) {
                 initLogout();
                 initWalletControls();
+                initNetworkControls();
                 initRequestTransactionForm();
                 app.page.initialised = true;
             }
@@ -75,6 +80,13 @@
         initLinkWallets();
         initManageWallets();
         initRefreshWallets();
+    }
+
+    function initNetworkControls() {
+        if(Arkane.arkaneSubProvider.network) {
+            $('#network-mgmt-rpc-name').val(Arkane.arkaneSubProvider.network.name);
+            $('#network-mgmt-endpoint').val(Arkane.arkaneSubProvider.network.nodeUrl);
+        }
     }
 
     function initLinkWallets() {
@@ -115,10 +127,10 @@
                     from: $('select[name="from"]', signForm).val(),
                     to: $('input[name="to"]', signForm).val(),
                     value: $('input[name="value"]', signForm).val(),
-                    gas: $('input[name="gas"]', signForm).val(),
-                    gasPrice: $('input[name="gas-price"]', signForm).val(),
-                    nonce: $('input[name="nonce"]', signForm).val(),
-                    data: $('textarea[name="data"]', signForm).val() || null,
+                    gas: $('input[name="gas"]', signForm).val() || undefined,
+                    gasPrice: $('input[name="gas-price"]', signForm).val()  || undefined,
+                    nonce: $('input[name="nonce"]', signForm).val() || undefined,
+                    data: $('textarea[name="data"]', signForm).val() || undefined,
                 };
 
                 window.web3.eth.signTransaction(rawTransaction, (err, result) => {
@@ -141,10 +153,10 @@
                     from: $('select[name="from"]', executeForm).val(),
                     to: $('input[name="to"]', executeForm).val(),
                     value: $('input[name="value"]', executeForm).val(),
-                    gas: $('input[name="gas"]', executeForm).val(),
-                    gasPrice: $('input[name="gas-price"]', executeForm).val(),
-                    nonce: $('input[name="nonce"]', executeForm).val(),
-                    data: $('textarea[name="data"]', executeForm).val() || null,
+                    gas: $('input[name="gas"]', executeForm).val()  || undefined,
+                    gasPrice: $('input[name="gas-price"]', executeForm).val()  || undefined,
+                    nonce: $('input[name="nonce"]', executeForm).val() || undefined,
+                    data: $('textarea[name="data"]', executeForm).val() || undefined,
                 };
 
                 window.web3.eth.sendTransaction(rawTransaction, function(err, result) {
