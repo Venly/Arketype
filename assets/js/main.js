@@ -100,6 +100,16 @@
         $('#appLog').html('');
     };
 
+    app.changeNetwork = function () {
+        Arkane.changeNetwork(
+            {
+                name: $('#network-mgmt-rpc-name').val() || "Kovan",
+                nodeUrl: $('#network-mgmt-endpoint').val() || 'https://kovan.infura.io'
+            }
+        );
+        app.log(Arkane.arkaneSubProvider.network, 'Network changed')
+    };
+
     app.getQueryParam = function(name) {
         const url = new URL(window.location.href);
         const params = url.searchParams.getAll(name);
