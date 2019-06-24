@@ -352,7 +352,7 @@
         form.addEventListener('submit', function(e) {
             e.stopPropagation();
             e.preventDefault();
-            var data = defaultData;
+            var data = {...defaultData};
             var clause = {};
             var network = {};
             for (var keyIndex in keys) {
