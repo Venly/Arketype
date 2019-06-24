@@ -408,7 +408,7 @@
     }
 
     function createSignRawForm(secretType, transactionType, fields) {
-        createForm('Sign Raw Transaction', secretType, 'sign-raw', fields, sign, {
+        createForm('Sign Raw Data', secretType, 'sign-raw', fields, sign, {
             type: transactionType,
         });
     }
