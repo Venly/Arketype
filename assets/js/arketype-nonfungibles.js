@@ -54,8 +54,16 @@
 
     function initSelectWallet() {
         $('select[name="walletId"]').on('change', function() {
-            getTokens($(this).val());
+            walletUpdated();
         });
+    }
+
+    function walletUpdated() {
+        var $wallet = $('select[name="walletId"]');
+        var walletId = $wallet.val();
+        var address = $wallet.find('option[value="'+walletId+'"]').data('address');
+        $('input[name="fromAddress"]').val(address);
+        getTokens(walletId);
     }
 
     function initGetWalletEvent() {
@@ -76,11 +84,14 @@
 
                 var walletId = $('select[name="walletId"]', formTx).val();
                 var to = $('input[name="to"]', formTx).val();
-                var tokenAddress = $('select[name="tokenAddress"]', formTx).val();
+                var tokenAddress = $('input[name="tokenAddress"]', formTx).val();
                 var fromAddress = $('input[name="fromAddress"]', formTx).val();
                 var tokenId = $('select[name="tokenId"]', formTx).val();
 
-                executeTransaction({secretType: 'ETHEREUM', walletId, to, from: fromAddress, tokenAddress, tokenId});
+                executeTransaction({secretType: 'ETHEREUM', walletId, to, from: fromAddress, tokenAddress, tokenId, network: {
+                    name: 'Rinkeby',
+                    nodeUrl: 'https://rinkeby.infura.io',
+                }});
             });
         }
     }
@@ -95,14 +106,14 @@
                        '<option>',
                        {value: wallet.id, text: buildWalletLabel(wallet), 'data-address': wallet.address}
                    )));
-            getTokens($walletsSelect.val());
+            walletUpdated();
         }
     }
 
     function updateTokens(walletId, tokens) {
         var localWalletId = $('select[name="walletId"]').val();
         var $tokenSelect = $('select[name="tokenId"]');
-        var $tokenAddress = $('select[name="tokenAddress"]');
+        var $tokenAddress = $('input[name="tokenAddress"]');
         $tokenSelect && $tokenSelect.empty();
         $tokenAddress.val('');
         if (localWalletId === walletId && tokens && tokens.length > 0) {
