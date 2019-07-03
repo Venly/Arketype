@@ -45,3 +45,24 @@ body {
         max-width: 1380px;
     }
 }
+
+
+.token-details {
+    font-size: 10px;
+    border: 1px solid #cccccc;
+    padding: 8px 10px 0 10px;
+    border-radius: 4px;
+    margin-top: 12px;
+}
+
+.token-details img {
+    max-width: 100%;
+    max-height: 100%;
+    margin-bottom: 10px;
+    visibility: hidden
+}
+
+
+.token-details img[src^="http"] {
+    visibility: visible;
+}

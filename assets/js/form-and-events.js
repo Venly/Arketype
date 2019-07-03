@@ -352,7 +352,7 @@
         form.addEventListener('submit', function(e) {
             e.stopPropagation();
             e.preventDefault();
-            var data = defaultData;
+            var data = {...defaultData};
             var clause = {};
             var network = {};
             for (var keyIndex in keys) {
@@ -408,7 +408,7 @@
     }
 
     function createSignRawForm(secretType, transactionType, fields) {
-        createForm('Sign Raw Transaction', secretType, 'sign-raw', fields, sign, {
+        createForm('Sign Raw Data', secretType, 'sign-raw', fields, sign, {
             type: transactionType,
         });
     }
