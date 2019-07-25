@@ -11,14 +11,14 @@ pipeline {
         stage('Docker Build') {
           steps {
             sh 'ls -l'
-            sh 'docker build -t fundrequestio/arkane-arketype:${BRANCH_NAME} .'
+            sh 'docker build -t arkanenetwork/arkane-arketype:${BRANCH_NAME} .'
           }
         }
         stage('Docker Push') {
           steps {
             withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
               sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
-              sh "docker push fundrequestio/arkane-arketype:${BRANCH_NAME} && echo 'pushed'"
+              sh "docker push arkanenetwork/arkane-arketype:${BRANCH_NAME} && echo 'pushed'"
             }
           }
         }
