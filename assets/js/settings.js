@@ -5,7 +5,7 @@
 
     app.env = 'qa';
     app.clientId = 'Arketype';
-    app.isLocal = false;
+    app.isLocal = true;
     app.environment = {
         env: app.env,
         connect: app.env + (app.isLocal ? '-local' : ''),
