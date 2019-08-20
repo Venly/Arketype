@@ -19,6 +19,7 @@
         app.page.initVechain();
         app.page.initBitcoin();
         app.page.initLitecoin();
+        app.page.initNeo();
         app.page.initialised = true;
     };
 
@@ -133,7 +134,7 @@
 
         createSignRawForm('ETHEREUM', 'ETHEREUM_RAW', {
             walletId: fieldsSign.walletId,
-            data: Object.assign({}, fieldsSign.data, { defaultValue: 'Some test data'}),
+            data: Object.assign({}, fieldsSign.data, {defaultValue: 'Some test data'}),
             prefix: {type: 'checkbox', checked: true, label: 'Prefix'},
             hash: {type: 'checkbox', checked: true, label: 'Hash', info: 'When prefix is checked, hash will always be set to \'true\''}
         });
@@ -155,7 +156,7 @@
 
         createSignRawForm('TRON', 'TRON_RAW', {
             walletId: signFields.walletId,
-            data: Object.assign({}, signFields.data, { defaultValue: 'Some test data'}),
+            data: Object.assign({}, signFields.data, {defaultValue: 'Some test data'}),
         });
 
 
@@ -174,7 +175,7 @@
         createSignForm('GOCHAIN', 'GOCHAIN_TRANSACTION', signFields);
         createSignRawForm('GOCHAIN', 'GOCHAIN_RAW', {
             walletId: signFields.walletId,
-            data: Object.assign({}, signFields.data, { defaultValue: 'Some test data'}),
+            data: Object.assign({}, signFields.data, {defaultValue: 'Some test data'}),
         });
 
         var executeFields = signFields;
@@ -224,6 +225,26 @@
             walletId: {type: 'select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'LYFYQfkZ4PXp5waKxSpA9H6xXFhTNPRCPe'},
             value: {type: 'input', label: 'Amount', defaultValue: '0.00003142'},
+        });
+    };
+
+    app.page.initNeo = function() {
+        createSignForm('NEO', 'NEO_NATIVE_TRANSACTION', {
+            walletId: {type: 'select', label: 'From'},
+            to: {type: 'input', label: 'To', defaultValue: 'AN2VD52SLntUGFwzZyjzsRqBBkUzjKpKpT'},
+            value: {type: 'input', label: 'Amount', defaultValue: '1'},
+        });
+
+        createExecuteForm('NEO', {
+            walletId: {type: 'select', label: 'From'},
+            to: {type: 'input', label: 'To', defaultValue: 'AN2VD52SLntUGFwzZyjzsRqBBkUzjKpKpT'},
+            value: {type: 'input', label: 'Amount', defaultValue: '1'},
+        });
+
+        createExecuteGasForm('NEO', {
+            walletId: {type: 'select', label: 'From'},
+            to: {type: 'input', label: 'To', defaultValue: 'AN2VD52SLntUGFwzZyjzsRqBBkUzjKpKpT'},
+            value: {type: 'input', label: 'Amount', defaultValue: '2'}
         });
     };
 
@@ -300,7 +321,7 @@
         htmlField.id = id;
         htmlField.placeholder = field.placeholder;
         htmlField.value = field.defaultValue;
-        if(field.dataName) {
+        if (field.dataName) {
             htmlField.dataset[field.dataName] = true;
         } else {
             var cleanLabel = label.toLowerCase().split(' ')[0];
@@ -375,11 +396,12 @@
 
                 if (fields[name].clause) {
                     clause[name] = value;
-                } else if (fields[name].network && value) {
-                    network[name] = value;
-                } else {
-                    data[name] = value;
-                }
+                } else
+                    if (fields[name].network && value) {
+                        network[name] = value;
+                    } else {
+                        data[name] = value;
+                    }
             }
             if (Object.keys(clause).length > 0) {
                 data.clauses = [clause];
@@ -416,6 +438,13 @@
     function createExecuteForm(secretType, fields) {
         createForm('Execute Transaction', secretType, 'execute', fields, executeTransaction, {
             secretType,
+        });
+    }
+
+    function createExecuteGasForm(secretType, fields) {
+        createForm(`Execute gas transfer`, secretType, 'execute-gas', fields, executeTransaction, {
+            secretType,
+            type: 'GAS_TRANSFER',
         });
     }
 })();
