@@ -47,8 +47,38 @@
     }
 
     function executeTransaction(executeData) {
+        if(executeData.tokenAddress && executeData.tokenAddress.length > 0) {
+            executeTokenTransfer(executeData);
+        } else {
+            executeTransfer(executeData);
+        }
+    }
+
+    function executeTransfer(executeData) {
         console.debug('Executing transaction', executeData);
-        window.arkaneConnect.createSigner().executeTransaction(executeData)
+        window.arkaneConnect.createSigner().executeTransfer(executeData)
+              .then(function(result) {
+                  app.log(result);
+              })
+              .catch(function(err) {
+                  app.error(err);
+              });
+    }
+
+    function executeTokenTransfer(executeData) {
+        console.debug('Executing token transaction', executeData);
+        window.arkaneConnect.createSigner().executeTokenTransfer(executeData)
+              .then(function(result) {
+                  app.log(result);
+              })
+              .catch(function(err) {
+                  app.error(err);
+              });
+    }
+
+    function executeGasTransaction(executeData) {
+        console.debug('Executing gas transaction', executeData);
+        window.arkaneConnect.createSigner().executeGasTransfer(executeData)
               .then(function(result) {
                   app.log(result);
               })
@@ -239,6 +269,11 @@
             walletId: {type: 'select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'AN2VD52SLntUGFwzZyjzsRqBBkUzjKpKpT'},
             value: {type: 'input', label: 'Amount', defaultValue: '1'},
+        });
+
+        createSignRawForm('NEO', 'NEO_MESSAGE', {
+            walletId: {type: 'select', label: 'From'},
+            data: {type: 'textarea', label: 'Message', defaultValue: 'Sign this message to accept our terms.'},
         });
 
         createExecuteGasForm('NEO', {
@@ -442,7 +477,7 @@
     }
 
     function createExecuteGasForm(secretType, fields) {
-        createForm(`Execute gas transfer`, secretType, 'execute-gas', fields, executeTransaction, {
+        createForm(`Execute gas transfer`, secretType, 'execute-gas', fields, executeGasTransaction, {
             secretType,
             type: 'GAS_TRANSFER',
         });

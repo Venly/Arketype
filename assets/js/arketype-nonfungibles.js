@@ -88,7 +88,7 @@
                 var fromAddress = $('input[name="fromAddress"]', formTx).val();
                 var tokenId = $('select[name="tokenId"]', formTx).val();
 
-                executeTransaction({secretType: 'ETHEREUM', walletId, to, from: fromAddress, tokenAddress, tokenId, network: {
+                executeNftTransfer({secretType: 'ETHEREUM', walletId, to, from: fromAddress, tokenAddress, tokenId, network: {
                     name: 'Rinkeby',
                     nodeUrl: 'https://rinkeby.infura.io',
                 }});
@@ -125,8 +125,8 @@
         }
     }
 
-    function executeTransaction(executeData) {
-        window.arkaneConnect.createSigner().executeTransaction(executeData)
+    function executeNftTransfer(executeData) {
+        window.arkaneConnect.createSigner().executeNftTransfer(executeData)
               .then(function(result) {
                   app.log(result);
               })
