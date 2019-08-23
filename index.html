@@ -164,6 +164,8 @@
                            aria-selected="false">Tron</a>
                         <a class="nav-item nav-link" id="nav-AETERNITY-tab" data-toggle="tab" href=".tab-pane#tab-AETERNITY" role="tab" aria-controls="tab-AETERNITY"
                            aria-selected="false">æternity</a>
+                        <a class="nav-item nav-link" id="nav-NEO-tab" data-toggle="tab" href=".tab-pane#tab-NEO" role="tab" aria-controls="tab-NEO"
+                           aria-selected="false">Neo</a>
                     </div>
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
@@ -292,6 +294,29 @@
                             </div>
                             <div class="mb-3 col-lg-6">
                                 <form data-form="execute" data-chain="AETERNITY" class="card bg-light"></form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade p-4 bg-white border" id="tab-NEO" data-chain="NEO" role="tabpanel" aria-labelledby="nav-NEO-tab">
+                        <button type="button" data-chain="NEO" class="btn btn-outline-primary get-wallets mb-3">
+                            Get Wallets
+                        </button>
+                        <button type="button" data-chain="NEO" class="btn btn-outline-primary manage-wallets mb-3">
+                            Manage Wallets
+                        </button>
+
+                        <div class="row">
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign" data-chain="NEO" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="execute" data-chain="NEO" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign-raw" data-chain="NEO" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="execute-gas" data-chain="NEO" class="card bg-light"></form>
                             </div>
                         </div>
                     </div>
