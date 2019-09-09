@@ -47,7 +47,7 @@
     }
 
     function executeTransaction(executeData) {
-        if(executeData.tokenAddress && executeData.tokenAddress.length > 0) {
+        if (executeData.tokenAddress && executeData.tokenAddress.length > 0) {
             executeTokenTransfer(executeData);
         } else {
             executeTransfer(executeData);
@@ -153,7 +153,7 @@
 
     app.page.initEthereum = function() {
         var fieldsSign = {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: '0x680800Dd4913021821A9C08D569eF4338dB8E9f6'},
             value: {type: 'input', label: 'Amount (in WEI)', defaultValue: '31400000000000000'},
             data: {type: 'textarea', label: 'Data (optional)', placeholder: 'Some test data'},
@@ -177,7 +177,7 @@
 
     app.page.initTron = function() {
         var signFields = {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'TAwwCCoa6cTjtKJVTSpnKbkDimgALcAXfb'},
             value: {type: 'input', label: 'Amount', defaultValue: '31400'},
             data: {type: 'textarea', label: 'Data (optional)', placeholder: 'Some test data'},
@@ -197,7 +197,7 @@
 
     app.page.initGo = function() {
         var signFields = {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: '0xd84aeb36b2a30eDB94e9f0A25A82E94e506ebB15'},
             value: {type: 'input', label: 'Amount', defaultValue: '32000000000000000'},
             data: {type: 'textarea', label: 'Data (optional)', placeholder: 'Some test data'},
@@ -215,14 +215,14 @@
 
     app.page.initVechain = function() {
         createSignForm('VECHAIN', 'VECHAIN_TRANSACTION', {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: '0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE', clause: true},
             amount: {type: 'input', label: 'Amount (GWEI)', defaultValue: '31400000000000000', clause: true},
             data: {type: 'textarea', label: 'Data (optional)', clause: true, placeholder: ''},
         });
 
         createExecuteForm('VECHAIN', {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: '0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE'},
             value: {type: 'input', label: 'Amount', defaultValue: '0.0314'},
             tokenAddress: {type: 'input', label: 'Token Address (optional)'},
@@ -232,13 +232,13 @@
 
     app.page.initBitcoin = function() {
         createSignForm('BITCOIN', 'BITCOIN_TRANSACTION', {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'mikjaeFSKYe6VEC3pQgpYCEwTMYK9Eo5pj'},
             value: {type: 'input', label: 'Amount', defaultValue: '314100'},
         });
 
         createExecuteForm('BITCOIN', {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'mikjaeFSKYe6VEC3pQgpYCEwTMYK9Eo5pj'},
             value: {type: 'input', label: 'Amount (in BTC)', defaultValue: '0.00003141'},
         });
@@ -246,13 +246,13 @@
 
     app.page.initLitecoin = function() {
         createSignForm('LITECOIN', 'LITECOIN_TRANSACTION', {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'LYFYQfkZ4PXp5waKxSpA9H6xXFhTNPRCPe'},
             value: {type: 'input', label: 'Amount', defaultValue: '314100'},
         });
 
         createExecuteForm('LITECOIN', {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'LYFYQfkZ4PXp5waKxSpA9H6xXFhTNPRCPe'},
             value: {type: 'input', label: 'Amount', defaultValue: '0.00003142'},
         });
@@ -260,24 +260,24 @@
 
     app.page.initNeo = function() {
         createSignForm('NEO', 'NEO_NATIVE_TRANSACTION', {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'AN2VD52SLntUGFwzZyjzsRqBBkUzjKpKpT'},
             value: {type: 'input', label: 'Amount', defaultValue: '1'},
         });
 
         createExecuteForm('NEO', {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'AN2VD52SLntUGFwzZyjzsRqBBkUzjKpKpT'},
             value: {type: 'input', label: 'Amount', defaultValue: '1'},
         });
 
         createSignRawForm('NEO', 'NEO_MESSAGE', {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             data: {type: 'textarea', label: 'Message', defaultValue: 'Sign this message to accept our terms.'},
         });
 
         createExecuteGasForm('NEO', {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'AN2VD52SLntUGFwzZyjzsRqBBkUzjKpKpT'},
             value: {type: 'input', label: 'Amount', defaultValue: '2'}
         });
@@ -285,19 +285,19 @@
 
     app.page.initAeternity = function() {
         createSignForm('AETERNITY', 'AETERNITY_TRANSACTION', {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'ak_v3Sj6XxFKodf2VddPHjPdcQHPRsPVkhSLTN9KKrBkx8aFzg1h'},
             value: {type: 'input', label: 'Amount', defaultValue: '14000000000000000000000'},
         });
 
         createExecuteForm('AETERNITY', {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'ak_v3Sj6XxFKodf2VddPHjPdcQHPRsPVkhSLTN9KKrBkx8aFzg1h'},
             value: {type: 'input', label: 'Amount', defaultValue: '14000'},
         });
     };
 
-    function createFormField(id, label, field) {
+    function createFormField(id, label, secretType, field) {
         var htmlGroup = document.createElement('div');
         htmlGroup.className = 'form-group row';
         var htmlLabel = document.createElement('label');
@@ -315,7 +315,7 @@
                 htmlField.rows = '4';
                 htmlFieldCol.appendChild(htmlField);
                 break;
-            case 'select':
+            case 'wallet-select':
                 htmlField = document.createElement('select');
                 var htmlInputGroup = document.createElement('div');
                 htmlInputGroup.className = 'input-group';
@@ -336,6 +336,18 @@
                 htmlInputGroup.appendChild(htmlField);
                 htmlInputGroup.appendChild(htmlInputGroupAppend);
                 htmlFieldCol.appendChild(htmlInputGroup);
+                var htmlUnlinkButton = document.createElement('button');
+                htmlUnlinkButton.type = 'button';
+                htmlUnlinkButton.dataset.id = id;
+                htmlUnlinkButton.className = 'btn btn-outline-secondary';
+                htmlUnlinkButton.title = 'Unlink';
+                htmlUnlinkButton.addEventListener('click', function(e) {
+                    unlinkWallet('#' + id, secretType);
+                });
+                var htmlUnlinkIcon = document.createElement('i');
+                htmlUnlinkIcon.className = 'fa fa-unlink';
+                htmlUnlinkButton.appendChild(htmlUnlinkIcon);
+                htmlInputGroupAppend.appendChild(htmlUnlinkButton);
                 break;
             case 'checkbox':
                 htmlField = document.createElement('input');
@@ -388,7 +400,7 @@
             var name = keys[keyIndex];
             var fieldId = prefix + '-' + secretType + '-' + name;
 
-            var htmlField = createFormField(fieldId, fields[name].label, {
+            var htmlField = createFormField(fieldId, fields[name].label, secretType, {
                 type: fields[name].type,
                 name,
                 defaultValue: fields[name].defaultValue || '',
@@ -431,12 +443,11 @@
 
                 if (fields[name].clause) {
                     clause[name] = value;
-                } else
-                    if (fields[name].network && value) {
-                        network[name] = value;
-                    } else {
-                        data[name] = value;
-                    }
+                } else if (fields[name].network && value) {
+                    network[name] = value;
+                } else {
+                    data[name] = value;
+                }
             }
             if (Object.keys(clause).length > 0) {
                 data.clauses = [clause];
@@ -481,5 +492,21 @@
             secretType,
             type: 'GAS_TRANSFER',
         });
+    }
+
+    function unlinkWallet(selector, secretType) {
+        var $select = $(selector);
+        var value = $select.val();
+
+        window.arkaneConnect.api.unlink(value)
+              .then(function(result) {
+                  return window.arkaneConnect.api.getWallets({secretType: secretType})
+                               .then(function(wallets) {
+                                   app.page.updateWallets(wallets, secretType);
+                               });
+              })
+              .catch(function(err) {
+                  app.error(err);
+              });
     }
 })();
