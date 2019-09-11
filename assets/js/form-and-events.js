@@ -169,6 +169,16 @@
             hash: {type: 'checkbox', checked: true, label: 'Hash', info: 'When prefix is checked, hash will always be set to \'true\''}
         });
 
+        createExecuteContractTransactionForm('ETHEREUM', 'ETHEREUM_CONTRACT_TRANSACTION',  {
+            walletId: {type: 'wallet-select', label: 'From'},
+            to: {type: 'input', label: 'Contract Address', defaultValue: '0xc4375b7de8af5a38a93548eb8453a498222c4ff2'},
+            value: {type: 'input', label: 'Amount (in WEI)', defaultValue: '0'},
+            functionName: {type: 'input', label: 'Function Name', defaultValue: 'transfer'},
+            inputs: {type: 'textarea', label: 'Inputs', defaultValue: '[{"type": "address", "value": "0xd82049204D8514c637f150C7231BFefC5C4937Ec"},{"type": "uint256", "value": "1000000000000000"}]'},
+            name: {type: 'input', label: 'Network name', placeholder: 'e.g. Rinkeby', network: true},
+            nodeUrl: {type: 'input', label: 'Network node URL', placeholder: 'e.g. https://rinkeby.infura.io', network: true}
+        });
+
         var fieldsExecute = fieldsSign;
         fieldsExecute.value.label = 'Amount (in ETH)';
         fieldsExecute.value.defaultValue = '0.0314';
@@ -440,11 +450,16 @@
                     var $prefix = $('[name="prefix"]', form);
                     value = $prefix.length > 0 && $prefix.is(':checked') ? true : value;
                 }
+                if (name === 'inputs') {
+                    value = JSON.parse(value);
+                }
 
                 if (fields[name].clause) {
                     clause[name] = value;
-                } else if (fields[name].network && value) {
-                    network[name] = value;
+                } else if (fields[name].network) {
+                    if (value) {
+                        network[name] = value;
+                    }
                 } else {
                     data[name] = value;
                 }
@@ -480,6 +495,13 @@
             type: transactionType,
         });
     }
+
+    function createExecuteContractTransactionForm(secretType, transactionType, fields) {
+        createForm('Execute contract transaction', secretType, 'execute-contract', fields, executeNativeTransaction, {
+            type: transactionType,
+        });
+    }
+
 
     function createExecuteForm(secretType, fields) {
         createForm('Execute Transaction', secretType, 'execute', fields, executeTransaction, {
