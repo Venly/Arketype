@@ -238,6 +238,14 @@
             tokenAddress: {type: 'input', label: 'Token Address (optional)'},
             data: {type: 'textarea', label: 'Data (optional)', placeholder: ''},
         });
+
+        createExecuteContractTransactionForm('VECHAIN', 'VECHAIN_CONTRACT_TRANSACTION',  {
+            walletId: {type: 'wallet-select', label: 'From'},
+            to: {type: 'input', label: 'Contract Address', defaultValue: '0x0000000000000000000000000000456E65726779', contractCall:true},
+            amount: {type: 'input', label: 'Amount (GWEI)', defaultValue: '0', contractCall: true},
+            functionName: {type: 'input', label: 'Function Name', defaultValue: 'transfer', contractCall: true},
+            inputs: {type: 'textarea', label: 'Inputs', defaultValue: '[{"type": "address", "value": "0xd82049204D8514c637f150C7231BFefC5C4937Ec"},{"type": "uint256", "value": "1000000000000"}]', contractCall: true}
+        });
     };
 
     app.page.initBitcoin = function() {
@@ -432,6 +440,7 @@
             e.preventDefault();
             var data = {...defaultData};
             var clause = {};
+            var contractCall = {};
             var network = {};
             for (var keyIndex in keys) {
                 var key = keys[keyIndex];
@@ -460,12 +469,18 @@
                     if (value) {
                         network[name] = value;
                     }
-                } else {
+                } else if(fields[name].contractCall) {
+                    contractCall[name] = value;
+                }
+                else {
                     data[name] = value;
                 }
             }
             if (Object.keys(clause).length > 0) {
                 data.clauses = [clause];
+            }
+            if (Object.keys(contractCall).length > 0) {
+                data.contractCalls = [contractCall];
             }
             if (Object.keys(network).length > 0) {
                 data.network = network;
