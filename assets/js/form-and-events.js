@@ -169,7 +169,7 @@
             hash: {type: 'checkbox', checked: true, label: 'Hash', info: 'When prefix is checked, hash will always be set to \'true\''}
         });
 
-        createExecuteContractTransactionForm('ETHEREUM', 'ETHEREUM_CONTRACT_TRANSACTION',  {
+        createExecuteContractForm('ETHEREUM', 'ETHEREUM_CONTRACT_EXECUTION',  {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'Contract Address', defaultValue: '0xc4375b7de8af5a38a93548eb8453a498222c4ff2'},
             value: {type: 'input', label: 'Amount (in WEI)', defaultValue: '0'},
@@ -239,7 +239,7 @@
             data: {type: 'textarea', label: 'Data (optional)', placeholder: ''},
         });
 
-        createExecuteContractTransactionForm('VECHAIN', 'VECHAIN_CONTRACT_TRANSACTION',  {
+        createExecuteContractForm('VECHAIN', 'VECHAIN_CONTRACT_EXECUTION',  {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'Contract Address', defaultValue: '0x0000000000000000000000000000456E65726779', contractCall:true},
             amount: {type: 'input', label: 'Amount (GWEI)', defaultValue: '0', contractCall: true},
@@ -511,7 +511,7 @@
         });
     }
 
-    function createExecuteContractTransactionForm(secretType, transactionType, fields) {
+    function createExecuteContractForm(secretType, transactionType, fields) {
         createForm('Execute contract transaction', secretType, 'execute-contract', fields, executeNativeTransaction, {
             type: transactionType,
         });
