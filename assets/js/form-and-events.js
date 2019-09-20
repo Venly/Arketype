@@ -87,6 +87,16 @@
               });
     }
 
+    function executeContract(executeData) {
+        console.debug('Executing contract', executeData);
+        window.arkaneConnect.createSigner().executeContract(executeData)
+              .then(function(result) {
+                  app.log(result);
+              })
+              .catch(function(err) {
+                  app.error(err);
+              });
+    }
     function executeNativeTransaction(executeData) {
         console.debug('Executing native transaction', executeData);
         window.arkaneConnect.createSigner().executeNativeTransaction(executeData)
@@ -169,7 +179,7 @@
             hash: {type: 'checkbox', checked: true, label: 'Hash', info: 'When prefix is checked, hash will always be set to \'true\''}
         });
 
-        createExecuteContractForm('ETHEREUM', 'ETHEREUM_CONTRACT_EXECUTION',  {
+        createExecuteContractForm('ETHEREUM',  {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'Contract Address', defaultValue: '0xc4375b7de8af5a38a93548eb8453a498222c4ff2'},
             value: {type: 'input', label: 'Amount (in WEI)', defaultValue: '0'},
@@ -239,7 +249,7 @@
             data: {type: 'textarea', label: 'Data (optional)', placeholder: ''},
         });
 
-        createExecuteContractForm('VECHAIN', 'VECHAIN_CONTRACT_EXECUTION',  {
+        createExecuteContractForm('VECHAIN',  {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'Contract Address', defaultValue: '0x0000000000000000000000000000456E65726779', contractCall:true},
             amount: {type: 'input', label: 'Amount (GWEI)', defaultValue: '0', contractCall: true},
@@ -511,9 +521,10 @@
         });
     }
 
-    function createExecuteContractForm(secretType, transactionType, fields) {
-        createForm('Execute contract transaction', secretType, 'execute-contract', fields, executeNativeTransaction, {
-            type: transactionType,
+    function createExecuteContractForm(secretType, fields) {
+        createForm('Execute contract transaction', secretType, 'execute-contract', fields, executeContract, {
+            secretType,
+            type: 'CONTRACT_EXECUTION',
         });
     }
 
