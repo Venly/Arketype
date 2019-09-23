@@ -214,7 +214,7 @@
         executeFields.value.defaultValue = '0.0314';
         createExecuteForm('TRON', executeFields);
 
-        createExecuteContractForm('TRON', 'TRON_CONTRACT_EXECUTION',  {
+        createExecuteContractForm('TRON',  {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'Contract Address', defaultValue: 'TFynD51aEXaYzkAiNoX2GtGEZ4ESZn7P6e'},
             value: {type: 'input', label: 'Amount (in WEI)', defaultValue: '0'},
