@@ -213,6 +213,14 @@
         var executeFields = signFields;
         executeFields.value.defaultValue = '0.0314';
         createExecuteForm('TRON', executeFields);
+
+        createExecuteContractForm('TRON', 'TRON_CONTRACT_EXECUTION',  {
+            walletId: {type: 'wallet-select', label: 'From'},
+            to: {type: 'input', label: 'Contract Address', defaultValue: 'TFynD51aEXaYzkAiNoX2GtGEZ4ESZn7P6e'},
+            value: {type: 'input', label: 'Amount (in WEI)', defaultValue: '0'},
+            functionName: {type: 'input', label: 'Function Name', defaultValue: 'transfer'},
+            inputs: {type: 'textarea', label: 'Inputs', defaultValue: '[{"type": "address", "value": "TA311N5Thw4vAjjBLNNtqEZp3qVRpeKgHB"},{"type": "uint256", "value": "1"}]'}
+        });
     };
 
     app.page.initGo = function() {
