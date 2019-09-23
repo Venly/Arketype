@@ -47,7 +47,7 @@
     }
 
     function executeTransaction(executeData) {
-        if(executeData.tokenAddress && executeData.tokenAddress.length > 0) {
+        if (executeData.tokenAddress && executeData.tokenAddress.length > 0) {
             executeTokenTransfer(executeData);
         } else {
             executeTransfer(executeData);
@@ -87,6 +87,16 @@
               });
     }
 
+    function executeContract(executeData) {
+        console.debug('Executing contract', executeData);
+        window.arkaneConnect.createSigner().executeContract(executeData)
+              .then(function(result) {
+                  app.log(result);
+              })
+              .catch(function(err) {
+                  app.error(err);
+              });
+    }
     function executeNativeTransaction(executeData) {
         console.debug('Executing native transaction', executeData);
         window.arkaneConnect.createSigner().executeNativeTransaction(executeData)
@@ -153,7 +163,7 @@
 
     app.page.initEthereum = function() {
         var fieldsSign = {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: '0x680800Dd4913021821A9C08D569eF4338dB8E9f6'},
             value: {type: 'input', label: 'Amount (in WEI)', defaultValue: '31400000000000000'},
             data: {type: 'textarea', label: 'Data (optional)', placeholder: 'Some test data'},
@@ -169,6 +179,16 @@
             hash: {type: 'checkbox', checked: true, label: 'Hash', info: 'When prefix is checked, hash will always be set to \'true\''}
         });
 
+        createExecuteContractForm('ETHEREUM',  {
+            walletId: {type: 'wallet-select', label: 'From'},
+            to: {type: 'input', label: 'Contract Address', defaultValue: '0xc4375b7de8af5a38a93548eb8453a498222c4ff2'},
+            value: {type: 'input', label: 'Amount (in WEI)', defaultValue: '0'},
+            functionName: {type: 'input', label: 'Function Name', defaultValue: 'transfer'},
+            inputs: {type: 'textarea', label: 'Inputs', defaultValue: '[{"type": "address", "value": "0xd82049204D8514c637f150C7231BFefC5C4937Ec"},{"type": "uint256", "value": "1000000000000000"}]'},
+            name: {type: 'input', label: 'Network name', placeholder: 'e.g. Rinkeby', network: true},
+            nodeUrl: {type: 'input', label: 'Network node URL', placeholder: 'e.g. https://rinkeby.infura.io', network: true}
+        });
+
         var fieldsExecute = fieldsSign;
         fieldsExecute.value.label = 'Amount (in ETH)';
         fieldsExecute.value.defaultValue = '0.0314';
@@ -177,7 +197,7 @@
 
     app.page.initTron = function() {
         var signFields = {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'TAwwCCoa6cTjtKJVTSpnKbkDimgALcAXfb'},
             value: {type: 'input', label: 'Amount', defaultValue: '31400'},
             data: {type: 'textarea', label: 'Data (optional)', placeholder: 'Some test data'},
@@ -193,11 +213,19 @@
         var executeFields = signFields;
         executeFields.value.defaultValue = '0.0314';
         createExecuteForm('TRON', executeFields);
+
+        createExecuteContractForm('TRON', 'TRON_CONTRACT_EXECUTION',  {
+            walletId: {type: 'wallet-select', label: 'From'},
+            to: {type: 'input', label: 'Contract Address', defaultValue: 'TFynD51aEXaYzkAiNoX2GtGEZ4ESZn7P6e'},
+            value: {type: 'input', label: 'Amount (in WEI)', defaultValue: '0'},
+            functionName: {type: 'input', label: 'Function Name', defaultValue: 'transfer'},
+            inputs: {type: 'textarea', label: 'Inputs', defaultValue: '[{"type": "address", "value": "TA311N5Thw4vAjjBLNNtqEZp3qVRpeKgHB"},{"type": "uint256", "value": "1"}]'}
+        });
     };
 
     app.page.initGo = function() {
         var signFields = {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: '0xd84aeb36b2a30eDB94e9f0A25A82E94e506ebB15'},
             value: {type: 'input', label: 'Amount', defaultValue: '32000000000000000'},
             data: {type: 'textarea', label: 'Data (optional)', placeholder: 'Some test data'},
@@ -215,30 +243,38 @@
 
     app.page.initVechain = function() {
         createSignForm('VECHAIN', 'VECHAIN_TRANSACTION', {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: '0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE', clause: true},
             amount: {type: 'input', label: 'Amount (GWEI)', defaultValue: '31400000000000000', clause: true},
             data: {type: 'textarea', label: 'Data (optional)', clause: true, placeholder: ''},
         });
 
         createExecuteForm('VECHAIN', {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: '0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE'},
             value: {type: 'input', label: 'Amount', defaultValue: '0.0314'},
             tokenAddress: {type: 'input', label: 'Token Address (optional)'},
             data: {type: 'textarea', label: 'Data (optional)', placeholder: ''},
         });
+
+        createExecuteContractForm('VECHAIN',  {
+            walletId: {type: 'wallet-select', label: 'From'},
+            to: {type: 'input', label: 'Contract Address', defaultValue: '0x0000000000000000000000000000456E65726779', contractCall:true},
+            amount: {type: 'input', label: 'Amount (GWEI)', defaultValue: '0', contractCall: true},
+            functionName: {type: 'input', label: 'Function Name', defaultValue: 'transfer', contractCall: true},
+            inputs: {type: 'textarea', label: 'Inputs', defaultValue: '[{"type": "address", "value": "0xd82049204D8514c637f150C7231BFefC5C4937Ec"},{"type": "uint256", "value": "1000000000000"}]', contractCall: true}
+        });
     };
 
     app.page.initBitcoin = function() {
         createSignForm('BITCOIN', 'BITCOIN_TRANSACTION', {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'mikjaeFSKYe6VEC3pQgpYCEwTMYK9Eo5pj'},
             value: {type: 'input', label: 'Amount', defaultValue: '314100'},
         });
 
         createExecuteForm('BITCOIN', {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'mikjaeFSKYe6VEC3pQgpYCEwTMYK9Eo5pj'},
             value: {type: 'input', label: 'Amount (in BTC)', defaultValue: '0.00003141'},
         });
@@ -246,13 +282,13 @@
 
     app.page.initLitecoin = function() {
         createSignForm('LITECOIN', 'LITECOIN_TRANSACTION', {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'LYFYQfkZ4PXp5waKxSpA9H6xXFhTNPRCPe'},
             value: {type: 'input', label: 'Amount', defaultValue: '314100'},
         });
 
         createExecuteForm('LITECOIN', {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'LYFYQfkZ4PXp5waKxSpA9H6xXFhTNPRCPe'},
             value: {type: 'input', label: 'Amount', defaultValue: '0.00003142'},
         });
@@ -260,24 +296,24 @@
 
     app.page.initNeo = function() {
         createSignForm('NEO', 'NEO_NATIVE_TRANSACTION', {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'AN2VD52SLntUGFwzZyjzsRqBBkUzjKpKpT'},
             value: {type: 'input', label: 'Amount', defaultValue: '1'},
         });
 
         createExecuteForm('NEO', {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'AN2VD52SLntUGFwzZyjzsRqBBkUzjKpKpT'},
             value: {type: 'input', label: 'Amount', defaultValue: '1'},
         });
 
         createSignRawForm('NEO', 'NEO_MESSAGE', {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             data: {type: 'textarea', label: 'Message', defaultValue: 'Sign this message to accept our terms.'},
         });
 
         createExecuteGasForm('NEO', {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'AN2VD52SLntUGFwzZyjzsRqBBkUzjKpKpT'},
             value: {type: 'input', label: 'Amount', defaultValue: '2'}
         });
@@ -285,19 +321,19 @@
 
     app.page.initAeternity = function() {
         createSignForm('AETERNITY', 'AETERNITY_TRANSACTION', {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'ak_v3Sj6XxFKodf2VddPHjPdcQHPRsPVkhSLTN9KKrBkx8aFzg1h'},
             value: {type: 'input', label: 'Amount', defaultValue: '14000000000000000000000'},
         });
 
         createExecuteForm('AETERNITY', {
-            walletId: {type: 'select', label: 'From'},
+            walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'ak_v3Sj6XxFKodf2VddPHjPdcQHPRsPVkhSLTN9KKrBkx8aFzg1h'},
             value: {type: 'input', label: 'Amount', defaultValue: '14000'},
         });
     };
 
-    function createFormField(id, label, field) {
+    function createFormField(id, label, secretType, field) {
         var htmlGroup = document.createElement('div');
         htmlGroup.className = 'form-group row';
         var htmlLabel = document.createElement('label');
@@ -315,7 +351,7 @@
                 htmlField.rows = '4';
                 htmlFieldCol.appendChild(htmlField);
                 break;
-            case 'select':
+            case 'wallet-select':
                 htmlField = document.createElement('select');
                 var htmlInputGroup = document.createElement('div');
                 htmlInputGroup.className = 'input-group';
@@ -336,6 +372,18 @@
                 htmlInputGroup.appendChild(htmlField);
                 htmlInputGroup.appendChild(htmlInputGroupAppend);
                 htmlFieldCol.appendChild(htmlInputGroup);
+                var htmlUnlinkButton = document.createElement('button');
+                htmlUnlinkButton.type = 'button';
+                htmlUnlinkButton.dataset.id = id;
+                htmlUnlinkButton.className = 'btn btn-outline-secondary';
+                htmlUnlinkButton.title = 'Unlink';
+                htmlUnlinkButton.addEventListener('click', function(e) {
+                    unlinkWallet('#' + id, secretType);
+                });
+                var htmlUnlinkIcon = document.createElement('i');
+                htmlUnlinkIcon.className = 'fa fa-unlink';
+                htmlUnlinkButton.appendChild(htmlUnlinkIcon);
+                htmlInputGroupAppend.appendChild(htmlUnlinkButton);
                 break;
             case 'checkbox':
                 htmlField = document.createElement('input');
@@ -388,7 +436,7 @@
             var name = keys[keyIndex];
             var fieldId = prefix + '-' + secretType + '-' + name;
 
-            var htmlField = createFormField(fieldId, fields[name].label, {
+            var htmlField = createFormField(fieldId, fields[name].label, secretType, {
                 type: fields[name].type,
                 name,
                 defaultValue: fields[name].defaultValue || '',
@@ -410,6 +458,7 @@
             e.preventDefault();
             var data = {...defaultData};
             var clause = {};
+            var contractCall = {};
             var network = {};
             for (var keyIndex in keys) {
                 var key = keys[keyIndex];
@@ -428,18 +477,28 @@
                     var $prefix = $('[name="prefix"]', form);
                     value = $prefix.length > 0 && $prefix.is(':checked') ? true : value;
                 }
+                if (name === 'inputs') {
+                    value = JSON.parse(value);
+                }
 
                 if (fields[name].clause) {
                     clause[name] = value;
-                } else
-                    if (fields[name].network && value) {
+                } else if (fields[name].network) {
+                    if (value) {
                         network[name] = value;
-                    } else {
-                        data[name] = value;
                     }
+                } else if(fields[name].contractCall) {
+                    contractCall[name] = value;
+                }
+                else {
+                    data[name] = value;
+                }
             }
             if (Object.keys(clause).length > 0) {
                 data.clauses = [clause];
+            }
+            if (Object.keys(contractCall).length > 0) {
+                data.contractCalls = [contractCall];
             }
             if (Object.keys(network).length > 0) {
                 data.network = network;
@@ -470,6 +529,14 @@
         });
     }
 
+    function createExecuteContractForm(secretType, fields) {
+        createForm('Execute contract transaction', secretType, 'execute-contract', fields, executeContract, {
+            secretType,
+            type: 'CONTRACT_EXECUTION',
+        });
+    }
+
+
     function createExecuteForm(secretType, fields) {
         createForm('Execute Transaction', secretType, 'execute', fields, executeTransaction, {
             secretType,
@@ -481,5 +548,21 @@
             secretType,
             type: 'GAS_TRANSFER',
         });
+    }
+
+    function unlinkWallet(selector, secretType) {
+        var $select = $(selector);
+        var value = $select.val();
+
+        window.arkaneConnect.api.unlink(value)
+              .then(function(result) {
+                  return window.arkaneConnect.api.getWallets({secretType: secretType})
+                               .then(function(wallets) {
+                                   app.page.updateWallets(wallets, secretType);
+                               });
+              })
+              .catch(function(err) {
+                  app.error(err);
+              });
     }
 })();
