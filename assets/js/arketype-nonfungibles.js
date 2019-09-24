@@ -87,11 +87,12 @@
                 var tokenAddress = $('input[name="tokenAddress"]', formTx).val();
                 var fromAddress = $('input[name="fromAddress"]', formTx).val();
                 var tokenId = $('select[name="tokenId"]', formTx).val();
-
-                executeNftTransfer({secretType: 'ETHEREUM', walletId, to, from: fromAddress, tokenAddress, tokenId, network: {
-                    name: 'Rinkeby',
-                    nodeUrl: 'https://rinkeby.infura.io',
-                }});
+                const transactionRequest = {secretType: 'ETHEREUM', walletId, to, from: fromAddress, tokenAddress, tokenId, network: {
+                        name: 'Rinkeby',
+                        nodeUrl: 'https://rinkeby.infura.io',
+                    }};
+                app.log(transactionRequest, 'Executing NFT Transfer');
+                executeNftTransfer(transactionRequest);
             });
         }
     }
