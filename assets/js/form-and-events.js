@@ -317,6 +317,12 @@
             to: {type: 'input', label: 'To', defaultValue: 'AN2VD52SLntUGFwzZyjzsRqBBkUzjKpKpT'},
             value: {type: 'input', label: 'Amount', defaultValue: '2'}
         });
+        createExecuteContractForm('NEO',  {
+            walletId: {type: 'wallet-select', label: 'From'},
+            to: {type: 'input', label: 'Contract Address', defaultValue: '94a24ee381bc386daa91984c7dd606f6fdd8f19e'},
+            functionName: {type: 'input', label: 'Function Name', defaultValue: 'approve'},
+            inputs: {type: 'textarea', label: 'Inputs', defaultValue: '[{"type": "address", "value": "AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y"},{"type": "integer", "value": "0"}]'}
+        });
     };
 
     app.page.initAeternity = function() {
