@@ -88,8 +88,7 @@
     }
 
     function executeContract(executeData) {
-        console.log('Executing contract', executeData);
-        console.log(JSON.stringify(executeData));
+        console.debug('Executing contract', executeData);
         window.arkaneConnect.createSigner().executeContract(executeData)
               .then(function(result) {
                   app.log(result);
