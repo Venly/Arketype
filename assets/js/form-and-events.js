@@ -88,7 +88,8 @@
     }
 
     function executeContract(executeData) {
-        console.debug('Executing contract', executeData);
+        console.log('Executing contract', executeData);
+        console.log(JSON.stringify(executeData));
         window.arkaneConnect.createSigner().executeContract(executeData)
               .then(function(result) {
                   app.log(result);
@@ -321,7 +322,9 @@
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'Contract Address', defaultValue: '94a24ee381bc386daa91984c7dd606f6fdd8f19e'},
             functionName: {type: 'input', label: 'Function Name', defaultValue: 'approve'},
-            inputs: {type: 'textarea', label: 'Inputs', defaultValue: '[{"type": "address", "value": "AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y"},{"type": "integer", "value": "0"}]'}
+            value: {type: 'input', label: 'Amount', defaultValue: '0'},
+            inputs: {type: 'textarea', label: 'Inputs', defaultValue: '[{"type": "address", "value": "AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y"},{"type": "integer", "value": "0"}]'},
+            chainSpecificFields: {type: 'textarea', label: 'Chain specific fields', defaultValue: '{"networkFee": 0.1, "outputs": [{\"to\":"94a24ee381bc386daa91984c7dd606f6fdd8f19e\",\"amount\":1,\"assetId\":\"602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7\"}]}'}
         });
     };
 
@@ -484,6 +487,9 @@
                     value = $prefix.length > 0 && $prefix.is(':checked') ? true : value;
                 }
                 if (name === 'inputs') {
+                    value = JSON.parse(value);
+                }
+                if (name === 'chainSpecificFields') {
                     value = JSON.parse(value);
                 }
 
