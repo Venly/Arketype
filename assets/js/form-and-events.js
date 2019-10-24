@@ -185,6 +185,7 @@
             value: {type: 'input', label: 'Amount (in WEI)', defaultValue: '0'},
             functionName: {type: 'input', label: 'Function Name', defaultValue: 'approve'},
             inputs: {type: 'textarea', label: 'Inputs', defaultValue: '[{"type": "address", "value": "0xd82049204D8514c637f150C7231BFefC5C4937Ec"},{"type": "uint256", "value": "0"}]'},
+            chainSpecificFields: {type: 'textarea', label: 'Chain specific fields', defaultValue: '{"gasLimit": 200000, "gasPrice": 10000000000}'},
             name: {type: 'input', label: 'Network name', placeholder: 'e.g. Rinkeby', network: true},
             nodeUrl: {type: 'input', label: 'Network node URL', placeholder: 'e.g. https://rinkeby.infura.io', network: true}
         });
@@ -332,6 +333,11 @@
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'ak_v3Sj6XxFKodf2VddPHjPdcQHPRsPVkhSLTN9KKrBkx8aFzg1h'},
             value: {type: 'input', label: 'Amount', defaultValue: '14000000000000000000000'},
+        });
+
+        createSignRawForm('AETERNITY', 'AETERNITY_RAW', {
+            walletId: {type: 'wallet-select', label: 'From'},
+            data: {type: 'textarea', label: 'Data', defaultValue: 'tx_+IUrAaEBV1+B/7Cil7dyXcZx2gsXabH8XL5FOFx7WtH8Lq8dYJ0LoQXc8QU36IYbbsXk7d7Lg77BPQuicjS136jJKX5wHepi9QOHAZu6brCYAAAAgicQhDuaygCqKxFM1wuWG58AoFFwNxylSmNg4Pv8OlwzrrPdOBQ95X6DOW+5H6nRMbqY3bEntQ=='},
         });
 
         createExecuteForm('AETERNITY', {
