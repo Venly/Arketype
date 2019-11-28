@@ -5,6 +5,8 @@
 
     if (window.location.href.indexOf("staging") > -1) {
         app.env = 'staging';
+    } else if (window.location.href.indexOf("qa2") > -1) {
+        app.env = 'qa2';
     } else if (window.location.href.indexOf("demo.arkane.network") > -1) {
         app.env = 'prod';
     } else {
