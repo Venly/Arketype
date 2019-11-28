@@ -190,10 +190,15 @@
             nodeUrl: {type: 'input', label: 'Network node URL', placeholder: 'e.g. https://rinkeby.infura.io', network: true}
         });
 
-        var fieldsExecute = fieldsSign;
-        fieldsExecute.value.label = 'Amount (in ETH)';
-        fieldsExecute.value.defaultValue = '0.0314';
-        createExecuteForm('ETHEREUM', fieldsExecute);
+        createExecuteForm('ETHEREUM', {
+            walletId: fieldsSign.walletId,
+            to: fieldsSign.to,
+            value: {type: 'input', label: 'Amount (in ETH)', defaultValue: '0.0314'},
+            tokenAddress: {type: 'input', label: 'Token address', placeholder: 'e.g. 0x6ff6c0ff1d68b964901f986d4c9fa3ac68346570'},
+            data: fieldsSign.data,
+            name: fieldsSign.name,
+            nodeUrl: fieldsSign.nodeUrl,
+        });
     };
 
     app.page.initTron = function() {
