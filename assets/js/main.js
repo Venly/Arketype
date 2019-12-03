@@ -2,15 +2,23 @@
     'use strict';
 
     window.app = window.app || {};
-    app.localStorageKeys = app.localStorageKeys  || {};
+    app.localStorageKeys = app.localStorageKeys || {};
     app.localStorageKeys.windowMode = 'arketype.windowMode';
 
     app.redirectUri = window.location.href.replace(window.location.search, '');
 
+    app.startLoading = function() {
+        document.body.classList.add('async-loading');
+    };
+
+    app.stopLoading = function() {
+        document.body.classList.remove('async-loading');
+    };
+
     app.copySelectDataAddress = function(selector) {
         var $select = $(selector);
         var value = $select.val();
-        var address = $select.find('option[value="'+value+'"]').data('address');
+        var address = $select.find('option[value="' + value + '"]').data('address');
         copyToClipboard(address);
     };
 
@@ -20,20 +28,27 @@
 
     app.handleWindowModeTypeSwitch = function() {
         var windowModeSelect = document.getElementById('window-mode');
-        var value = windowModeSelect.value;
-        if(localStorage) {
-            value = localStorage.getItem(app.localStorageKeys.windowMode) || value;
-            windowModeSelect.value = value;
+        if (windowModeSelect) {
+            var value = windowModeSelect.value;
+            if (localStorage) {
+                value = localStorage.getItem(app.localStorageKeys.windowMode) || value;
+                windowModeSelect.value = value;
+            }
+        } else {
+            value = localStorage.getItem(app.localStorageKeys.windowMode);
         }
         window.arkaneConnect.windowMode = value;
         window.arkaneConnect.signUsing = value;
-        windowModeSelect.addEventListener('change', function(e) {
-            window.arkaneConnect.windowMode = e.target.value;
-            window.arkaneConnect.signUsing = e.target.value;
-            if(localStorage) {
-                localStorage.setItem(app.localStorageKeys.windowMode, e.target.value);
-            }
-        });
+
+        if (windowModeSelect) {
+            windowModeSelect.addEventListener('change', function(e) {
+                window.arkaneConnect.windowMode = e.target.value;
+                window.arkaneConnect.signUsing = e.target.value;
+                if (localStorage) {
+                    localStorage.setItem(app.localStorageKeys.windowMode, e.target.value);
+                }
+            });
+        }
     };
 
     app.checkResultRequestParams = function() {
@@ -72,7 +87,9 @@
         $temp.remove();
     }
 
-    function logger(txt, title, type) {
+    function logger(txt,
+                    title,
+                    type) {
         if (typeof type === 'undefined') {
             type = 'info';
         }
@@ -88,11 +105,13 @@
         $appLog.html(result + $appLog.html());
     }
 
-    app.log = function(txt, title) {
+    app.log = function(txt,
+                       title) {
         logger(txt, title)
     };
 
-    app.error = function(txt, title) {
+    app.error = function(txt,
+                         title) {
         logger(txt, title, 'danger')
     };
 
@@ -100,7 +119,7 @@
         $('#appLog').html('');
     };
 
-    app.changeNetwork = function () {
+    app.changeNetwork = function() {
         Arkane.changeNetwork(
             {
                 name: $('#network-mgmt-rpc-name').val() || "Kovan",

@@ -21,25 +21,31 @@
     };
 
     app.attachLinkEvents = function() {
-        document.getElementById('auth-loginlink').addEventListener('click', function(e) {
-            e.preventDefault();
-            var windowMode = app.getWindowMode();
-            window.arkaneConnect.flows.authenticate({windowMode: windowMode}).then((result) => {
-                return result.authenticated(app.handleAuthenticated)
-                                   .notAuthenticated((auth) => {
-                                 document.body.classList.add('not-logged-in');
-                                   });
-                  });
-        });
+        var loginButton = document.getElementById('auth-loginlink');
+        var logoutButton = document.getElementById('auth-logout');
+        if(loginButton) {
+            loginButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                var windowMode = app.getWindowMode();
+                window.arkaneConnect.flows.authenticate({windowMode: windowMode}).then((result) => {
+                    return result.authenticated(app.handleAuthenticated)
+                                 .notAuthenticated((auth) => {
+                                     document.body.classList.add('not-logged-in');
+                                 });
+                });
+            });
+        }
 
-        document.getElementById('auth-logout').addEventListener('click', function(e) {
-            e.preventDefault();
-            window.arkaneConnect
-                  .logout()
-                  .then(() => {
-                      app.handleLogout();
-                  });
-        });
+        if(logoutButton) {
+            logoutButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.arkaneConnect
+                      .logout()
+                      .then(() => {
+                          app.handleLogout();
+                      });
+            });
+        }
     };
 
     app.handleAuthenticated = (auth) => {

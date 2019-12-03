@@ -3,7 +3,7 @@
   "version": "0.0.3",
   "description": "",
   "dependencies": {
-    "@arkane-network/arkane-connect": "develop",
+    "@arkane-network/arkane-connect": "file:///Users/steve/work/fnd/arkane-connect/arkane-network-arkane-connect-1.7.0-develop.3.tgz",
     "@arkane-network/web3-arkane-provider": "develop",
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
@@ -12,7 +12,7 @@
     "web3": "0.20.7"
   },
   "scripts": {
-    "start": "http-server -p 4000 -a localhost -c-1",
+    "start": "http-server -p 4000 -a 127.0.0.1 -c-1",
     "start-ext": "http-server -p 4000 -c-1"
   },
   "devDependencies": {

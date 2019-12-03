@@ -66,3 +66,24 @@ body {
 .token-details img[src^="http"] {
     visibility: visible;
 }
+
+.loader-overlay {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    background-color: rgba(0,0,0,0.3);
+}
+
+.async-loading .loader-overlay {
+    display: flex;
+    z-index: 99999;
+}
+
+.async-loading {
+    position: relative;
+}
