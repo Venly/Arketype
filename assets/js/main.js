@@ -23,7 +23,12 @@
     };
 
     app.getWindowMode = function() {
-        return document.getElementById('window-mode').value;
+        let el = document.getElementById('window-mode');
+        if(typeof el !== 'undefined' && el && el.value) {
+            return el.value;
+        } else {
+            return localStorage.getItem(app.localStorageKeys.windowMode) || 'POPUP';
+        }
     };
 
     app.handleWindowModeTypeSwitch = function() {
