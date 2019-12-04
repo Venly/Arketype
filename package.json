@@ -12,7 +12,7 @@
     "web3": "0.20.7"
   },
   "scripts": {
-    "start": "http-server -p 4000 -a localhost -c-1",
+    "start": "http-server -p 4000 -a 127.0.0.1 -c-1",
     "start-ext": "http-server -p 4000 -c-1"
   },
   "devDependencies": {
