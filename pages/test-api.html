@@ -35,19 +35,19 @@
                         <a class="nav-link" href="/index.html">Wallets </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/app-wallets">App Wallets </a>
+                        <a class="nav-link" href="/pages/app-wallets">App Wallets </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/simple-get-wallets">Simple Connect Example</a>
+                        <a class="nav-link" href="/pages/simple-get-wallets">Simple Connect Example</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/web3-provider">Web3 Provider</a>
+                        <a class="nav-link" href="/pages/web3-provider">Web3 Provider</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/nonfungibles">Nonfungibles</a>
+                        <a class="nav-link" href="/pages/nonfungibles">Nonfungibles</a>
                     </li>
                     <li class="nav-item active">
-                        <a class="nav-link" href="/test-connect-js">Test Connect JS <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="/pages/test-api">Test Api <span class="sr-only">(current)</span></a>
                     </li>
                 </ul>
             </div>
@@ -82,42 +82,36 @@
         <div class="row">
             <div class="col-md-6">
                 <h4 class="text-muted mb-3">Wallet</h4>
-
                 <div class="card mb-3">
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <code>connect.api.getAvailableSecretTypes()</code>
                         <button class="btn btn-primary" onclick="app.page.getAvailableSecretTypes()">Get SecretTypes</button>
                     </div>
                 </div>
-
                 <div class="card mb-3">
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <code>connect.api.getWallets({secretType})</code>
                         <button class="btn btn-primary" onclick="app.page.getWallets(document.getElementById('secretType').value)">Get Wallets</button>
                     </div>
                 </div>
-
                 <div class="card mb-3">
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <code>connect.api.getWallet(walletId)</code>
                         <button class="btn btn-primary" onclick="app.page.getWallet(document.getElementById('walletId').value)">Get Wallet</button>
                     </div>
                 </div>
-
                 <div class="card mb-3">
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <code>connect.api.getBalance(walletId)</code>
                         <button class="btn btn-primary" onclick="app.page.getBalance(document.getElementById('walletId').value)">Get Balance</button>
                     </div>
                 </div>
-
                 <div class="card mb-3">
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <code>connect.api.getTokenBalances(walletId)</code>
                         <button class="btn btn-primary" onclick="app.page.getTokenBalances(document.getElementById('walletId').value)">Get TokenBalances</button>
                     </div>
                 </div>
-
                 <div class="card mb-3">
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <code>connect.api.getTokenBalance(walletId, tokenAddress)</code>
@@ -126,17 +120,20 @@
                         </button>
                     </div>
                 </div>
-
                 <div class="card mb-3">
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <code>connect.api.getNonfungibles(walletId)</code>
                         <button class="btn btn-primary" onclick="app.page.getNonfungibles(document.getElementById('walletId').value)">Get Nonfungibles</button>
                     </div>
                 </div>
-
+                <div class="card mb-3">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <code>connect.api.unlink(walletId)</code>
+                        <button class="btn btn-primary" onclick="app.page.unlink(document.getElementById('walletId').value)">Unlink Wallet</button>
+                    </div>
+                </div>
 
                 <h4 class="text-muted mb-3">Profile</h4>
-
                 <div class="card mb-3">
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <code>connect.api.getProfile()</code>
@@ -144,24 +141,19 @@
                     </div>
                 </div>
 
-
-
                 <h4 class="text-muted mb-3">Transactions</h4>
-
                 <div class="card mb-3">
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <code>connect.api.getPendingTransactions()</code>
                         <button class="btn btn-primary" onclick="app.page.getPendingTransactions()">Get Pending Transactions</button>
                     </div>
                 </div>
-
                 <div class="card mb-3">
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <code>connect.api.deleteTransaction()</code>
                         <button class="btn btn-primary" onclick="app.page.deleteTransaction()">Delete Transaction Id</button>
                     </div>
                 </div>
-
                 <div class="card mb-3">
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <code>connect.api.getTransactionStatus(transactionHash, secretType)</code>

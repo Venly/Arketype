@@ -32,6 +32,7 @@
         getWallets: wrap((secretType) => window.arkaneConnect.api.getWallets({secretType}), 'getWallets'),
         getWallet: wrap((walletId) => window.arkaneConnect.api.getWallet(walletId), 'getWallet'),
         getNonfungibles: wrap((walletId) => window.arkaneConnect.api.getNonfungibles(walletId), 'getNonfungibles'),
+        unlink: wrap((walletId) => window.arkaneConnect.api.unlink(walletId), 'unlink'),
         getBalance: wrap((walletId) => window.arkaneConnect.api.getBalance(walletId), 'getBalance'),
         getTokenBalances: wrap((walletId) => window.arkaneConnect.api.getTokenBalances(walletId), 'getTokenBalances'),
         getTokenBalance: wrap((walletId,

@@ -34,17 +34,20 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/index.html">Wallets </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pages/app-wallets">App Wallets </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pages/simple-get-wallets">Simple Connect Example</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pages/web3-provider">Web3 Provider</a>
+                    </li>
                     <li class="nav-item active">
-                        <a class="nav-link" href="/app-wallets">App Wallets <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="/pages/nonfungibles">Nonfungibles <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/simple-get-wallets">Simple Connect Example</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/web3-provider">Web3 Provider</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/nonfungibles">Nonfungibles</a>
+                        <a class="nav-link" href="/pages/test-api">Test Api</a>
                     </li>
                 </ul>
             </div>
@@ -143,16 +146,16 @@
             </div>
 
             <div class="col-md-12 mb-4">
-                <h4 class="mb-3">Request Transaction</h4>
+                <h4 class="mb-3">Select Ethereum Wallet</h4>
                 <div class="row">
                     <div class="mb-3 col-lg-12">
-                        <form data-form="request">
-                            <div class="form-group row">
+                        <form data-form="nonfungibles">
+                            <div class="form-group row" style="display: none;">
                                 <label for="exec-type" class="col-sm-5 col-form-label">Type</label>
                                 <div class="col-sm-7">
                                     <div class="input-group">
                                         <select id="exec-type" class="form-control" name="type">
-                                            <option value="">Please select a type</option>
+                                            <option value="ETHEREUM" selected="selected">Please select a type</option>
                                         </select>
                                     </div>
                                 </div>
@@ -163,10 +166,7 @@
                                     <div class="input-group">
                                         <select id="exec-from" class="form-control" data-from="true" name="walletId"></select>
                                         <div class="input-group-append">
-                                            <button type="button" class="btn btn-outline-primary create-app-wallet" title="Create a new application wallet">
-                                                <i class="fa fa-plus"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-outline-secondary get-app-wallets" title="Refresh application wallets">
+                                            <button type="button" class="btn btn-outline-secondary get-wallets" title="Refresh wallets">
                                                 <i class="fa fa-refresh"></i>
                                             </button>
                                             <button type="button" class="btn btn-outline-secondary" onclick="app.copySelectDataAddress('#exec-from')" title="Copy address">
@@ -182,37 +182,63 @@
                                     <input id="exec-to" class="form-control" data-to="true" name="to" placeholder="To"/>
                                 </div>
                             </div>
-                            <div class="form-group row">
-                                <label for="exec-token-address" class="col-sm-5 col-form-label">Token address (optional)</label>
+                            <div class="form-group row" style="display: none;">
+                                <label for="exec-form-address" class="col-sm-5 col-form-label">From</label>
                                 <div class="col-sm-7">
-                                    <input id="exec-token-address" class="form-control" data-token-address="true" name="tokenAddress" placeholder="Token address"/>
+                                    <input id="exec-form-address" class="form-control" data-from-address="true" name="fromAddress" placeholder="From Address"/>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="exec-amount" class="col-sm-5 col-form-label">Amount</label>
+                                <label for="exec-token-id" class="col-sm-5 col-form-label">Token</label>
                                 <div class="col-sm-7">
-                                    <input id="exec-amount" class="form-control" data-amount="true" name="value" placeholder="value" value="0.0314"/>
+                                    <select id="exec-token-id" class="form-control" data-token-id="true" name="tokenId"></select>
+                                    <div class="token-details" id="token-details">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <img id="token-image" />
+                                            </div>
+                                            <dl class="col-md-9">
+                                                <dt>Name</dt>
+                                                <dd id="token-name"></dd>
+                                                <dt>Description</dt>
+                                                <dd id="token-description"></dd>
+                                            </dl>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="exec-data" class="col-sm-5 col-form-label">Data (optional)</label>
+                                <label for="exec-token-address" class="col-sm-5 col-form-label">Token Contract</label>
                                 <div class="col-sm-7">
-                                    <textarea id="exec-data" class="form-control" data-data="true" name="data" rows="4"></textarea>
+                                    <input disabled="disabled" id="exec-token-address" class="form-control" data-token-address="true" name="tokenAddress"
+                                           placeholder="Token Address"/>
+                                    <div class="token-details" id="token-contract">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <img id="token-contract-image"/>
+                                            </div>
+                                            <dl class="col-md-9">
+                                                <dt>Name</dt>
+                                                <dd id="token-contract-name"></dd>
+                                                <dt>Description</dt>
+                                                <dd id="token-contract-description"></dd>
+                                                <dt>Symbol</dt>
+                                                <dd id="token-contract-symbol"></dd>
+                                                <dt>Url</dt>
+                                                <dd id="token-contract-url"></dd>
+                                            </dl>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="offset-5 col-7">
-                                    <button type="submit" class="btn btn-primary">Request Transaction</button>
+                                    <button type="submit" class="btn btn-primary">Send</button>
                                 </div>
                             </div>
                         </form>
                     </div>
                 </div>
-            </div>
-
-            <div class="col-md-12 mb-4">
-                <h4 class="mb-3">Pending Transaction Requests</h4>
-                <div data-list="pending-transactions"></div>
             </div>
         </div>
     </div>
@@ -238,7 +264,7 @@
 <script src="/assets/js/form-and-events.js"></script>
 <script src="/assets/js/main.js"></script>
 <script src="/assets/js/auth.js"></script>
-<script src="/assets/js/arketype-app-wallets.js"></script>
+<script src="/assets/js/arketype-nonfungibles.js"></script>
 
 </body>
 
