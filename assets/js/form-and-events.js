@@ -14,6 +14,7 @@
 
         app.page.initAeternity();
         app.page.initEthereum();
+        app.page.initMatic();
         app.page.initTron();
         app.page.initGo();
         app.page.initVechain();
@@ -194,6 +195,46 @@
             walletId: fieldsSign.walletId,
             to: fieldsSign.to,
             value: {type: 'input', label: 'Amount (in ETH)', defaultValue: '0.0314'},
+            tokenAddress: {type: 'input', label: 'Token address', placeholder: 'e.g. 0x6ff6c0ff1d68b964901f986d4c9fa3ac68346570'},
+            data: fieldsSign.data,
+            name: fieldsSign.name,
+            nodeUrl: fieldsSign.nodeUrl,
+        });
+    };
+
+    app.page.initMatic = function() {
+        var fieldsSign = {
+            walletId: {type: 'wallet-select', label: 'From'},
+            to: {type: 'input', label: 'To', defaultValue: '0x680800Dd4913021821A9C08D569eF4338dB8E9f6'},
+            value: {type: 'input', label: 'Amount (in WEI)', defaultValue: '31400000000000000'},
+            data: {type: 'textarea', label: 'Data (optional)', placeholder: 'Some test data'},
+            name: {type: 'input', label: 'Network name', placeholder: 'e.g. Rinkeby', network: true},
+            nodeUrl: {type: 'input', label: 'Network node URL', placeholder: 'e.g. https://rinkeby.infura.io', network: true},
+        };
+        createSignForm('MATIC', 'MATIC_TRANSACTION', fieldsSign);
+
+        createSignRawForm('MATIC', 'MATIC_RAW', {
+            walletId: fieldsSign.walletId,
+            data: Object.assign({}, fieldsSign.data, {defaultValue: 'Some test data'}),
+            prefix: {type: 'checkbox', checked: true, label: 'Prefix'},
+            hash: {type: 'checkbox', checked: true, label: 'Hash', info: 'When prefix is checked, hash will always be set to \'true\''}
+        });
+
+        createExecuteContractForm('MATIC',  {
+            walletId: {type: 'wallet-select', label: 'From'},
+            to: {type: 'input', label: 'Contract Address', defaultValue: '0xc4375b7de8af5a38a93548eb8453a498222c4ff2'},
+            value: {type: 'input', label: 'Amount (in WEI)', defaultValue: '0'},
+            functionName: {type: 'input', label: 'Function Name', defaultValue: 'approve'},
+            inputs: {type: 'textarea', label: 'Inputs', defaultValue: '[{"type": "address", "value": "0xd82049204D8514c637f150C7231BFefC5C4937Ec"},{"type": "uint256", "value": "0"}]'},
+            chainSpecificFields: {type: 'textarea', label: 'Chain specific fields', defaultValue: '{"gasLimit": 200000, "gasPrice": 10000000000}'},
+            name: {type: 'input', label: 'Network name', placeholder: 'e.g. Rinkeby', network: true},
+            nodeUrl: {type: 'input', label: 'Network node URL', placeholder: 'e.g. https://rinkeby.infura.io', network: true}
+        });
+
+        createExecuteForm('MATIC', {
+            walletId: fieldsSign.walletId,
+            to: fieldsSign.to,
+            value: {type: 'input', label: 'Amount (in MATIC)', defaultValue: '0.0314'},
             tokenAddress: {type: 'input', label: 'Token address', placeholder: 'e.g. 0x6ff6c0ff1d68b964901f986d4c9fa3ac68346570'},
             data: fieldsSign.data,
             name: fieldsSign.name,
