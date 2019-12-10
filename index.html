@@ -158,6 +158,8 @@
                            aria-selected="false">Bitcoin</a>
                         <a class="nav-item nav-link" id="nav-ETHEREUM-tab" data-toggle="tab" href=".tab-pane#tab-ETHEREUM" role="tab" aria-controls="tab-ETHEREUM"
                            aria-selected="true">Ethereum</a>
+                        <a class="nav-item nav-link" id="nav-MATIC-tab" data-toggle="tab" href=".tab-pane#tab-MATIC" role="tab" aria-controls="tab-MATIC"
+                           aria-selected="true">Matic</a>
                         <a class="nav-item nav-link" id="nav-VECHAIN-tab" data-toggle="tab" href=".tab-pane#tab-VECHAIN" role="tab" aria-controls="tab-VECHAIN"
                            aria-selected="false">VeChain</a>
                         <a class="nav-item nav-link" id="nav-LITECOIN-tab" data-toggle="tab" href=".tab-pane#tab-LITECOIN" role="tab" aria-controls="tab-LITECOIN"
@@ -193,6 +195,29 @@
                             </div>
                             <div class="mb-3 col-lg-6">
                                 <form data-form="execute-contract" data-chain="ETHEREUM" class="card bg-light"></form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade p-4 bg-white border" id="tab-MATIC" data-chain="MATIC" role="tabpanel" aria-labelledby="nav-MATIC-tab">
+                        <button type="button" data-chain="MATIC" class="btn btn-outline-primary get-wallets mb-3">
+                            Refresh Wallets
+                        </button>
+                        <button type="button" data-chain="MATIC" class="btn btn-outline-primary manage-wallets mb-3">
+                            Manage Wallets
+                        </button>
+
+                        <div class="row">
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign" data-chain="MATIC" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="execute" data-chain="MATIC" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign-raw" data-chain="MATIC" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="execute-contract" data-chain="MATIC" class="card bg-light"></form>
                             </div>
                         </div>
                     </div>
