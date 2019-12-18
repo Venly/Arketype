@@ -47,6 +47,17 @@
               });
     }
 
+    function signMessage(message) {
+        console.debug('Signing message', message);
+        window.arkaneConnect.createSigner().signMessage(message)
+              .then(function(result) {
+                  app.log(result);
+              })
+              .catch(function(err) {
+                  app.error(err);
+              });
+    }
+
     function executeTransaction(executeData) {
         if (executeData.tokenAddress && executeData.tokenAddress.length > 0) {
             executeTokenTransfer(executeData);
@@ -163,6 +174,7 @@
     };
 
     app.page.initEthereum = function() {
+        var secretType = 'ETHEREUM';
         var fieldsSign = {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: '0x680800Dd4913021821A9C08D569eF4338dB8E9f6'},
@@ -171,16 +183,21 @@
             name: {type: 'input', label: 'Network name', placeholder: 'e.g. Rinkeby', network: true},
             nodeUrl: {type: 'input', label: 'Network node URL', placeholder: 'e.g. https://rinkeby.infura.io', network: true},
         };
-        createSignForm('ETHEREUM', 'ETHEREUM_TRANSACTION', fieldsSign);
+        createSignForm(secretType, 'ETHEREUM_TRANSACTION', fieldsSign);
 
-        createSignRawForm('ETHEREUM', 'ETHEREUM_RAW', {
+        createSignRawForm(secretType, 'ETHEREUM_RAW', {
             walletId: fieldsSign.walletId,
             data: Object.assign({}, fieldsSign.data, {defaultValue: 'Some test data'}),
             prefix: {type: 'checkbox', checked: true, label: 'Prefix'},
             hash: {type: 'checkbox', checked: true, label: 'Hash', info: 'When prefix is checked, hash will always be set to \'true\''}
         });
 
-        createExecuteContractForm('ETHEREUM',  {
+        createSignMessage(secretType, {
+            walletId: fieldsSign.walletId,
+            data: Object.assign({}, fieldsSign.data, {defaultValue: 'Some message', label: 'Message'}),
+        });
+
+        createExecuteContractForm(secretType,  {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'Contract Address', defaultValue: '0xc4375b7de8af5a38a93548eb8453a498222c4ff2'},
             value: {type: 'input', label: 'Amount (in WEI)', defaultValue: '0'},
@@ -191,7 +208,7 @@
             nodeUrl: {type: 'input', label: 'Network node URL', placeholder: 'e.g. https://rinkeby.infura.io', network: true}
         });
 
-        createExecuteForm('ETHEREUM', {
+        createExecuteForm(secretType, {
             walletId: fieldsSign.walletId,
             to: fieldsSign.to,
             value: {type: 'input', label: 'Amount (in ETH)', defaultValue: '0.0314'},
@@ -203,6 +220,7 @@
     };
 
     app.page.initMatic = function() {
+        var secretType = 'MATIC';
         var fieldsSign = {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: '0x680800Dd4913021821A9C08D569eF4338dB8E9f6'},
@@ -211,16 +229,21 @@
             name: {type: 'input', label: 'Network name', placeholder: 'e.g. Rinkeby', network: true},
             nodeUrl: {type: 'input', label: 'Network node URL', placeholder: 'e.g. https://rinkeby.infura.io', network: true},
         };
-        createSignForm('MATIC', 'MATIC_TRANSACTION', fieldsSign);
+        createSignForm(secretType, 'MATIC_TRANSACTION', fieldsSign);
 
-        createSignRawForm('MATIC', 'MATIC_RAW', {
+        createSignRawForm(secretType, 'MATIC_RAW', {
             walletId: fieldsSign.walletId,
             data: Object.assign({}, fieldsSign.data, {defaultValue: 'Some test data'}),
             prefix: {type: 'checkbox', checked: true, label: 'Prefix'},
             hash: {type: 'checkbox', checked: true, label: 'Hash', info: 'When prefix is checked, hash will always be set to \'true\''}
         });
 
-        createExecuteContractForm('MATIC',  {
+        createSignMessage(secretType, {
+            walletId: fieldsSign.walletId,
+            data: Object.assign({}, fieldsSign.data, {defaultValue: 'Some message', label: 'Message'}),
+        });
+
+        createExecuteContractForm(secretType,  {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'Contract Address', defaultValue: '0xc4375b7de8af5a38a93548eb8453a498222c4ff2'},
             value: {type: 'input', label: 'Amount (in WEI)', defaultValue: '0'},
@@ -231,7 +254,7 @@
             nodeUrl: {type: 'input', label: 'Network node URL', placeholder: 'e.g. https://rinkeby.infura.io', network: true}
         });
 
-        createExecuteForm('MATIC', {
+        createExecuteForm(secretType, {
             walletId: fieldsSign.walletId,
             to: fieldsSign.to,
             value: {type: 'input', label: 'Amount (in MATIC)', defaultValue: '0.0314'},
@@ -243,25 +266,31 @@
     };
 
     app.page.initTron = function() {
-        var signFields = {
+        var secretType = 'TRON';
+        var fields = {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'TAwwCCoa6cTjtKJVTSpnKbkDimgALcAXfb'},
             value: {type: 'input', label: 'Amount', defaultValue: '31400'},
             data: {type: 'textarea', label: 'Data (optional)', placeholder: 'Some test data'},
         };
-        createSignForm('TRON', 'TRON_TRANSACTION', signFields);
+        createSignForm(secretType, 'TRON_TRANSACTION', fields);
 
-        createSignRawForm('TRON', 'TRON_RAW', {
-            walletId: signFields.walletId,
-            data: Object.assign({}, signFields.data, {defaultValue: 'Some test data'}),
+        createSignRawForm(secretType, 'TRON_RAW', {
+            walletId: fields.walletId,
+            data: Object.assign({}, fields.data, {defaultValue: 'Some test data'}),
+        });
+
+        createSignMessage(secretType, {
+            walletId: fields.walletId,
+            data: Object.assign({}, fields.data, {defaultValue: 'Some message', label: 'Message'}),
         });
 
 
-        var executeFields = signFields;
+        var executeFields = fields;
         executeFields.value.defaultValue = '0.0314';
-        createExecuteForm('TRON', executeFields);
+        createExecuteForm(secretType, executeFields);
 
-        createExecuteContractForm('TRON',  {
+        createExecuteContractForm(secretType,  {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'Contract Address', defaultValue: 'TFynD51aEXaYzkAiNoX2GtGEZ4ESZn7P6e'},
             value: {type: 'input', label: 'Amount (in WEI)', defaultValue: '0'},
@@ -271,32 +300,39 @@
     };
 
     app.page.initGo = function() {
-        var signFields = {
+        var secretType = 'GOCHAIN';
+        var fields = {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: '0xd84aeb36b2a30eDB94e9f0A25A82E94e506ebB15'},
             value: {type: 'input', label: 'Amount', defaultValue: '32000000000000000'},
             data: {type: 'textarea', label: 'Data (optional)', placeholder: 'Some test data'},
         };
-        createSignForm('GOCHAIN', 'GOCHAIN_TRANSACTION', signFields);
-        createSignRawForm('GOCHAIN', 'GOCHAIN_RAW', {
-            walletId: signFields.walletId,
-            data: Object.assign({}, signFields.data, {defaultValue: 'Some test data'}),
+        createSignForm(secretType, 'GOCHAIN_TRANSACTION', fields);
+        createSignRawForm(secretType, 'GOCHAIN_RAW', {
+            walletId: fields.walletId,
+            data: Object.assign({}, fields.data, {defaultValue: 'Some test data'}),
+        });
+        createSignMessage(secretType, {
+            walletId: fields.walletId,
+            data: Object.assign({}, fields.data, {defaultValue: 'Some message', label: 'Message'}),
         });
 
-        var executeFields = signFields;
+        var executeFields = fields;
         executeFields.value.defaultValue = '0.0321';
-        createExecuteForm('GOCHAIN', executeFields);
+        createExecuteForm(secretType, executeFields);
     };
 
     app.page.initVechain = function() {
-        createSignForm('VECHAIN', 'VECHAIN_TRANSACTION', {
+        var secretType = 'VECHAIN';
+        var fields = {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: '0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE', clause: true},
             amount: {type: 'input', label: 'Amount (GWEI)', defaultValue: '31400000000000000', clause: true},
             data: {type: 'textarea', label: 'Data (optional)', clause: true, placeholder: ''},
-        });
+        };
+        createSignForm(secretType, 'VECHAIN_TRANSACTION', fields);
 
-        createExecuteForm('VECHAIN', {
+        createExecuteForm(secretType, {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: '0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE'},
             value: {type: 'input', label: 'Amount', defaultValue: '0.0314'},
@@ -304,7 +340,7 @@
             data: {type: 'textarea', label: 'Data (optional)', placeholder: ''},
         });
 
-        createExecuteContractForm('VECHAIN',  {
+        createExecuteContractForm(secretType,  {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'Contract Address', defaultValue: '0x0000000000000000000000000000456E65726779'},
             amount: {type: 'input', label: 'Amount (GWEI)', defaultValue: '0'},
@@ -314,13 +350,14 @@
     };
 
     app.page.initBitcoin = function() {
-        createSignForm('BITCOIN', 'BITCOIN_TRANSACTION', {
+        var secretType = 'BITCOIN';
+        createSignForm(secretType, 'BITCOIN_TRANSACTION', {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'mikjaeFSKYe6VEC3pQgpYCEwTMYK9Eo5pj'},
             value: {type: 'input', label: 'Amount', defaultValue: '314100'},
         });
 
-        createExecuteForm('BITCOIN', {
+        createExecuteForm(secretType, {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'mikjaeFSKYe6VEC3pQgpYCEwTMYK9Eo5pj'},
             value: {type: 'input', label: 'Amount (in BTC)', defaultValue: '0.00003141'},
@@ -328,13 +365,14 @@
     };
 
     app.page.initLitecoin = function() {
-        createSignForm('LITECOIN', 'LITECOIN_TRANSACTION', {
+        var secretType = 'LITECOIN';
+        createSignForm(secretType, 'LITECOIN_TRANSACTION', {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'LYFYQfkZ4PXp5waKxSpA9H6xXFhTNPRCPe'},
             value: {type: 'input', label: 'Amount', defaultValue: '314100'},
         });
 
-        createExecuteForm('LITECOIN', {
+        createExecuteForm(secretType, {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'LYFYQfkZ4PXp5waKxSpA9H6xXFhTNPRCPe'},
             value: {type: 'input', label: 'Amount', defaultValue: '0.00003142'},
@@ -342,30 +380,36 @@
     };
 
     app.page.initNeo = function() {
-        createSignForm('NEO', 'NEO_NATIVE_TRANSACTION', {
+        var secretType = 'NEO';
+        var fields = {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'AN2VD52SLntUGFwzZyjzsRqBBkUzjKpKpT'},
             value: {type: 'input', label: 'Amount', defaultValue: '1'},
+            data: {type: 'textarea', label: 'Data', defaultValue: 'Sign this message to accept our terms.'},
+        };
+
+        createSignForm(secretType, 'NEO_NATIVE_TRANSACTION', fields);
+
+        createExecuteForm(secretType, fields);
+
+        createSignRawForm(secretType, 'NEO_MESSAGE', {
+            walletId: fields.walletId,
+            data: fields.data,
         });
 
-        createExecuteForm('NEO', {
-            walletId: {type: 'wallet-select', label: 'From'},
-            to: {type: 'input', label: 'To', defaultValue: 'AN2VD52SLntUGFwzZyjzsRqBBkUzjKpKpT'},
-            value: {type: 'input', label: 'Amount', defaultValue: '1'},
+        createSignMessage(secretType, {
+            walletId: fields.walletId,
+            data: Object.assign({}, fields.data, {defaultValue: 'Some message', label: 'Message'}),
         });
 
-        createSignRawForm('NEO', 'NEO_MESSAGE', {
-            walletId: {type: 'wallet-select', label: 'From'},
-            data: {type: 'textarea', label: 'Message', defaultValue: 'Sign this message to accept our terms.'},
+        createExecuteGasForm(secretType, {
+            walletId: fields.walletId,
+            to: fields.to,
+            value: fields.value,
         });
 
-        createExecuteGasForm('NEO', {
-            walletId: {type: 'wallet-select', label: 'From'},
-            to: {type: 'input', label: 'To', defaultValue: 'AN2VD52SLntUGFwzZyjzsRqBBkUzjKpKpT'},
-            value: {type: 'input', label: 'Amount', defaultValue: '2'}
-        });
-        createExecuteContractForm('NEO',  {
-            walletId: {type: 'wallet-select', label: 'From'},
+        createExecuteContractForm(secretType,  {
+            walletId: fields.walletId,
             to: {type: 'input', label: 'Contract Address', defaultValue: '94a24ee381bc386daa91984c7dd606f6fdd8f19e'},
             functionName: {type: 'input', label: 'Function Name', defaultValue: 'approve'},
             value: {type: 'input', label: 'Amount', defaultValue: '0'},
@@ -375,18 +419,30 @@
     };
 
     app.page.initAeternity = function() {
-        createSignForm('AETERNITY', 'AETERNITY_TRANSACTION', {
+        var secretType = 'AETERNITY';
+        var fields = {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'ak_v3Sj6XxFKodf2VddPHjPdcQHPRsPVkhSLTN9KKrBkx8aFzg1h'},
             value: {type: 'input', label: 'Amount', defaultValue: '14000000000000000000000'},
-        });
-
-        createSignRawForm('AETERNITY', 'AETERNITY_RAW', {
-            walletId: {type: 'wallet-select', label: 'From'},
             data: {type: 'textarea', label: 'Data', defaultValue: 'tx_+IUrAaEBV1+B/7Cil7dyXcZx2gsXabH8XL5FOFx7WtH8Lq8dYJ0LoQXc8QU36IYbbsXk7d7Lg77BPQuicjS136jJKX5wHepi9QOHAZu6brCYAAAAgicQhDuaygCqKxFM1wuWG58AoFFwNxylSmNg4Pv8OlwzrrPdOBQ95X6DOW+5H6nRMbqY3bEntQ=='},
+        };
+        createSignForm(secretType, 'AETERNITY_TRANSACTION', {
+            walletId: fields.walletId,
+            to: fields.to,
+            value: fields.value
         });
 
-        createExecuteForm('AETERNITY', {
+        createSignRawForm(secretType, 'AETERNITY_RAW', {
+            walletId: fields.walletId,
+            data: fields.data,
+        });
+
+        createSignMessage(secretType, {
+            walletId: fields.walletId,
+            data: Object.assign({}, fields.data, {defaultValue: 'Some message', label: 'Message'}),
+        });
+
+        createExecuteForm(secretType, {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: 'ak_v3Sj6XxFKodf2VddPHjPdcQHPRsPVkhSLTN9KKrBkx8aFzg1h'},
             value: {type: 'input', label: 'Amount', defaultValue: '14000'},
@@ -584,6 +640,12 @@
     function createSignRawForm(secretType, transactionType, fields) {
         createForm('Sign Raw Data', secretType, 'sign-raw', fields, sign, {
             type: transactionType,
+        });
+    }
+
+    function createSignMessage(secretType, fields) {
+        createForm('Sign Message', secretType, 'sign-message', fields, signMessage, {
+            secretType,
         });
     }
 
