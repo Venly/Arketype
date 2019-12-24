@@ -59,7 +59,7 @@
     }
 
     function executeTransaction(executeData) {
-        let token = executeData.tokenAddress || executeData.token;
+        let token = executeData.tokenAddress;
         if (token && token.length > 0) {
             executeTokenTransfer(executeData);
         } else {
@@ -293,7 +293,7 @@
 
         var executeFields = fields;
         executeFields.value.defaultValue = '0.0314';
-        executeFields.token = {
+        executeFields.tokenAddress = {
             type: "input",
             label: "Token Address (optional)",
         };

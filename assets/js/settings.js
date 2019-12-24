@@ -15,6 +15,7 @@
 
     app.clientId = 'Arketype';
     app.isLocal = false;
+    app.isLocal = true;
 
     let resolvedEnv = app.env === 'prod' ? '' : '-' + app.env;
 
