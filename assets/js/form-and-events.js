@@ -176,7 +176,7 @@
 
     app.page.initEthereum = function() {
         var secretType = 'ETHEREUM';
-        var fieldsSign = {
+        var fields = {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: '0x680800Dd4913021821A9C08D569eF4338dB8E9f6'},
             value: {type: 'input', label: 'Amount (in WEI)', defaultValue: '31400000000000000'},
@@ -184,18 +184,18 @@
             name: {type: 'input', label: 'Network name', placeholder: 'e.g. Rinkeby', network: true},
             nodeUrl: {type: 'input', label: 'Network node URL', placeholder: 'e.g. https://rinkeby.infura.io', network: true},
         };
-        createSignForm(secretType, 'ETHEREUM_TRANSACTION', fieldsSign);
+        createSignForm(secretType, 'ETHEREUM_TRANSACTION', fields);
 
         createSignRawForm(secretType, 'ETHEREUM_RAW', {
-            walletId: fieldsSign.walletId,
-            data: Object.assign({}, fieldsSign.data, {defaultValue: 'Some test data'}),
+            walletId: fields.walletId,
+            data: Object.assign({}, fields.data, {defaultValue: 'Some test data'}),
             prefix: {type: 'checkbox', checked: true, label: 'Prefix'},
             hash: {type: 'checkbox', checked: true, label: 'Hash', info: 'When prefix is checked, hash will always be set to \'true\''}
         });
 
         createSignMessage(secretType, {
-            walletId: fieldsSign.walletId,
-            data: Object.assign({}, fieldsSign.data, {defaultValue: 'Some message', label: 'Message'}),
+            walletId: fields.walletId,
+            data: Object.assign({}, fields.data, {defaultValue: 'Some message', label: 'Message'}),
         });
 
         createExecuteContractForm(secretType,  {
@@ -210,19 +210,19 @@
         });
 
         createExecuteForm(secretType, {
-            walletId: fieldsSign.walletId,
-            to: fieldsSign.to,
+            walletId: fields.walletId,
+            to: fields.to,
             value: {type: 'input', label: 'Amount (in ETH)', defaultValue: '0.0314'},
             tokenAddress: {type: 'input', label: 'Token address', placeholder: 'e.g. 0x6ff6c0ff1d68b964901f986d4c9fa3ac68346570'},
-            data: fieldsSign.data,
-            name: fieldsSign.name,
-            nodeUrl: fieldsSign.nodeUrl,
+            data: fields.data,
+            name: fields.name,
+            nodeUrl: fields.nodeUrl,
         });
     };
 
     app.page.initMatic = function() {
         var secretType = 'MATIC';
-        var fieldsSign = {
+        var fields = {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: '0x680800Dd4913021821A9C08D569eF4338dB8E9f6'},
             value: {type: 'input', label: 'Amount (in WEI)', defaultValue: '31400000000000000'},
@@ -230,18 +230,18 @@
             name: {type: 'input', label: 'Network name', placeholder: 'e.g. Rinkeby', network: true},
             nodeUrl: {type: 'input', label: 'Network node URL', placeholder: 'e.g. https://rinkeby.infura.io', network: true},
         };
-        createSignForm(secretType, 'MATIC_TRANSACTION', fieldsSign);
+        createSignForm(secretType, 'MATIC_TRANSACTION', fields);
 
         createSignRawForm(secretType, 'MATIC_RAW', {
-            walletId: fieldsSign.walletId,
-            data: Object.assign({}, fieldsSign.data, {defaultValue: 'Some test data'}),
+            walletId: fields.walletId,
+            data: Object.assign({}, fields.data, {defaultValue: 'Some test data'}),
             prefix: {type: 'checkbox', checked: true, label: 'Prefix'},
             hash: {type: 'checkbox', checked: true, label: 'Hash', info: 'When prefix is checked, hash will always be set to \'true\''}
         });
 
         createSignMessage(secretType, {
-            walletId: fieldsSign.walletId,
-            data: Object.assign({}, fieldsSign.data, {defaultValue: 'Some message', label: 'Message'}),
+            walletId: fields.walletId,
+            data: Object.assign({}, fields.data, {defaultValue: 'Some message', label: 'Message'}),
         });
 
         createExecuteContractForm(secretType,  {
@@ -255,18 +255,18 @@
             nodeUrl: {type: 'input', label: 'Network node URL', placeholder: 'e.g. https://rinkeby.infura.io', network: true}
         });
 
-        fieldsExecute.tokenAddress = {
+        fields.tokenAddress = {
             type: "input",
             label: "Token Address (optional)",
         };
         createExecuteForm(secretType, {
-            walletId: fieldsSign.walletId,
-            to: fieldsSign.to,
+            walletId: fields.walletId,
+            to: fields.to,
             value: {type: 'input', label: 'Amount (in MATIC)', defaultValue: '0.0314'},
             tokenAddress: {type: 'input', label: 'Token address', placeholder: 'e.g. 0x6ff6c0ff1d68b964901f986d4c9fa3ac68346570'},
-            data: fieldsSign.data,
-            name: fieldsSign.name,
-            nodeUrl: fieldsSign.nodeUrl,
+            data: fields.data,
+            name: fields.name,
+            nodeUrl: fields.nodeUrl,
         });
     };
 
