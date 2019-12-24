@@ -47,7 +47,8 @@
     }
 
     function executeTransaction(executeData) {
-        if (executeData.tokenAddress && executeData.tokenAddress.length > 0) {
+        let token = executeData.tokenAddress || executeData.token;
+        if (token && token.length > 0) {
             executeTokenTransfer(executeData);
         } else {
             executeTransfer(executeData);
@@ -193,6 +194,10 @@
         var fieldsExecute = fieldsSign;
         fieldsExecute.value.label = 'Amount (in ETH)';
         fieldsExecute.value.defaultValue = '0.0314';
+        fieldsExecute.tokenAddress = {
+            type: "input",
+            label: "Token Address (optional)",
+        };
         createExecuteForm('ETHEREUM', fieldsExecute);
     };
 
@@ -213,6 +218,10 @@
 
         var executeFields = signFields;
         executeFields.value.defaultValue = '0.0314';
+        executeFields.token = {
+            type: "input",
+            label: "Token Address (optional)",
+        };
         createExecuteForm('TRON', executeFields);
 
         createExecuteContractForm('TRON',  {
@@ -248,6 +257,11 @@
             to: {type: 'input', label: 'To', defaultValue: '0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE', clause: true},
             amount: {type: 'input', label: 'Amount (GWEI)', defaultValue: '31400000000000000', clause: true},
             data: {type: 'textarea', label: 'Data (optional)', clause: true, placeholder: ''},
+        });
+
+        createSignRawForm('VECHAIN', 'VECHAIN_RAW', {
+            walletId: {type: 'wallet-select', label: 'From'},
+            data: {type: 'textarea', label: 'Message', defaultValue: 'Sign this message to accept our terms.'},
         });
 
         createExecuteForm('VECHAIN', {
