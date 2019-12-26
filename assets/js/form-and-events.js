@@ -336,7 +336,7 @@
         var fields = {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: '0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE', clause: true},
-            amount: {type: 'input', label: 'Amount (GWEI)', defaultValue: '31400000000000000', clause: true},
+            amount: {type: 'input', label: 'Amount (WEI)', defaultValue: '31400000000000000', clause: true},
             data: {type: 'textarea', label: 'Data (optional)', clause: true, placeholder: ''},
         };
         createSignForm(secretType, 'VECHAIN_TRANSACTION', fields);
@@ -357,7 +357,7 @@
         createExecuteContractForm(secretType,  {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'Contract Address', defaultValue: '0x0000000000000000000000000000456E65726779'},
-            amount: {type: 'input', label: 'Amount (GWEI)', defaultValue: '0'},
+            amount: {type: 'input', label: 'Amount (WEI)', defaultValue: '0'},
             functionName: {type: 'input', label: 'Function Name', defaultValue: 'approve'},
             inputs: {type: 'textarea', label: 'Inputs', defaultValue: '[{"type": "address", "value": "0xd82049204D8514c637f150C7231BFefC5C4937Ec"},{"type": "uint256", "value": "0"}]'}
         });
