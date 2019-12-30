@@ -328,6 +328,8 @@
 
         var executeFields = fields;
         executeFields.value.defaultValue = '0.0321';
+        executeFields.tokenAddress = {type: 'input', label: 'Token Address (optional)'};
+
         createExecuteForm(secretType, executeFields);
     };
 
