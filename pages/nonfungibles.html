@@ -146,17 +146,23 @@
             </div>
 
             <div class="col-md-12 mb-4">
-                <h4 class="mb-3">Select Ethereum Wallet</h4>
+                <h4 class="mb-3">Select Wallet</h4>
                 <div class="row">
                     <div class="mb-3 col-lg-12">
                         <form data-form="nonfungibles">
-                            <div class="form-group row" style="display: none;">
-                                <label for="exec-type" class="col-sm-5 col-form-label">Type</label>
+                            <div class="form-group row">
+                                <label for="exec-type" class="col-sm-5 col-form-label">Chain</label>
                                 <div class="col-sm-7">
                                     <div class="input-group">
                                         <select id="exec-type" class="form-control" name="type">
-                                            <option value="ETHEREUM" selected="selected">Please select a type</option>
+                                            <option value="ETHEREUM" selected="selected">Ethereum</option>
+                                            <option value="VECHAIN">Vechain</option>
                                         </select>
+                                        <div class="input-group-append">
+                                            <button type="button" class="btn btn-outline-secondary get-wallets" title="Refresh wallets">
+                                                <i class="fa fa-refresh"></i> Get Wallets
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -166,9 +172,6 @@
                                     <div class="input-group">
                                         <select id="exec-from" class="form-control" data-from="true" name="walletId"></select>
                                         <div class="input-group-append">
-                                            <button type="button" class="btn btn-outline-secondary get-wallets" title="Refresh wallets">
-                                                <i class="fa fa-refresh"></i>
-                                            </button>
                                             <button type="button" class="btn btn-outline-secondary" onclick="app.copySelectDataAddress('#exec-from')" title="Copy address">
                                                 <i class="fa fa-copy"></i>
                                             </button>
