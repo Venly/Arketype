@@ -338,7 +338,7 @@
         var fields = {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: '0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE', clause: true},
-            value: {type: 'input', label: 'Amount (WEI)', defaultValue: '31400000000000000', clause: true},
+            amount: {type: 'input', label: 'Amount (WEI)', defaultValue: '31400000000000000', clause: true},
             data: {type: 'textarea', label: 'Data (optional)', clause: true, placeholder: ''},
         };
         createSignForm(secretType, 'VECHAIN_TRANSACTION', fields);
