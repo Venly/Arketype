@@ -261,7 +261,7 @@
         createExecuteContractForm('VECHAIN',  {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'Contract Address', defaultValue: '0x0000000000000000000000000000456E65726779'},
-            amount: {type: 'input', label: 'Amount (GWEI)', defaultValue: '0'},
+            value: {type: 'input', label: 'Amount (GWEI)', defaultValue: '0'},
             functionName: {type: 'input', label: 'Function Name', defaultValue: 'approve'},
             inputs: {type: 'textarea', label: 'Inputs', defaultValue: '[{"type": "address", "value": "0xd82049204D8514c637f150C7231BFefC5C4937Ec"},{"type": "uint256", "value": "0"}]'}
         });
