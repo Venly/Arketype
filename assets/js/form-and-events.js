@@ -301,7 +301,7 @@
 
         createExecuteContractForm(secretType,  {
             walletId: {type: 'wallet-select', label: 'From'},
-            to: {type: 'input', label: 'Contract Address', defaultValue: 'TFynD51aEXaYzkAiNoX2GtGEZ4ESZn7P6e'},
+            to: {type: 'input', label: 'Contract Address', defaultValue: 'TQg6nWj5eVNLNiNF8jk3RyQwbzyuyf2rKg'},
             value: {type: 'input', label: 'Amount (in WEI)', defaultValue: '0'},
             functionName: {type: 'input', label: 'Function Name', defaultValue: 'approve'},
             inputs: {type: 'textarea', label: 'Inputs', defaultValue: '[{"type": "address", "value": "TA311N5Thw4vAjjBLNNtqEZp3qVRpeKgHB"},{"type": "uint256", "value": "0"}]'}
