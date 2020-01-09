@@ -588,7 +588,7 @@
         form.addEventListener('submit', function(e) {
             e.stopPropagation();
             e.preventDefault();
-            var data = {...defaultData};
+            var data = Object.assign({}, defaultData);
             var clause = {};
             var contractCall = {};
             var network = {};
