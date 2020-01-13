@@ -5,6 +5,7 @@
         $(app).on('authenticated', function() {
             window.arkaneConnect.api.getWallets({secretType: 'ETHEREUM'})
                   .then(function(wallets) {
+                      wallets.filter((wallet) => wallet.walletType !== WalletType.APPLICATION);
                       app.log(wallets, 'Wallets');
                       app.page.wallets = wallets;
                       updateWallets(wallets);
@@ -29,6 +30,7 @@
     function getWallets(el) {
         window.arkaneConnect.api.getWallets({secretType: getSelectedSecretType()})
               .then(function(wallets) {
+                  wallets.filter((wallet) => wallet.walletType !== WalletType.APPLICATION);
                   if (el) {
                       el.dataset.success = 'true';
                   }
