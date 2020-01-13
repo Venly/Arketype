@@ -22,8 +22,8 @@
     function getWalletsBySecretType(secretType) {
         return window.arkaneConnect.api.getWallets({secretType: secretType})
                      .then(function(wallets) {
-                         wallets.filter((wallet) => wallet.walletType !== WalletType.APPLICATION);
                          app.log(wallets, 'Wallets ' + secretType);
+                         wallets = wallets.filter((wallet) => wallet.walletType !== 'APPLICATION');
                          app.page.updateWallets(wallets, secretType);
                      });
     }

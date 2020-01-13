@@ -694,7 +694,7 @@
               .then(function(result) {
                   return window.arkaneConnect.api.getWallets({secretType: secretType})
                                .then(function(wallets) {
-                                   wallets.filter((wallet) => wallet.walletType !== WalletType.APPLICATION);
+                                   wallets = wallets.filter((wallet) => wallet.walletType !== 'APPLICATION');
                                    app.page.updateWallets(wallets, secretType);
                                });
               })
