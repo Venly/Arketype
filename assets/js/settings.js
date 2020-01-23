@@ -1,4 +1,4 @@
-(function() {
+(function(window) {
     'use strict';
 
     window.app = window.app || {};
@@ -16,15 +16,25 @@
     app.clientId = 'Arketype';
     app.isLocal = false;
 
-    let resolvedEnv = app.env === 'prod' ? '' : '-' + app.env;
+    let resolvedEnv = resolveEnv(app.env);
 
     app.environment = {
         env: app.env,
         connect: app.env + (app.isLocal ? '-local' : ''),
-        api: 'https://api' + resolvedEnv + '.arkane.network',
+        api: app.env === 'local' ? 'http://localhost:8581/api' : 'https://api' + resolvedEnv + '.arkane.network',
         login: 'https://login' + resolvedEnv + '.arkane.network',
         arketypeClientSecret: '02053a9d-8293-43c4-a201-f8669f1329af', // Only visible for demo purpose, this secret should be configured in application backend
     };
 
-
-})();
+    function resolveEnv(appEnv) {
+        switch (appEnv) {
+            case 'local':
+                return '-tst1';
+            case 'prod':
+                return appEnv;
+                break;
+            default:
+                return '-' + appEnv;
+        }
+    }
+})(window);
