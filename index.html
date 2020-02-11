@@ -18,6 +18,7 @@
 </head>
 
 <body class="bg-light-gray not-logged-in" id="arketype">
+<div class="loader-overlay"><img src="/assets/img/loader.gif" alt="loader"/></div>
 
 <header class="bg-light">
     <div class="container">
@@ -33,16 +34,19 @@
                         <a class="nav-link" href="/index.html">Wallets <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/app-wallets">App Wallets</a>
+                        <a class="nav-link" href="/pages/app-wallets">App Wallets</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/simple-get-wallets">Simple Connect Example</a>
+                        <a class="nav-link" href="/pages/simple-get-wallets">Simple Connect Example</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/web3-provider">Web3 Provider</a>
+                        <a class="nav-link" href="/pages/web3-provider">Web3 Provider</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/nonfungibles">Nonfungibles</a>
+                        <a class="nav-link" href="/pages/nonfungibles">Nonfungibles</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pages/test-api">Test Api</a>
                     </li>
                 </ul>
             </div>
@@ -154,6 +158,8 @@
                            aria-selected="false">Bitcoin</a>
                         <a class="nav-item nav-link" id="nav-ETHEREUM-tab" data-toggle="tab" href=".tab-pane#tab-ETHEREUM" role="tab" aria-controls="tab-ETHEREUM"
                            aria-selected="true">Ethereum</a>
+                        <a class="nav-item nav-link" id="nav-MATIC-tab" data-toggle="tab" href=".tab-pane#tab-MATIC" role="tab" aria-controls="tab-MATIC"
+                           aria-selected="true">Matic</a>
                         <a class="nav-item nav-link" id="nav-VECHAIN-tab" data-toggle="tab" href=".tab-pane#tab-VECHAIN" role="tab" aria-controls="tab-VECHAIN"
                            aria-selected="false">VeChain</a>
                         <a class="nav-item nav-link" id="nav-LITECOIN-tab" data-toggle="tab" href=".tab-pane#tab-LITECOIN" role="tab" aria-controls="tab-LITECOIN"
@@ -188,7 +194,36 @@
                                 <form data-form="sign-raw" data-chain="ETHEREUM" class="card bg-light"></form>
                             </div>
                             <div class="mb-3 col-lg-6">
+                                <form data-form="sign-message" data-chain="ETHEREUM" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
                                 <form data-form="execute-contract" data-chain="ETHEREUM" class="card bg-light"></form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade p-4 bg-white border" id="tab-MATIC" data-chain="MATIC" role="tabpanel" aria-labelledby="nav-MATIC-tab">
+                        <button type="button" data-chain="MATIC" class="btn btn-outline-primary get-wallets mb-3">
+                            Refresh Wallets
+                        </button>
+                        <button type="button" data-chain="MATIC" class="btn btn-outline-primary manage-wallets mb-3">
+                            Manage Wallets
+                        </button>
+
+                        <div class="row">
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign" data-chain="MATIC" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="execute" data-chain="MATIC" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign-raw" data-chain="MATIC" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign-message" data-chain="MATIC" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="execute-contract" data-chain="MATIC" class="card bg-light"></form>
                             </div>
                         </div>
                     </div>
@@ -203,6 +238,9 @@
                         <div class="row">
                             <div class="mb-5 col-lg-6">
                                 <form data-form="sign" data-chain="GOCHAIN" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign-message" data-chain="GOCHAIN" class="card bg-light"></form>
                             </div>
                             <div class="mb-5 col-lg-6">
                                 <form data-form="execute" data-chain="GOCHAIN" class="card bg-light"></form>
@@ -228,6 +266,9 @@
                                 <form data-form="execute" data-chain="VECHAIN" class="card bg-light"></form>
                             </div>
                             <div class="mb-3 col-lg-6">
+                                <form data-form="sign-raw" data-chain="VECHAIN" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
                                 <form data-form="execute-contract" data-chain="VECHAIN" class="card bg-light"></form>
                             </div>
                         </div>
@@ -249,6 +290,9 @@
                             </div>
                             <div class="mb-3 col-lg-6">
                                 <form data-form="sign-raw" data-chain="TRON" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign-message" data-chain="TRON" class="card bg-light"></form>
                             </div>
                             <div class="mb-3 col-lg-6">
                                 <form data-form="execute-contract" data-chain="TRON" class="card bg-light"></form>
@@ -305,6 +349,9 @@
                                 <form data-form="sign-raw" data-chain="AETERNITY" class="card bg-light"></form>
                             </div>
                             <div class="mb-3 col-lg-6">
+                                <form data-form="sign-message" data-chain="AETERNITY" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
                                 <form data-form="execute" data-chain="AETERNITY" class="card bg-light"></form>
                             </div>
                         </div>
@@ -326,6 +373,9 @@
                             </div>
                             <div class="mb-3 col-lg-6">
                                 <form data-form="sign-raw" data-chain="NEO" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign-message" data-chain="NEO" class="card bg-light"></form>
                             </div>
                             <div class="mb-3 col-lg-6">
                                 <form data-form="execute-gas" data-chain="NEO" class="card bg-light"></form>
@@ -356,12 +406,12 @@
 <script src="/node_modules/jquery/dist/jquery.min.js"></script>
 <script src="/assets/js/vendor/modernizr-custom.js"></script>
 <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
-<script src="/assets/js/settings.js"></script>
-<script src="/assets/js/auth.js"></script>
-<script src="/assets/js/form-and-events.js"></script>
-<script src="/assets/js/main.js"></script>
-<script src="/assets/js/auth.js"></script>
-<script src="/assets/js/arketype-wallets.js"></script>
+<script src="/assets/js/settings.js?v=0.0.5"></script>
+<script src="/assets/js/auth.js?v=0.0.5"></script>
+<script src="/assets/js/form-and-events.js?v=0.0.5"></script>
+<script src="/assets/js/main.js?v=0.0.5"></script>
+<script src="/assets/js/auth.js?v=0.0.5"></script>
+<script src="/assets/js/arketype-wallets.js?v=0.0.5"></script>
 
 </body>
 

@@ -6,6 +6,7 @@
             window.arkaneConnect.api.getWallets({secretType: 'ETHEREUM'})
                   .then(function(wallets) {
                       app.log(wallets, 'Wallets');
+                      wallets = wallets.filter((wallet) => wallet.walletType !== 'APPLICATION');
                       app.page.wallets = wallets;
                       updateWallets(wallets);
                       if (!app.page.initialised) {
@@ -21,14 +22,20 @@
         });
     });
 
+    function getSelectedSecretType() {
+        var type = $('select[name="type"]').val();
+        return type !== 'undefined' && type.length > 0 ? type : 'ETHEREUM';
+    }
+
     function getWallets(el) {
-        window.arkaneConnect.api.getWallets({secretType: 'ETHEREUM'})
+        window.arkaneConnect.api.getWallets({secretType: getSelectedSecretType()})
               .then(function(wallets) {
                   if (el) {
                       el.dataset.success = 'true';
                   }
-                  app.page.wallets = wallets;
                   app.log(wallets, 'Wallets');
+                  wallets = wallets.filter((wallet) => wallet.walletType !== 'APPLICATION');
+                  app.page.wallets = wallets;
                   updateWallets(wallets);
               });
     }
@@ -61,7 +68,7 @@
     function walletUpdated() {
         var $wallet = $('select[name="walletId"]');
         var walletId = $wallet.val();
-        var address = $wallet.find('option[value="'+walletId+'"]').data('address');
+        var address = $wallet.find('option[value="' + walletId + '"]').data('address');
         $('input[name="fromAddress"]').val(address);
         getTokens(walletId);
     }
@@ -87,10 +94,16 @@
                 var tokenAddress = $('input[name="tokenAddress"]', formTx).val();
                 var fromAddress = $('input[name="fromAddress"]', formTx).val();
                 var tokenId = $('select[name="tokenId"]', formTx).val();
-                const transactionRequest = {secretType: 'ETHEREUM', walletId, to, from: fromAddress, tokenAddress, tokenId, network: {
+                var wallet = app.page.wallets.find((w) => w.id === walletId);
+                const transactionRequest = {
+                    secretType: wallet.secretType, walletId, to, from: fromAddress, tokenAddress, tokenId
+                };
+                if (wallet.secretType === 'ETHEREUM' && !transactionRequest.network) {
+                    transactionRequest.network = {
                         name: 'Rinkeby',
-                        nodeUrl: 'https://rinkeby.infura.io',
-                    }};
+                        nodeUrl: 'https://rinkeby.arkane.network',
+                    };
+                }
                 app.log(transactionRequest, 'Executing NFT Transfer');
                 executeNftTransfer(transactionRequest);
             });
@@ -100,18 +113,20 @@
     function updateWallets(wallets) {
         var $walletsSelect = $('select[name="walletId"]');
         $walletsSelect && $walletsSelect.empty();
-        var selectedSecretType = $('select[name="type"]').val();
-        if (selectedSecretType && wallets) {
-            wallets.filter(wallet => wallet.secretType === selectedSecretType)
-                   .forEach(wallet => $walletsSelect.append($(
-                       '<option>',
-                       {value: wallet.id, text: buildWalletLabel(wallet), 'data-address': wallet.address}
-                   )));
+        if (wallets) {
+            wallets.filter(
+                wallet => wallet.secretType === getSelectedSecretType())
+                   .forEach(
+                       wallet => $walletsSelect.append($(
+                           '<option>',
+                           {value: wallet.id, text: buildWalletLabel(wallet), 'data-address': wallet.address}
+                       )));
             walletUpdated();
         }
     }
 
-    function updateTokens(walletId, tokens) {
+    function updateTokens(walletId,
+                          tokens) {
         var localWalletId = $('select[name="walletId"]').val();
         var $tokenSelect = $('select[name="tokenId"]');
         var $tokenAddress = $('input[name="tokenAddress"]');
@@ -120,7 +135,8 @@
         if (localWalletId === walletId && tokens && tokens.length > 0) {
             fillTokenDetails(tokens[0].id);
             $tokenAddress.val(tokens[0].contract.address);
-            tokens.forEach(token => $tokenSelect.append($('<option>', {value: token.id, text: buildTokenLabel(token)})))
+            tokens.forEach(
+                token => $tokenSelect.append($('<option>', {value: token.id, text: buildTokenLabel(token)})))
         } else {
             fillTokenDetails();
         }

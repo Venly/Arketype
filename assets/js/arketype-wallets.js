@@ -20,10 +20,12 @@
     }
 
     function getWalletsBySecretType(secretType) {
-        return window.arkaneConnect.api.getWallets({secretType: secretType}).then(function(wallets) {
-            app.log(wallets, 'Wallets ' + secretType);
-            app.page.updateWallets(wallets, secretType);
-        });
+        return window.arkaneConnect.api.getWallets({secretType: secretType})
+                     .then(function(wallets) {
+                         app.log(wallets, 'Wallets ' + secretType);
+                         wallets = wallets.filter((wallet) => wallet.walletType !== 'APPLICATION');
+                         app.page.updateWallets(wallets, secretType);
+                     });
     }
 
     function initGetWalletEvent() {
@@ -38,7 +40,7 @@
         document.querySelectorAll('.manage-wallets').forEach(function(el) {
             el.addEventListener('click', function() {
                 var chain = this.dataset.chain;
-                if(app.getWindowMode() === 'POPUP') {
+                if (app.getWindowMode() === 'POPUP') {
                     window.arkaneConnect.flows.manageWallets(chain).then((result) => {
                         app.log(result, 'manage-wallets finished');
                         getWalletsBySecretType(this.dataset.chain.toUpperCase());
@@ -54,7 +56,7 @@
 
     function initLinkWalletsEvent() {
         document.getElementById('link-wallets').addEventListener('click', function() {
-            if(app.getWindowMode() === 'POPUP') {
+            if (app.getWindowMode() === 'POPUP') {
                 window.arkaneConnect.flows.linkWallets().then((result) => {
                     app.log(result, 'link-wallets finished');
                     var chain = document.querySelector('#nav-tabContent > .active').dataset.chain;

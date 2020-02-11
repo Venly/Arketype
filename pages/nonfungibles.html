@@ -19,6 +19,7 @@
 </head>
 
 <body class="bg-light-gray not-logged-in" id="arketype">
+<div class="loader-overlay"><img src="/assets/img/loader.gif" alt="loader"/></div>
 
 <header class="bg-light">
     <div class="container">
@@ -34,16 +35,19 @@
                         <a class="nav-link" href="/index.html">Wallets </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/app-wallets">App Wallets </a>
+                        <a class="nav-link" href="/pages/app-wallets">App Wallets </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/simple-get-wallets">Simple Connect Example</a>
+                        <a class="nav-link" href="/pages/simple-get-wallets">Simple Connect Example</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/web3-provider">Web3 Provider</a>
+                        <a class="nav-link" href="/pages/web3-provider">Web3 Provider</a>
                     </li>
                     <li class="nav-item active">
-                        <a class="nav-link" href="/nonfungibles">Nonfungibles <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="/pages/nonfungibles">Nonfungibles <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pages/test-api">Test Api</a>
                     </li>
                 </ul>
             </div>
@@ -142,17 +146,24 @@
             </div>
 
             <div class="col-md-12 mb-4">
-                <h4 class="mb-3">Select Ethereum Wallet</h4>
+                <h4 class="mb-3">Select Wallet</h4>
                 <div class="row">
                     <div class="mb-3 col-lg-12">
                         <form data-form="nonfungibles">
-                            <div class="form-group row" style="display: none;">
-                                <label for="exec-type" class="col-sm-5 col-form-label">Type</label>
+                            <div class="form-group row">
+                                <label for="exec-type" class="col-sm-5 col-form-label">Chain</label>
                                 <div class="col-sm-7">
                                     <div class="input-group">
                                         <select id="exec-type" class="form-control" name="type">
-                                            <option value="ETHEREUM" selected="selected">Please select a type</option>
+                                            <option value="ETHEREUM" selected="selected">Ethereum</option>
+                                            <option value="VECHAIN">Vechain</option>
+                                            <option value="MATIC">Matic</option>
                                         </select>
+                                        <div class="input-group-append">
+                                            <button type="button" class="btn btn-outline-secondary get-wallets" title="Refresh wallets">
+                                                <i class="fa fa-refresh"></i> Get Wallets
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -162,9 +173,6 @@
                                     <div class="input-group">
                                         <select id="exec-from" class="form-control" data-from="true" name="walletId"></select>
                                         <div class="input-group-append">
-                                            <button type="button" class="btn btn-outline-secondary get-wallets" title="Refresh wallets">
-                                                <i class="fa fa-refresh"></i>
-                                            </button>
                                             <button type="button" class="btn btn-outline-secondary" onclick="app.copySelectDataAddress('#exec-from')" title="Copy address">
                                                 <i class="fa fa-copy"></i>
                                             </button>
