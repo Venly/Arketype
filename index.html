@@ -87,9 +87,11 @@
 
     <div class="row auth-not-logged-in">
         <div class="form-group col-12 text-center">
-            <label for="auth-loginlink">You're not logged in</label>
+            <label>You're not logged in</label>
             <div>
-                <button class="btn btn-primary" id="auth-loginlink">Login</button>
+                <button class="btn btn-primary auth-loginlink">Login</button>
+                <button class="btn btn-primary auth-loginlink google" data-idp-hint="google"></button>
+                <button class="btn btn-primary auth-loginlink facebook" data-idp-hint="facebook"></button>
             </div>
         </div>
     </div>

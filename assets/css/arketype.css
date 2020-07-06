@@ -87,3 +87,19 @@ body {
 .async-loading {
     position: relative;
 }
+
+.google {
+    border: 0;
+    width: 191px;
+    height: 45px;
+    background: url('/assets/img/google-signin.png') no-repeat;
+    background-size: 191px 45px;
+}
+
+.facebook {
+    border: 0;
+    width: 200px;
+    height: 45px;
+    background: url('/assets/img/facebook-signing.png') no-repeat;
+    background-size: 200px 45px;
+}
