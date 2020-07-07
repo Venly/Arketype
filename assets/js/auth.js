@@ -24,7 +24,6 @@
         var logoutButton = document.getElementById('auth-logout');
         $(".auth-loginlink").on('click', function (e) {
             e.preventDefault();
-            console.log('ok');
             let idpHint = $(this).data('idp-hint');
             var windowMode = app.getWindowMode();
             window.arkaneConnect.flows.authenticate({windowMode: windowMode, idpHint: idpHint}).then((result) => {

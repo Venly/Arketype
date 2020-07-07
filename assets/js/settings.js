@@ -14,7 +14,7 @@
     }
 
     app.clientId = 'Arketype';
-    app.isLocal = false;
+    app.isLocal = true;
 
     let resolvedEnv = resolveEnv(app.env);
 
