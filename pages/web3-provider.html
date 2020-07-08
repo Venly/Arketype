@@ -71,10 +71,14 @@
   <div class="row auth-not-logged-in">
     <div class="form-group col-12 text-center">
       <div>
-        <button class="btn btn-primary" id="auth-loginlink">Connect to Arkane</button>
-        <a class="btn btn-link" data-toggle="collapse" href="#web3-settings" role="button" aria-expanded="false" aria-controls="collapseExample">
-          <span class="fa fa-cogs fa-lg" aria-hidden="true"></span>
-        </a>
+          <button class="btn btn-primary auth-loginlink">Connect to Arkane</button>
+          <button class="btn btn-primary auth-loginlink google" data-idp-hint="google"></button>
+          <button class="btn btn-primary auth-loginlink facebook" data-idp-hint="facebook"></button>
+
+          <a class="btn btn-link" data-toggle="collapse" href="#web3-settings" role="button" aria-expanded="false"
+             aria-controls="collapseExample">
+              <span class="fa fa-cogs fa-lg" aria-hidden="true"></span>
+          </a>
       </div>
     </div>
     <div class="collapse col-md-12 p-4" id="web3-settings">

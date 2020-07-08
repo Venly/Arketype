@@ -21,29 +21,27 @@
     };
 
     app.attachLinkEvents = function() {
-        var loginButton = document.getElementById('auth-loginlink');
         var logoutButton = document.getElementById('auth-logout');
-        if(loginButton) {
-            loginButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                var windowMode = app.getWindowMode();
-                window.arkaneConnect.flows.authenticate({windowMode: windowMode}).then((result) => {
-                    return result.authenticated(app.handleAuthenticated)
-                                 .notAuthenticated((auth) => {
-                                     document.body.classList.add('not-logged-in');
-                                 });
-                });
+        $(".auth-loginlink").on('click', function (e) {
+            e.preventDefault();
+            let idpHint = $(this).data('idp-hint');
+            var windowMode = app.getWindowMode();
+            window.arkaneConnect.flows.authenticate({windowMode: windowMode, idpHint: idpHint}).then((result) => {
+                return result.authenticated(app.handleAuthenticated)
+                    .notAuthenticated((auth) => {
+                        document.body.classList.add('not-logged-in');
+                    });
             });
-        }
+        });
 
-        if(logoutButton) {
-            logoutButton.addEventListener('click', function(e) {
+        if (logoutButton) {
+            logoutButton.addEventListener('click', function (e) {
                 e.preventDefault();
                 window.arkaneConnect
-                      .logout()
-                      .then(() => {
-                          app.handleLogout();
-                      });
+                    .logout()
+                    .then(() => {
+                        app.handleLogout();
+                    });
             });
         }
     };
