@@ -33,3 +33,11 @@
     background: url('/assets/img/facebook-signing.png') no-repeat;
     background-size: 200px 45px;
 }
+
+.twitter {
+    border: 0;
+    width: 158px;
+    height: 28px;
+    background: url('/assets/img/twitter-signin.png') no-repeat;
+    background-size: 158px 28px;
+}
