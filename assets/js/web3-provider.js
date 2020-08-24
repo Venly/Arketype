@@ -7,15 +7,20 @@
             let idpHint = $(this).data('idp-hint');
             let options = {
                 clientId: 'Arketype',
-                network: {
-                    name: $('#settings-rpc-name').val() || "Kovan",
-                    nodeUrl: $('#settings-rpc-endpoint').val() || 'https://kovan.arkane.network'
-                },
                 environment: app.env,
             };
             if (idpHint) {
                 options.authenticationOptions = {idpHint: idpHint}
             }
+            let networkName = $('#settings-rpc-name').val();
+            let nodeUrl = $('#settings-rpc-endpoint').val();
+            if (networkName && nodeUrl) {
+                options.network = {
+                    name: $('#settings-rpc-name').val(),
+                    nodeUrl: $('#settings-rpc-endpoint').val()
+                }
+            }
+
             console.log('initializing arkane web3 provider with', options);
             Arkane.createArkaneProviderEngine(options)
                 .then(function (provider) {
@@ -88,7 +93,9 @@
     }
 
     function initNetworkControls() {
-        if (Arkane.arkaneSubProvider.network) {
+        let networkName = $('#settings-rpc-name').val();
+        let nodeUrl = $('#settings-rpc-endpoint').val();
+        if (networkName && nodeUrl && Arkane.arkaneSubProvider.network) {
             $('#network-mgmt-rpc-name').val(Arkane.arkaneSubProvider.network.name);
             $('#network-mgmt-endpoint').val(Arkane.arkaneSubProvider.network.nodeUrl);
         }
@@ -127,6 +134,8 @@
             signForm.addEventListener('submit', function (e) {
                 e.stopPropagation();
                 e.preventDefault();
+                //add this if a popup blocker is being triggered
+                window.Arkane.arkaneConnect().createSigner();
 
                 var rawTransaction = {
                     from: $('select[name="from"]', signForm).val(),
@@ -153,6 +162,9 @@
             executeForm.addEventListener('submit', function (e) {
                 e.stopPropagation();
                 e.preventDefault();
+
+                //add this if a popup blocker is being triggered
+                window.Arkane.arkaneConnect().createSigner();
 
                 var rawTransaction = {
                     from: $('select[name="from"]', executeForm).val(),

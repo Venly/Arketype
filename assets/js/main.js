@@ -127,8 +127,8 @@
     app.changeNetwork = function() {
         Arkane.changeNetwork(
             {
-                name: $('#network-mgmt-rpc-name').val() || "Kovan",
-                nodeUrl: $('#network-mgmt-endpoint').val() || 'https://kovan.infura.io'
+                name: $('#network-mgmt-rpc-name').val(),
+                nodeUrl: $('#network-mgmt-endpoint').val()
             }
         );
         app.log(Arkane.arkaneSubProvider.network, 'Network changed')
