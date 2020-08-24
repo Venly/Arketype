@@ -3,46 +3,55 @@
 
     app.initApp = function () {
         app.page = app.page || {};
-        $('.auth-loginlink').on('click', function (event) {
-            let idpHint = $(this).data('idp-hint');
-            let options = {
-                clientId: 'Arketype',
-                environment: app.env,
-            };
-            if (idpHint) {
-                options.authenticationOptions = {idpHint: idpHint}
+        let idpHint = $(this).data('idp-hint');
+        let options = {
+            clientId: 'Arketype',
+            environment: app.env,
+            skipAuthentication: true
+        };
+        if (idpHint) {
+            options.authenticationOptions = {idpHint: idpHint}
+        }
+        let networkName = $('#settings-rpc-name').val();
+        let nodeUrl = $('#settings-rpc-endpoint').val();
+        if (networkName && nodeUrl) {
+            options.network = {
+                name: $('#settings-rpc-name').val(),
+                nodeUrl: $('#settings-rpc-endpoint').val()
             }
-            let networkName = $('#settings-rpc-name').val();
-            let nodeUrl = $('#settings-rpc-endpoint').val();
-            if (networkName && nodeUrl) {
-                options.network = {
-                    name: $('#settings-rpc-name').val(),
-                    nodeUrl: $('#settings-rpc-endpoint').val()
-                }
-            }
+        }
 
-            console.log('initializing arkane web3 provider with', options);
-            Arkane.createArkaneProviderEngine(options)
-                .then(function (provider) {
-                    window.web3 = new Web3(provider);
-                    handleAuthenticated();
-                })
-                .catch((reason) => {
-                    if (reason) {
-                        switch (reason) {
-                            case 'not-authenticated':
-                                console.log('User is not authenticated (closed window?)', reason);
-                                break;
-                            case 'no-wallet-linked':
-                                console.log('No wallet was linked to this application', reason);
-                                break;
-                            default:
-                                console.log('Something went wrong while creating the Arkane provider', reason);
-                        }
-                    } else {
-                        console.log('Something went wrong while creating the Arkane provider');
+        console.log('initializing arkane web3 provider with', options);
+        Arkane.createArkaneProviderEngine(options)
+            .then(function (provider) {
+                window.web3 = new Web3(provider);
+                handleWeb3Loaded();
+            })
+            .catch((reason) => {
+                if (reason) {
+                    switch (reason) {
+                        case 'not-authenticated':
+                            console.log('User is not authenticated (closed window?)', reason);
+                            break;
+                        case 'no-wallet-linked':
+                            console.log('No wallet was linked to this application', reason);
+                            break;
+                        default:
+                            console.log('Something went wrong while creating the Arkane provider', reason);
                     }
-                });
+                } else {
+                    console.log('Something went wrong while creating the Arkane provider');
+                }
+            });
+
+        $('.auth-loginlink').on('click', function (event) {
+            Arkane.authenticate().then(account => {
+                if (account) {
+                    document.body.classList.remove('not-logged-in');
+                    document.body.classList.add('logged-in');
+                    $(app).trigger('authenticated');
+                }
+            })
         });
 
         $(app).on('authenticated', function () {
@@ -61,10 +70,14 @@
         });
     };
 
-    function handleAuthenticated() {
-        document.body.classList.remove('not-logged-in');
-        document.body.classList.add('logged-in');
-        $(app).trigger('authenticated');
+    function handleWeb3Loaded() {
+        Arkane.checkAuthenticated().then(authResult => {
+            if (authResult.isAuthenticated) {
+                document.body.classList.remove('not-logged-in');
+                document.body.classList.add('logged-in');
+                $(app).trigger('authenticated');
+            }
+        });
     }
 
     function getWallets(el) {
