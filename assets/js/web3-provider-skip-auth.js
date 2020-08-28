@@ -45,7 +45,12 @@
             });
 
         $('.auth-loginlink').on('click', function (event) {
-            Arkane.authenticate().then(account => {
+            let idpHint = $(this).data('idp-hint');
+            let authenticationOptions = {};
+            if (idpHint) {
+                authenticationOptions.idpHint = idpHint;
+            }
+            Arkane.authenticate(authenticationOptions).then(account => {
                 if (account) {
                     document.body.classList.remove('not-logged-in');
                     document.body.classList.add('logged-in');
@@ -58,6 +63,15 @@
             window.web3.eth.getAccounts(function (err, wallets) {
                 app.log(wallets, 'Wallets');
                 updateWallets(wallets);
+            });
+            console.log(window.web3);
+
+            window.web3.version.getNetwork(function (err, id) {
+                if (err) {
+                    console.error(err);
+                } else {
+                    console.log('chainid', id);
+                }
             });
 
             if (!app.page.initialised) {
