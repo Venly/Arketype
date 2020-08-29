@@ -64,15 +64,6 @@
                 app.log(wallets, 'Wallets');
                 updateWallets(wallets);
             });
-            console.log(window.web3);
-
-            window.web3.version.getNetwork(function (err, id) {
-                if (err) {
-                    console.error(err);
-                } else {
-                    console.log('chainid', id);
-                }
-            });
 
             if (!app.page.initialised) {
                 initLogout();
@@ -85,6 +76,11 @@
     };
 
     function handleWeb3Loaded() {
+        window.web3.version.getNetwork(function (err, id) {
+            if (!err) {
+                app.log(id, 'ChainID');
+            }
+        });
         Arkane.checkAuthenticated().then(authResult => {
             if (authResult.isAuthenticated) {
                 document.body.classList.remove('not-logged-in');
