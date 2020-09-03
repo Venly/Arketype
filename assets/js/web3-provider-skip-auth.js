@@ -45,7 +45,12 @@
             });
 
         $('.auth-loginlink').on('click', function (event) {
-            Arkane.authenticate().then(account => {
+            let idpHint = $(this).data('idp-hint');
+            let authenticationOptions = {};
+            if (idpHint) {
+                authenticationOptions.idpHint = idpHint;
+            }
+            Arkane.authenticate(authenticationOptions).then(account => {
                 if (account) {
                     document.body.classList.remove('not-logged-in');
                     document.body.classList.add('logged-in');
@@ -71,6 +76,11 @@
     };
 
     function handleWeb3Loaded() {
+        window.web3.version.getNetwork(function (err, id) {
+            if (!err) {
+                app.log(id, 'ChainID');
+            }
+        });
         Arkane.checkAuthenticated().then(authResult => {
             if (authResult.isAuthenticated) {
                 document.body.classList.remove('not-logged-in');
