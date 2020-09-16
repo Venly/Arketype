@@ -184,6 +184,33 @@
                     }
                 });
             });
+
+            var eip712Form = document.querySelector('#eip712-form');
+            if (eip712Form) {
+                eip712Form.addEventListener('submit', function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    //add this if a popup blocker is being triggered
+                    window.Arkane.arkaneConnect().createSigner();
+
+                    const data = $('textarea[name="data"]', eip712Form).val();
+                    const signer = $('select[name="from"]', eip712Form).val()
+                    window.web3.currentProvider.sendAsync(
+                        {
+                            method: "eth_signTypedData_v3",
+                            params: [signer, data],
+                            from: signer
+                        },
+                        function (err, result) {
+                            if (err || result.error) {
+                                return console.error(result);
+                            }
+                            app.log(result, 'EIP712 signature');
+                        }
+                    );
+                });
+            }
         }
     }
 
@@ -202,4 +229,5 @@
         const walletsSelect = $('select[name="from"]');
         walletsSelect && walletsSelect.empty();
     }
+
 })();

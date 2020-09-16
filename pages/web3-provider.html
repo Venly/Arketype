@@ -24,8 +24,10 @@
 <header class="bg-light">
     <div class="container">
         <nav class="row navbar navbar-expand-md navbar-light">
-            <a class="navbar-brand" href="/index.html"><img src="/assets/img/Arketype-thumbnail.png" alt="" width="32" height="32"></a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
+            <a class="navbar-brand" href="/index.html"><img src="/assets/img/Arketype-thumbnail.png" alt="" width="32"
+                                                            height="32"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                    aria-controls="navbarCollapse" aria-expanded="false"
                     aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -65,54 +67,59 @@
             <img class="d-block mx-auto mb-4" src="/assets/img/logo-arkane-a-light.svg" alt="" width="72" height="72">
             <h2>Arkane Network</h2>
             <div class="lead">
-                <p class="mb-1"><span>Demo project</span><img class="d-inline mx-1" src="/assets/img/Arketype-thumbnail.png" alt="" width="32" height="32"><span>Arketype</span>
+                <p class="mb-1"><span>Demo project</span><img class="d-inline mx-1"
+                                                              src="/assets/img/Arketype-thumbnail.png" alt="" width="32"
+                                                              height="32"><span>Arketype</span>
                 </p>
-                <p>Source code available on <a href="https://github.com/ArkaneNetwork/arketype" target="_blank">GitHub</a></p>
+                <p>Source code available on <a href="https://github.com/ArkaneNetwork/arketype"
+                                               target="_blank">GitHub</a></p>
             </div>
         </div>
     </div>
 
-  <div class="row auth-not-logged-in">
-    <div class="form-group col-12 text-center">
-      <div>
-          <button class="btn btn-primary auth-loginlink">Connect to Arkane</button>
-          <button class="btn btn-primary auth-loginlink google" data-idp-hint="google"></button>
-          <button class="btn btn-primary auth-loginlink facebook" data-idp-hint="facebook"></button>
-          <button class="btn btn-primary auth-loginlink twitter" data-idp-hint="twitter"></button>
+    <div class="row auth-not-logged-in">
+        <div class="form-group col-12 text-center">
+            <div>
+                <button class="btn btn-primary auth-loginlink">Connect to Arkane</button>
+                <button class="btn btn-primary auth-loginlink google" data-idp-hint="google"></button>
+                <button class="btn btn-primary auth-loginlink facebook" data-idp-hint="facebook"></button>
+                <button class="btn btn-primary auth-loginlink twitter" data-idp-hint="twitter"></button>
 
-          <a class="btn btn-link" data-toggle="collapse" href="#web3-settings" role="button" aria-expanded="false"
-             aria-controls="collapseExample">
-              <span class="fa fa-cogs fa-lg" aria-hidden="true"></span>
-          </a>
-      </div>
-    </div>
-    <div class="collapse col-md-12 p-4" id="web3-settings">
-      <div class="row">
-        <div class="mb-3 col-lg-4 offset-lg-4">
-          <form id="settings-form" data-form="request" class="card bg-light">
-            <fieldset class="card-body">
-              <legend class="card-title">Settings</legend>
-
-
-                <div class="form-group row">
-                    <label for="sign-to" class="col-sm-5 col-form-label">Network name</label>
-                    <div class="col-sm-7">
-                        <input id="settings-rpc-name" class="form-control" name="settings-rpc-name" placeholder="e.g. Rinkeby"/>
-                    </div>
-                </div>
-
-              <div class="form-group row">
-                <label for="sign-to" class="col-sm-5 col-form-label">Network node URL</label>
-                <div class="col-sm-7">
-                  <input id="settings-rpc-endpoint" class="form-control" name="settings-rpc-endpoint" placeholder="e.g. https://rinkeby.infura.io"/>
-                </div>
-              </div>
-            </fieldset>
-          </form>
+                <a class="btn btn-link" data-toggle="collapse" href="#web3-settings" role="button" aria-expanded="false"
+                   aria-controls="collapseExample">
+                    <span class="fa fa-cogs fa-lg" aria-hidden="true"></span>
+                </a>
+            </div>
         </div>
-      </div>
+        <div class="collapse col-md-12 p-4" id="web3-settings">
+            <div class="row">
+                <div class="mb-3 col-lg-4 offset-lg-4">
+                    <form id="settings-form" data-form="request" class="card bg-light">
+                        <fieldset class="card-body">
+                            <legend class="card-title">Settings</legend>
+
+
+                            <div class="form-group row">
+                                <label for="sign-to" class="col-sm-5 col-form-label">Network name</label>
+                                <div class="col-sm-7">
+                                    <input id="settings-rpc-name" class="form-control" name="settings-rpc-name"
+                                           placeholder="e.g. Rinkeby"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="sign-to" class="col-sm-5 col-form-label">Network node URL</label>
+                                <div class="col-sm-7">
+                                    <input id="settings-rpc-endpoint" class="form-control" name="settings-rpc-endpoint"
+                                           placeholder="e.g. https://rinkeby.infura.io"/>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <div class="bg-light py-5 auth-logged-in">
@@ -143,22 +150,24 @@
                     <h4 class="mb-3 col-12">Network</h4>
                     <div class="col-12 col-md-12">
 
-                                <div class="form-group row">
-                                    <label for="sign-to" class="col-sm-5 col-form-label">Network name</label>
-                                    <div class="col-sm-7">
-                                        <input id="network-mgmt-rpc-name" class="form-control" name="settings-rpc-name" placeholder="e.g. Rinkeby"/>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label for="sign-to" class="col-sm-5 col-form-label">Network node URL</label>
-                                    <div class="col-sm-7">
-                                        <input id="network-mgmt-endpoint" class="form-control" name="settings-rpc-endpoint" placeholder="e.g. https://rinkeby.infura.io"/>
-                                    </div>
-                                </div>
-                            <div class="card p-2">
-                                <button class="btn btn-secondary" onclick="app.changeNetwork()">Change network</button>
+                        <div class="form-group row">
+                            <label for="sign-to" class="col-sm-5 col-form-label">Network name</label>
+                            <div class="col-sm-7">
+                                <input id="network-mgmt-rpc-name" class="form-control" name="settings-rpc-name"
+                                       placeholder="e.g. Rinkeby"/>
                             </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="sign-to" class="col-sm-5 col-form-label">Network node URL</label>
+                            <div class="col-sm-7">
+                                <input id="network-mgmt-endpoint" class="form-control" name="settings-rpc-endpoint"
+                                       placeholder="e.g. https://rinkeby.infura.io"/>
+                            </div>
+                        </div>
+                        <div class="card p-2">
+                            <button class="btn btn-secondary" onclick="app.changeNetwork()">Change network</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -191,9 +200,12 @@
                                     <label for="sign-from" class="col-sm-5 col-form-label">From</label>
                                     <div class="col-sm-7">
                                         <div class="input-group">
-                                            <select id="sign-from" class="form-control" data-from="true" name="from"></select>
+                                            <select id="sign-from" class="form-control" data-from="true"
+                                                    name="from"></select>
                                             <div class="input-group-append">
-                                                <button type="button" class="btn btn-outline-secondary" onclick="app.copySelectDataAddress('#sign-from')" title="Copy address">
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                        onclick="app.copySelectDataAddress('#sign-from')"
+                                                        title="Copy address">
                                                     <i class="fa fa-copy"></i>
                                                 </button>
                                             </div>
@@ -204,47 +216,56 @@
                                 <div class="form-group row">
                                     <label for="sign-to" class="col-sm-5 col-form-label">To</label>
                                     <div class="col-sm-7">
-                                        <input id="sign-to" class="form-control" data-to="true" name="to" placeholder="To"/>
+                                        <input id="sign-to" class="form-control" data-to="true" name="to"
+                                               placeholder="To"/>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
-                                    <label for="sign-amount" class="col-sm-5 col-form-label">Value (in wei, optional)</label>
+                                    <label for="sign-amount" class="col-sm-5 col-form-label">Value (in wei,
+                                        optional)</label>
                                     <div class="col-sm-7">
-                                        <input id="sign-amount" class="form-control" data-amount="true" name="value" placeholder="value" value="314000000000000000"/>
+                                        <input id="sign-amount" class="form-control" data-amount="true" name="value"
+                                               placeholder="value" value="314000000000000000"/>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label for="sign-gas" class="col-sm-5 col-form-label">Gas (optional)</label>
                                     <div class="col-sm-7">
-                                        <input id="sign-gas" type="number" class="form-control" data-gas="true" name="gas" placeholder="Gas"/>
+                                        <input id="sign-gas" type="number" class="form-control" data-gas="true"
+                                               name="gas" placeholder="Gas"/>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
-                                    <label for="sign-gas-price" class="col-sm-5 col-form-label">Gas Price (in wei, optional)</label>
+                                    <label for="sign-gas-price" class="col-sm-5 col-form-label">Gas Price (in wei,
+                                        optional)</label>
                                     <div class="col-sm-7">
-                                        <input id="sign-gas-price" type="number" class="form-control" data-gas-price="true" name="gas-price" placeholder="Gas Price"/>
+                                        <input id="sign-gas-price" type="number" class="form-control"
+                                               data-gas-price="true" name="gas-price" placeholder="Gas Price"/>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label for="sign-gas-price" class="col-sm-5 col-form-label">Nonce (optional)</label>
                                     <div class="col-sm-7">
-                                        <input id="sign-nonce" type="number" class="form-control" data-nonce="true" name="nonce" placeholder="Nonce"/>
+                                        <input id="sign-nonce" type="number" class="form-control" data-nonce="true"
+                                               name="nonce" placeholder="Nonce"/>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label for="sign-data" class="col-sm-5 col-form-label">Data (optional)</label>
                                     <div class="col-sm-7">
-                                        <textarea id="sign-data" class="form-control" data-data="true" name="data" rows="4"></textarea>
+                                        <textarea id="sign-data" class="form-control" data-data="true" name="data"
+                                                  rows="4"></textarea>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="offset-5 col-7">
-                                        <button type="submit" value="sign" class="btn btn-primary">Sign Transaction</button>
+                                        <button type="submit" value="sign" class="btn btn-primary">Sign Transaction
+                                        </button>
                                     </div>
                                 </div>
                             </fieldset>
@@ -259,9 +280,12 @@
                                     <label for="exec-from" class="col-sm-5 col-form-label">From</label>
                                     <div class="col-sm-7">
                                         <div class="input-group">
-                                            <select id="exec-from" class="form-control" data-from="true" name="from"></select>
+                                            <select id="exec-from" class="form-control" data-from="true"
+                                                    name="from"></select>
                                             <div class="input-group-append">
-                                                <button type="button" class="btn btn-outline-secondary" onclick="app.copySelectDataAddress('#exec-from')" title="Copy address">
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                        onclick="app.copySelectDataAddress('#exec-from')"
+                                                        title="Copy address">
                                                     <i class="fa fa-copy"></i>
                                                 </button>
                                             </div>
@@ -272,47 +296,98 @@
                                 <div class="form-group row">
                                     <label for="exec-to" class="col-sm-5 col-form-label">To</label>
                                     <div class="col-sm-7">
-                                        <input id="exec-to" class="form-control" data-to="true" name="to" placeholder="To"/>
+                                        <input id="exec-to" class="form-control" data-to="true" name="to"
+                                               placeholder="To"/>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
-                                    <label for="exec-amount" class="col-sm-5 col-form-label">Value (in wei, optional)</label>
+                                    <label for="exec-amount" class="col-sm-5 col-form-label">Value (in wei,
+                                        optional)</label>
                                     <div class="col-sm-7">
-                                        <input id="exec-amount" class="form-control" data-amount="true" name="value" placeholder="value" value="314000000000000000"/>
+                                        <input id="exec-amount" class="form-control" data-amount="true" name="value"
+                                               placeholder="value" value="314000000000000000"/>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label for="exec-gas" class="col-sm-5 col-form-label">Gas (optional)</label>
                                     <div class="col-sm-7">
-                                        <input id="exec-gas" type="number" class="form-control" data-gas="true" name="gas" placeholder="Gas"/>
+                                        <input id="exec-gas" type="number" class="form-control" data-gas="true"
+                                               name="gas" placeholder="Gas"/>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
-                                    <label for="exec-gas-price" class="col-sm-5 col-form-label">Gas Price (in wei, optional)</label>
+                                    <label for="exec-gas-price" class="col-sm-5 col-form-label">Gas Price (in wei,
+                                        optional)</label>
                                     <div class="col-sm-7">
-                                        <input id="exec-gas-price" type="number" class="form-control" data-gas-price="true" name="gas-price" placeholder="Gas Price"/>
+                                        <input id="exec-gas-price" type="number" class="form-control"
+                                               data-gas-price="true" name="gas-price" placeholder="Gas Price"/>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label for="exec-gas-price" class="col-sm-5 col-form-label">Nonce (optional)</label>
                                     <div class="col-sm-7">
-                                        <input id="exec-nonce" type="number" class="form-control" data-nonce="true" name="nonce" placeholder="Nonce"/>
+                                        <input id="exec-nonce" type="number" class="form-control" data-nonce="true"
+                                               name="nonce" placeholder="Nonce"/>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label for="exec-data" class="col-sm-5 col-form-label">Data (optional)</label>
                                     <div class="col-sm-7">
-                                        <textarea id="exec-data" class="form-control" data-data="true" name="data" rows="4"></textarea>
+                                        <textarea id="exec-data" class="form-control" data-data="true" name="data"
+                                                  rows="4"></textarea>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="offset-5 col-7">
-                                        <button type="submit" value="execute" class="btn btn-primary">Execute Transaction</button>
+                                        <button type="submit" value="execute" class="btn btn-primary">Execute
+                                            Transaction
+                                        </button>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="mb-3 col-lg-6">
+                        <form id="eip712-form" data-form="request" class="card bg-light">
+                            <fieldset class="card-body">
+                                <legend class="card-title">Sign typed data (EIP712)</legend>
+
+
+                                <div class="form-group row">
+                                    <label for="sign-from" class="col-sm-5 col-form-label">From</label>
+                                    <div class="col-sm-7">
+                                        <div class="input-group">
+                                            <select id="eip712-from" class="form-control" data-from="true"
+                                                    name="from"></select>
+                                            <div class="input-group-append">
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                        onclick="app.copySelectDataAddress('#eip712-from')"
+                                                        title="Copy address">
+                                                    <i class="fa fa-copy"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="eip712-data" class="col-sm-5 col-form-label">EIP712 data</label>
+                                    <div class="col-sm-7">
+                                        <textarea id="eip712-data" class="form-control" data-data="true" name="data"
+                                                  rows="4">{"types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"},{"name":"salt","type":"bytes32"}],"Bid":[{"name":"amount","type":"uint256"},{"name":"bidder","type":"Identity"}],"Identity":[{"name":"userId","type":"uint256"},{"name":"wallet","type":"address"}]},"domain":{"name":"My amazing dApp","version":"2","chainId":4,"verifyingContract":"0x1C56346CD2A2Bf3202F771f50d3D14a367B48070","salt":"0xf2d857f4a3edcb9b78b4d503bfe733db1e3f6cdc2b7971ee739626c97e86a558"},"primaryType":"Bid","message":{"amount":100,"bidder":{"userId":323,"wallet":"0x3333333333333333333333333333333333333333"}}}</textarea>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="offset-5 col-7">
+                                        <button type="submit" value="execute" class="btn btn-primary">Sign</button>
                                     </div>
                                 </div>
                             </fieldset>
