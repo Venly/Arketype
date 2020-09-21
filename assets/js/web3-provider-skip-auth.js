@@ -60,7 +60,7 @@
         });
 
         $(app).on('authenticated', function () {
-            window.web3.eth.getAccounts(function (err, wallets) {
+            window.web3.eth.getAccounts().then(wallets => {
                 app.log(wallets, 'Wallets');
                 updateWallets(wallets);
             });
@@ -76,10 +76,9 @@
     };
 
     function handleWeb3Loaded() {
-        window.web3.version.getNetwork(function (err, id) {
-            if (!err) {
-                app.log(id, 'ChainID');
-            }
+        app.log(window.web3.version, 'web3 version');
+        window.web3.eth.getChainId().then(network => {
+            app.log(network, 'ChainID');
         });
         Arkane.checkAuthenticated().then(authResult => {
             if (authResult.isAuthenticated) {
@@ -199,13 +198,17 @@
                     data: $('textarea[name="data"]', executeForm).val() || undefined,
                 };
 
-                window.web3.eth.sendTransaction(rawTransaction, function (err, result) {
-                    if (err) {
+                window.web3.eth.sendTransaction(rawTransaction)
+                    .on('transactionHash', function (hash) {
+                        app.log(hash, 'Tx hash');
+                    })
+                    .on('receipt', function (receipt) {
+                        app.log(receipt, 'Tx receipt');
+                    })
+                    .on('error', function (err) {
                         app.error("error: " + err.message ? err.message : JSON.stringify(err));
-                    } else {
-                        app.log(JSON.stringify(result));
-                    }
-                });
+                    });
+
             });
         }
 

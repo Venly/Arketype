@@ -25,6 +25,7 @@
             Arkane.createArkaneProviderEngine(options)
                 .then(function (provider) {
                     window.web3 = new Web3(provider);
+                    handleWeb3Loaded();
                     handleAuthenticated();
                 })
                 .catch((reason) => {
@@ -60,6 +61,13 @@
             }
         });
     };
+
+    function handleWeb3Loaded() {
+        app.log(window.web3.version, 'web3 version');
+        window.web3.eth.getChainId().then(network => {
+            app.log(network, 'ChainID');
+        });
+    }
 
     function handleAuthenticated() {
         document.body.classList.remove('not-logged-in');
@@ -176,13 +184,16 @@
                     data: $('textarea[name="data"]', executeForm).val() || undefined,
                 };
 
-                window.web3.eth.sendTransaction(rawTransaction, function (err, result) {
-                    if (err) {
+                window.web3.eth.sendTransaction(rawTransaction)
+                    .on('transactionHash', function (hash) {
+                        app.log(hash, 'Tx hash');
+                    })
+                    .on('receipt', function (receipt) {
+                        app.log(receipt, 'Tx receipt');
+                    })
+                    .on('error', function (err) {
                         app.error("error: " + err.message ? err.message : JSON.stringify(err));
-                    } else {
-                        app.log(JSON.stringify(result));
-                    }
-                });
+                    });
             });
 
             var eip712Form = document.querySelector('#eip712-form');
