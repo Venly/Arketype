@@ -52,12 +52,23 @@
     function signMessage(message) {
         console.debug('Signing message', message);
         window.arkaneConnect.createSigner().signMessage(message)
-              .then(function(result) {
-                  app.log(result);
-              })
-              .catch(function(err) {
-                  app.error(err);
-              });
+            .then(function (result) {
+                app.log(result);
+            })
+            .catch(function (err) {
+                app.error(err);
+            });
+    }
+
+    function signEip712(data) {
+        console.debug('Signing eip712 message', data);
+        window.arkaneConnect.createSigner().signEip712(data)
+            .then(function (result) {
+                app.log(result);
+            })
+            .catch(function (err) {
+                app.error(err);
+            });
     }
 
     function executeTransaction(executeData) {
@@ -195,12 +206,26 @@
             walletId: fields.walletId,
             data: Object.assign({}, fields.data, {defaultValue: 'Some test data'}),
             prefix: {type: 'checkbox', checked: true, label: 'Prefix'},
-            hash: {type: 'checkbox', checked: true, label: 'Hash', info: 'When prefix is checked, hash will always be set to \'true\''}
+            hash: {
+                type: 'checkbox',
+                checked: true,
+                label: 'Hash',
+                info: 'When prefix is checked, hash will always be set to \'true\''
+            }
         });
 
         createSignMessage(secretType, {
             walletId: fields.walletId,
-            data: Object.assign({}, fields.data, {defaultValue: 'Some message', label: 'Message'}),
+            data: Object.assign({}, fields.data, {defaultValue: 'Some message', label: 'Message', placeholder: '{}'}),
+        });
+
+        createSignEip712(secretType, {
+            walletId: fields.walletId,
+            data: Object.assign({}, fields.data, {
+                defaultValue: '{"types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"},{"name":"salt","type":"bytes32"}],"Bid":[{"name":"amount","type":"uint256"},{"name":"bidder","type":"Identity"}],"Identity":[{"name":"userId","type":"uint256"},{"name":"wallet","type":"address"}]},"domain":{"name":"My amazing dApp","version":"2","chainId":1,"verifyingContract":"0x1C56346CD2A2Bf3202F771f50d3D14a367B48070","salt":"0xf2d857f4a3edcb9b78b4d503bfe733db1e3f6cdc2b7971ee739626c97e86a558"},"primaryType":"Bid","message":{"amount":100,"bidder":{"userId":323,"wallet":"0x3333333333333333333333333333333333333333"}}}',
+                label: 'Data',
+                json: true
+            }),
         });
 
         createExecuteContractForm(secretType, {
@@ -624,6 +649,7 @@
         form.addEventListener('submit', function(e) {
             e.stopPropagation();
             e.preventDefault();
+            console.log('submitting...');
             var data = Object.assign({}, defaultData);
             var clause = {};
             var contractCall = {};
@@ -649,6 +675,10 @@
                     value = JSON.parse(value);
                 }
                 if (name === 'chainSpecificFields') {
+                    value = JSON.parse(value);
+                }
+
+                if (name === 'data' && fields.data.json) {
                     value = JSON.parse(value);
                 }
 
@@ -706,6 +736,13 @@
     function createSignMessage(secretType,
                                fields) {
         createForm('Sign Message', secretType, 'sign-message', fields, signMessage, {
+            secretType,
+        });
+    }
+
+    function createSignEip712(secretType,
+                              fields) {
+        createForm('Sign EIP712', secretType, 'sign-eip712', fields, signEip712, {
             secretType,
         });
     }
