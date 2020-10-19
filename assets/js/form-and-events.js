@@ -16,6 +16,7 @@
         app.page.initAeternity();
         app.page.initEthereum();
         app.page.initMatic();
+        app.page.initBsc();
         app.page.initTron();
         app.page.initGo();
         app.page.initVechain();
@@ -61,7 +62,7 @@
     }
 
     function signEip712(data) {
-        console.debug('Signing eip712 message', data);
+        console.log('Signing eip712 message', data);
         window.arkaneConnect.createSigner().signEip712(data)
             .then(function (result) {
                 app.log(result);
@@ -301,14 +302,106 @@
             walletId: fields.walletId,
             to: fields.to,
             value: {type: 'input', label: 'Amount (in MATIC)', defaultValue: '0.0314'},
-            tokenAddress: {type: 'input', label: 'Token address', placeholder: 'e.g. 0x6ff6c0ff1d68b964901f986d4c9fa3ac68346570'},
+            tokenAddress: {
+                type: 'input',
+                label: 'Token address',
+                placeholder: 'e.g. 0x6ff6c0ff1d68b964901f986d4c9fa3ac68346570'
+            },
             data: fields.data,
             name: fields.name,
             nodeUrl: fields.nodeUrl,
         });
     };
 
-    app.page.initTron = function() {
+    app.page.initBsc = function () {
+        var secretType = 'BSC';
+        var fields = {
+            walletId: {type: 'wallet-select', label: 'From'},
+            to: {type: 'input', label: 'To', defaultValue: '0x680800Dd4913021821A9C08D569eF4338dB8E9f6'},
+            value: {type: 'input', label: 'Amount (in WEI)', defaultValue: '31400000000000000'},
+            data: {type: 'textarea', label: 'Data (optional)', placeholder: 'Some test data'},
+            name: {type: 'input', label: 'Network name', placeholder: 'e.g. Rinkeby', network: true},
+            nodeUrl: {
+                type: 'input',
+                label: 'Network node URL',
+                placeholder: 'e.g. https://rinkeby.infura.io',
+                network: true
+            },
+        };
+        createSignForm(secretType, 'BSC_TRANSACTION', fields);
+
+        createSignRawForm(secretType, 'BSC_RAW', {
+            walletId: fields.walletId,
+            data: Object.assign({}, fields.data, {defaultValue: 'Some test data'}),
+            prefix: {type: 'checkbox', checked: true, label: 'Prefix'},
+            hash: {
+                type: 'checkbox',
+                checked: true,
+                label: 'Hash',
+                info: 'When prefix is checked, hash will always be set to \'true\''
+            }
+        });
+
+        createSignMessage(secretType, {
+            walletId: fields.walletId,
+            data: Object.assign({}, fields.data, {defaultValue: 'Some message', label: 'Message'}),
+        });
+
+        createSignEip712(secretType, {
+            walletId: fields.walletId,
+            data: Object.assign({}, fields.data, {
+                defaultValue: '{"types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"},{"name":"salt","type":"bytes32"}],"Bid":[{"name":"amount","type":"uint256"},{"name":"bidder","type":"Identity"}],"Identity":[{"name":"userId","type":"uint256"},{"name":"wallet","type":"address"}]},"domain":{"name":"My amazing dApp","version":"2","chainId":1,"verifyingContract":"0x1C56346CD2A2Bf3202F771f50d3D14a367B48070","salt":"0xf2d857f4a3edcb9b78b4d503bfe733db1e3f6cdc2b7971ee739626c97e86a558"},"primaryType":"Bid","message":{"amount":100,"bidder":{"userId":323,"wallet":"0x3333333333333333333333333333333333333333"}}}',
+                label: 'Data',
+                json: true
+            }),
+        })
+
+        createExecuteContractForm(secretType, {
+            walletId: {type: 'wallet-select', label: 'From'},
+            to: {type: 'input', label: 'Contract Address', defaultValue: '0xc4375b7de8af5a38a93548eb8453a498222c4ff2'},
+            value: {type: 'input', label: 'Amount (in WEI)', defaultValue: '0'},
+            functionName: {type: 'input', label: 'Function Name', defaultValue: 'approve'},
+            inputs: {
+                type: 'textarea',
+                label: 'Inputs',
+                defaultValue: '[{"type": "address", "value": "0xd82049204D8514c637f150C7231BFefC5C4937Ec"},{"type": "uint256", "value": "0"}]'
+            },
+            chainSpecificFields: {
+                type: 'textarea',
+                label: 'Chain specific fields',
+                defaultValue: '{"gasLimit": 200000, "gasPrice": 0}',
+                dataName: 'chainSpecific'
+            },
+            name: {type: 'input', label: 'Network name', placeholder: 'e.g. TestNet', network: true},
+            nodeUrl: {
+                type: 'input',
+                label: 'Network node URL',
+                placeholder: 'e.g. https://testnet-bsc.arkane.network',
+                network: true
+            }
+        });
+
+        fields.tokenAddress = {
+            type: "input",
+            label: "Token Address (optional)",
+        };
+        createExecuteForm(secretType, {
+            walletId: fields.walletId,
+            to: fields.to,
+            value: {type: 'input', label: 'Amount (in BSC)', defaultValue: '0.0314'},
+            tokenAddress: {
+                type: 'input',
+                label: 'Token address',
+                placeholder: 'e.g. 0x6ff6c0ff1d68b964901f986d4c9fa3ac68346570'
+            },
+            data: fields.data,
+            name: fields.name,
+            nodeUrl: fields.nodeUrl,
+        });
+    };
+
+
+    app.page.initTron = function () {
         var secretType = 'TRON';
         var fields = {
             walletId: {type: 'wallet-select', label: 'From'},
