@@ -11,7 +11,6 @@ pipeline {
         stage('Docker Build') {
           steps {
             sh 'ls -l'
-            sh 'npm install'
             sh 'docker build -t arkanenetwork/arkane-arketype:${BRANCH_NAME} .'
           }
         }
@@ -24,9 +23,4 @@ pipeline {
           }
         }
     }
-    post {
-            always {
-                cleanWs()
-            }
-        }
 }
