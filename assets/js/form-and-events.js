@@ -364,12 +364,12 @@
             inputs: {
                 type: 'textarea',
                 label: 'Inputs',
-                defaultValue: '[{"type": "address", "value": "0xd82049204D8514c637f150C7231BFefC5C4937Ec"},{"type": "uint256", "value": "0"}]'
+                defaultValue: '[{"type": "address", "value": "0xa7ce868f6490186ac57fa12174df770672ec0950"},{"type": "uint256", "value": "0"}]'
             },
             chainSpecificFields: {
                 type: 'textarea',
                 label: 'Chain specific fields',
-                defaultValue: '{"gasLimit": 200000, "gasPrice": 0}',
+                defaultValue: '{"gasLimit": 145000, "gasPrice": 20}',
                 dataName: 'chainSpecific'
             },
             name: {type: 'input', label: 'Network name', placeholder: 'e.g. TestNet', network: true},
