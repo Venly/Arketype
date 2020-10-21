@@ -104,10 +104,10 @@
     ethers "~4.0.4"
     lodash "^4.17.11"
 
-"@arkane-network/arkane-connect@1.20.0":
-  version "1.20.0"
-  resolved "https://registry.yarnpkg.com/@arkane-network/arkane-connect/-/arkane-connect-1.20.0.tgz#82c4905fd523908b69fcfefc88642a13cb30aa62"
-  integrity sha512-nyb4lmxnzSoJc1VHeup8lTSNrLaFxVdTtWmePAsVpUYoSnrHrub/Jwm599ciC92b4+E7Rrpq9getssgJ4lSojw==
+"@arkane-network/arkane-connect@1.21.0":
+  version "1.21.0"
+  resolved "https://registry.yarnpkg.com/@arkane-network/arkane-connect/-/arkane-connect-1.21.0.tgz#3a820e6f93b3ddd3a5cdc0e3cb76c1ff3532ed91"
+  integrity sha512-TZd36BqTef39VFsxhxYevCXzGbGoLJN52m9nIOcfgRUp0zEVMOlyXmMr/NnY0O1trJPFJlQNEC/nzdx0mb0TOQ==
   dependencies:
     "@types/node" "^12.7.1"
     axios "^0.19.0"
@@ -116,32 +116,20 @@
     keycloak-js "11.0.2"
     querystring "^0.2.0"
 
-"@arkane-network/arkane-connect@1.21.0-develop.10":
-  version "1.21.0-develop.10"
-  resolved "https://registry.yarnpkg.com/@arkane-network/arkane-connect/-/arkane-connect-1.21.0-develop.10.tgz#181f655a9154734dd15cd09f3550e38e5f7d927d"
-  integrity sha512-ViVFXbArPD9R756WQhky/4l/ktNoN9lm22fSnBeRN/UtL0fZSfS0pIhPlkcair4vKwHy7avFQoPS0O+3sCITug==
-  dependencies:
-    "@types/node" "^12.7.1"
-    axios "^0.19.0"
-    core-js "^3.2.1"
-    es6-promise "^4.2.8"
-    keycloak-js "11.0.2"
-    querystring "^0.2.0"
-
-"@arkane-network/web3-arkane-provider@0.15.0-develop.3":
-  version "0.15.0-develop.3"
-  resolved "https://registry.yarnpkg.com/@arkane-network/web3-arkane-provider/-/web3-arkane-provider-0.15.0-develop.3.tgz#106ebcf6f8806a313739c7627625846f5e6acb87"
-  integrity sha512-Eim51Ih/+tNphsmGjYlE/r/1wzF4vV9lavh/vIBXqMRSReUzQpFwoNVo8HD7MfhOX2VjwmT5LuOW6Qpats9vGg==
+"@arkane-network/web3-arkane-provider@0.15.0-develop.5":
+  version "0.15.0-develop.5"
+  resolved "https://registry.yarnpkg.com/@arkane-network/web3-arkane-provider/-/web3-arkane-provider-0.15.0-develop.5.tgz#01ffd6bbf82a1cbb108bd9393a2fe9aa0e54fa75"
+  integrity sha512-lkiw/mhi1T+PqFERKvc9Ol7e79HRZ4Wkf8Uwnbu5HqWBIrxPWieOHs+FnHaKj25LJuHpH/yoTgMuomfyDB/1Fg==
   dependencies:
     "@0x/assert" "^3.0.9"
     "@0x/subproviders" "6.1.1"
-    "@arkane-network/arkane-connect" "1.20.0"
-    "@arkane-network/web3-provider-engine" "16.0.1"
+    "@arkane-network/arkane-connect" "1.21.0"
+    "@arkane-network/web3-provider-engine" "16.0.1-e"
 
-"@arkane-network/web3-provider-engine@16.0.1":
-  version "16.0.1"
-  resolved "https://registry.yarnpkg.com/@arkane-network/web3-provider-engine/-/web3-provider-engine-16.0.1.tgz#30900a2632ccfc933945bbc4f45cfd3aac570c04"
-  integrity sha512-8/tOnjkGAjqAvmBcpO7BrkwXZYqPKFhznkOdG6a5FmEqHFGEHIbJ6Y83+RULqJLGFBYhnGO2wQWDW2HB83hvMA==
+"@arkane-network/web3-provider-engine@16.0.1-e":
+  version "16.0.1-e"
+  resolved "https://registry.yarnpkg.com/@arkane-network/web3-provider-engine/-/web3-provider-engine-16.0.1-e.tgz#f95a2942b0dd349c53ef2ebfc30b1fc799e18ef5"
+  integrity sha512-dQWm7gvQiL+iPFJhXobe2gqK2dDQUpSklR///wAlR39UVp9bvdysdpX7/9fJn/SjK8MmwQdDlRO9IT/va3vc3A==
   dependencies:
     async "^2.5.0"
     backoff "^2.5.0"
