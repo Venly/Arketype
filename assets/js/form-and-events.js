@@ -369,7 +369,7 @@
             chainSpecificFields: {
                 type: 'textarea',
                 label: 'Chain specific fields',
-                defaultValue: '{"gasLimit": 145000, "gasPrice": 20}',
+                defaultValue: '{"gasLimit": 145000, "gasPrice": 20000000000}',
                 dataName: 'chainSpecific'
             },
             name: {type: 'input', label: 'Network name', placeholder: 'e.g. TestNet', network: true},
