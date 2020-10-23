@@ -168,16 +168,24 @@
                            aria-selected="true">Matic</a>
                         <a class="nav-item nav-link" id="nav-VECHAIN-tab" data-toggle="tab" href=".tab-pane#tab-VECHAIN" role="tab" aria-controls="tab-VECHAIN"
                            aria-selected="false">VeChain</a>
-                        <a class="nav-item nav-link" id="nav-LITECOIN-tab" data-toggle="tab" href=".tab-pane#tab-LITECOIN" role="tab" aria-controls="tab-LITECOIN"
+                        <a class="nav-item nav-link" id="nav-LITECOIN-tab" data-toggle="tab"
+                           href=".tab-pane#tab-LITECOIN" role="tab" aria-controls="tab-LITECOIN"
                            aria-selected="false">Litecoin</a>
-                        <a class="nav-item nav-link" id="nav-GOCHAIN-tab" data-toggle="tab" href=".tab-pane#tab-GOCHAIN" role="tab" aria-controls="tab-GOCHAIN"
+                        <a class="nav-item nav-link" id="nav-GOCHAIN-tab" data-toggle="tab" href=".tab-pane#tab-GOCHAIN"
+                           role="tab" aria-controls="tab-GOCHAIN"
                            aria-selected="false">GoChain</a>
-                        <a class="nav-item nav-link" id="nav-TRON-tab" data-toggle="tab" href=".tab-pane#tab-TRON" role="tab" aria-controls="tab-TRON"
+                        <a class="nav-item nav-link" id="nav-TRON-tab" data-toggle="tab" href=".tab-pane#tab-TRON"
+                           role="tab" aria-controls="tab-TRON"
                            aria-selected="false">Tron</a>
-                        <a class="nav-item nav-link" id="nav-AETERNITY-tab" data-toggle="tab" href=".tab-pane#tab-AETERNITY" role="tab" aria-controls="tab-AETERNITY"
+                        <a class="nav-item nav-link" id="nav-AETERNITY-tab" data-toggle="tab"
+                           href=".tab-pane#tab-AETERNITY" role="tab" aria-controls="tab-AETERNITY"
                            aria-selected="false">æternity</a>
-                        <a class="nav-item nav-link" id="nav-NEO-tab" data-toggle="tab" href=".tab-pane#tab-NEO" role="tab" aria-controls="tab-NEO"
+                        <a class="nav-item nav-link" id="nav-NEO-tab" data-toggle="tab" href=".tab-pane#tab-NEO"
+                           role="tab" aria-controls="tab-NEO"
                            aria-selected="false">Neo</a>
+                        <a class="nav-item nav-link" id="nav-BSC-tab" data-toggle="tab" href=".tab-pane#tab-BSC"
+                           role="tab" aria-controls="tab-BSC"
+                           aria-selected="true">Binance SC</a>
                     </div>
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
@@ -391,6 +399,36 @@
                             </div>
                             <div class="mb-3 col-lg-6">
                                 <form data-form="execute-contract" data-chain="NEO" class="card bg-light"></form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade p-4 bg-white border" id="tab-BSC" data-chain="BSC" role="tabpanel"
+                         aria-labelledby="nav-BSC-tab">
+                        <button type="button" data-chain="BSC" class="btn btn-outline-primary get-wallets mb-3">
+                            Refresh Wallets
+                        </button>
+                        <button type="button" data-chain="BSC" class="btn btn-outline-primary manage-wallets mb-3">
+                            Manage Wallets
+                        </button>
+
+                        <div class="row">
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign" data-chain="BSC" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="execute" data-chain="BSC" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign-raw" data-chain="BSC" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign-eip712" data-chain="BSC" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign-message" data-chain="BSC" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="execute-contract" data-chain="BSC" class="card bg-light"></form>
                             </div>
                         </div>
                     </div>

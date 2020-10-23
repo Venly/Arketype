@@ -60,6 +60,17 @@
         });
 
         $(app).on('authenticated', function () {
+            window.web3.eth.subscribe('newBlockHeaders', function (error, result) {
+                if (!error) {
+                    return;
+                }
+                console.error('weird, an error!', error);
+            })
+                .on("data", function (blockHeader) {
+                    app.log(blockHeader.number, 'New block');
+                })
+                .on("error", console.error);
+
             window.web3.eth.getAccounts().then(wallets => {
                 app.log(wallets, 'Wallets');
                 updateWallets(wallets);
@@ -197,8 +208,9 @@
                     nonce: $('input[name="nonce"]', executeForm).val() || undefined,
                     data: $('textarea[name="data"]', executeForm).val() || undefined,
                 };
-
-                window.web3.eth.sendTransaction(rawTransaction)
+                window.web3.eth.sendTransaction(rawTransaction, function (err, hash) {
+                    if (err) console.error(err);
+                })
                     .on('transactionHash', function (hash) {
                         app.log(hash, 'Tx hash');
                     })
