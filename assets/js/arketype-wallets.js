@@ -8,6 +8,7 @@
                 initGetWalletEvent();
                 initManageWalletsEvent();
                 initLinkWalletsEvent();
+                initClaimWalletsEvent();
             }
         });
     });
@@ -66,6 +67,22 @@
                 });
             } else {
                 window.arkaneConnect.flows.linkWallets({redirectUri: app.redirectUri});
+            }
+        });
+    }
+
+    function initClaimWalletsEvent() {
+        document.getElementById('claim-wallets').addEventListener('click', function () {
+            if (app.getWindowMode() === 'POPUP') {
+                window.arkaneConnect.flows.claimWallets().then((result) => {
+                    app.log(result, 'claim-wallets finished');
+                    var chain = document.querySelector('#nav-tabContent > .active').dataset.chain;
+                    getWalletsBySecretType(chain.toUpperCase());
+                }).catch((result) => {
+                    app.error(result, 'claim-wallets');
+                });
+            } else {
+                window.arkaneConnect.flows.claimWallets({redirectUri: app.redirectUri});
             }
         });
     }
