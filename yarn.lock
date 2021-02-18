@@ -116,10 +116,10 @@
     keycloak-js "11.0.2"
     querystring "^0.2.0"
 
-"@arkane-network/web3-arkane-provider@0.16.0":
-  version "0.16.0"
-  resolved "https://registry.yarnpkg.com/@arkane-network/web3-arkane-provider/-/web3-arkane-provider-0.16.0.tgz#671a5d2b1aa34d528cc7a3c355d4b48cdd5475fe"
-  integrity sha512-XBilrio+wnPiYgdDIrMCb6nNHekjPxYxaCGTIDadKoSUxn8CrfaZh4R9wEv9YZC69bJsfTts/wzIayrAhZARCg==
+"@arkane-network/web3-arkane-provider@0.17.0-develop.1":
+  version "0.17.0-develop.1"
+  resolved "https://registry.yarnpkg.com/@arkane-network/web3-arkane-provider/-/web3-arkane-provider-0.17.0-develop.1.tgz#cb33220620c3fd662ace1b8919b847e487b548ea"
+  integrity sha512-Ae7AldVp2qLLhRwrBs0dX9kbkjrb8RCNvK3JmfI9dUMc+CRInpPLl9nimF13SrVLrjKlD3FMQLVHuYpNPEvFdw==
   dependencies:
     "@0x/assert" "^3.0.9"
     "@0x/subproviders" "6.1.1"
