@@ -3,11 +3,13 @@
 
     app.initApp = function () {
         app.page = app.page || {};
+        app.secretType = 'ETHEREUM';
         $('.auth-loginlink').on('click', function (event) {
             let idpHint = $(this).data('idp-hint');
             let options = {
                 clientId: 'Arketype',
                 environment: app.env,
+                secretType: app.secretType
             };
             if (idpHint) {
                 options.authenticationOptions = {idpHint: idpHint}
@@ -55,6 +57,7 @@
             let val = $('#network-mgmt-secret-type').find(":selected").text();
             console.log(val.toUpperCase(), 'switching');
             Arkane.changeSecretType(val.toUpperCase()).then(provider => {
+                app.secretType = val.toUpperCase();
                 window.web3 = new Web3(provider);
                 handleWeb3Loaded();
                 getWallets();
@@ -114,7 +117,7 @@
     function initManageWallets() {
         $('#manage-wallets').click(() => {
             window.Arkane.arkaneConnect()
-                .manageWallets('ETHEREUM')
+                .manageWallets(app.secretType)
                 .then(function () {
                     getWallets();
                 });
