@@ -7,8 +7,7 @@
         let options = {
             clientId: 'Arketype',
             environment: app.env,
-            skipAuthentication: true,
-            secretType: 'BSC'
+            skipAuthentication: true
         };
         if (idpHint) {
             options.authenticationOptions = {idpHint: idpHint}
