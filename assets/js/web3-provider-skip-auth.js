@@ -3,24 +3,17 @@
 
     app.initApp = function () {
         app.page = app.page || {};
+        app.secretType = 'ETHEREUM';
         let idpHint = $(this).data('idp-hint');
         let options = {
             clientId: 'Arketype',
             environment: app.env,
-            skipAuthentication: true
+            skipAuthentication: true,
+            secretType: app.secretType
         };
         if (idpHint) {
             options.authenticationOptions = {idpHint: idpHint}
         }
-        let networkName = $('#settings-rpc-name').val();
-        let nodeUrl = $('#settings-rpc-endpoint').val();
-        if (networkName && nodeUrl) {
-            options.network = {
-                name: $('#settings-rpc-name').val(),
-                nodeUrl: $('#settings-rpc-endpoint').val()
-            }
-        }
-
         console.log('initializing arkane web3 provider with', options);
         Arkane.createArkaneProviderEngine(options)
             .then(function (provider) {
@@ -59,7 +52,7 @@
             })
         });
 
-        $(app).on('authenticated', function () {
+        function subscribeToBlockHeaders() {
             window.web3.eth.subscribe('newBlockHeaders', function (error, result) {
                 if (!error) {
                     return;
@@ -69,7 +62,11 @@
                 .on("data", function (blockHeader) {
                     app.log(blockHeader.number, 'New block');
                 })
-                .on("error", console.error);
+                .on("error", console.error)
+        }
+
+        $(app).on('authenticated', function () {
+            subscribeToBlockHeaders();
 
             window.web3.eth.getAccounts().then(wallets => {
                 app.log(wallets, 'Wallets');
@@ -79,10 +76,21 @@
             if (!app.page.initialised) {
                 initLogout();
                 initWalletControls();
-                initNetworkControls();
                 initRequestTransactionForm();
                 app.page.initialised = true;
             }
+        });
+        $('#btn-secret-type').on('click', function (event) {
+            let val = $('#network-mgmt-secret-type').find(":selected").text();
+            console.log(val.toUpperCase(), 'switching');
+            Arkane.changeSecretType(val.toUpperCase()).then(provider => {
+                app.secretType = val.toUpperCase();
+                window.web3 = new Web3(provider);
+                handleWeb3Loaded();
+                getWallets();
+                subscribeToBlockHeaders();
+            });
+
         });
     };
 
@@ -107,6 +115,10 @@
         });
     }
 
+    function changeSecretType() {
+        Arkane.changeSecretType()
+    }
+
     function initLogout() {
         $('#auth-logout').click(() => {
             window.Arkane.arkaneConnect().logout()
@@ -125,15 +137,6 @@
         initRefreshWallets();
     }
 
-    function initNetworkControls() {
-        let networkName = $('#settings-rpc-name').val();
-        let nodeUrl = $('#settings-rpc-endpoint').val();
-        if (networkName && nodeUrl && Arkane.arkaneSubProvider.network) {
-            $('#network-mgmt-rpc-name').val(Arkane.arkaneSubProvider.network.name);
-            $('#network-mgmt-endpoint').val(Arkane.arkaneSubProvider.network.nodeUrl);
-        }
-    }
-
     function initLinkWallets() {
         $('#link-wallets').click(() => {
             window.Arkane.arkaneConnect()
@@ -147,7 +150,7 @@
     function initManageWallets() {
         $('#manage-wallets').click(() => {
             window.Arkane.arkaneConnect()
-                .manageWallets('ETHEREUM')
+                .manageWallets(app.secretType)
                 .then(function () {
                     getWallets();
                 });

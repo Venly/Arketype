@@ -3,22 +3,16 @@
 
     app.initApp = function () {
         app.page = app.page || {};
+        app.secretType = 'ETHEREUM';
         $('.auth-loginlink').on('click', function (event) {
             let idpHint = $(this).data('idp-hint');
             let options = {
                 clientId: 'Arketype',
                 environment: app.env,
+                secretType: app.secretType
             };
             if (idpHint) {
                 options.authenticationOptions = {idpHint: idpHint}
-            }
-            let networkName = $('#settings-rpc-name').val();
-            let nodeUrl = $('#settings-rpc-endpoint').val();
-            if (networkName && nodeUrl) {
-                options.network = {
-                    name: $('#settings-rpc-name').val(),
-                    nodeUrl: $('#settings-rpc-endpoint').val()
-                }
             }
 
             console.log('initializing arkane web3 provider with', options);
@@ -55,10 +49,20 @@
             if (!app.page.initialised) {
                 initLogout();
                 initWalletControls();
-                initNetworkControls();
                 initRequestTransactionForm();
                 app.page.initialised = true;
             }
+        });
+        $('#btn-secret-type').on('click', function (event) {
+            let val = $('#network-mgmt-secret-type').find(":selected").text();
+            console.log(val.toUpperCase(), 'switching');
+            Arkane.changeSecretType(val.toUpperCase()).then(provider => {
+                app.secretType = val.toUpperCase();
+                window.web3 = new Web3(provider);
+                handleWeb3Loaded();
+                getWallets();
+            });
+
         });
     };
 
@@ -100,15 +104,6 @@
         initRefreshWallets();
     }
 
-    function initNetworkControls() {
-        let networkName = $('#settings-rpc-name').val();
-        let nodeUrl = $('#settings-rpc-endpoint').val();
-        if (networkName && nodeUrl && Arkane.arkaneSubProvider.network) {
-            $('#network-mgmt-rpc-name').val(Arkane.arkaneSubProvider.network.name);
-            $('#network-mgmt-endpoint').val(Arkane.arkaneSubProvider.network.nodeUrl);
-        }
-    }
-
     function initLinkWallets() {
         $('#link-wallets').click(() => {
             window.Arkane.arkaneConnect()
@@ -122,7 +117,7 @@
     function initManageWallets() {
         $('#manage-wallets').click(() => {
             window.Arkane.arkaneConnect()
-                .manageWallets('ETHEREUM')
+                .manageWallets(app.secretType)
                 .then(function () {
                     getWallets();
                 });

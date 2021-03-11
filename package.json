@@ -4,7 +4,7 @@
   "description": "",
   "dependencies": {
     "@arkane-network/arkane-connect": "1.23.0-develop.5",
-    "@arkane-network/web3-arkane-provider": "0.20.0",
+    "@arkane-network/web3-arkane-provider": "0.21.0",
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
     "jquery": "^3.4.1",

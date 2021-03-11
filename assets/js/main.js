@@ -1,4 +1,4 @@
-(function() {
+(function () {
     'use strict';
 
     window.app = window.app || {};
@@ -7,31 +7,31 @@
 
     app.redirectUri = window.location.href.replace(window.location.search, '');
 
-    app.startLoading = function() {
+    app.startLoading = function () {
         document.body.classList.add('async-loading');
     };
 
-    app.stopLoading = function() {
+    app.stopLoading = function () {
         document.body.classList.remove('async-loading');
     };
 
-    app.copySelectDataAddress = function(selector) {
+    app.copySelectDataAddress = function (selector) {
         var $select = $(selector);
         var value = $select.val();
         var address = $select.find('option[value="' + value + '"]').data('address');
         copyToClipboard(address);
     };
 
-    app.getWindowMode = function() {
+    app.getWindowMode = function () {
         let el = document.getElementById('window-mode');
-        if(typeof el !== 'undefined' && el && el.value) {
+        if (typeof el !== 'undefined' && el && el.value) {
             return el.value;
         } else {
             return localStorage.getItem(app.localStorageKeys.windowMode) || 'POPUP';
         }
     };
 
-    app.handleWindowModeTypeSwitch = function() {
+    app.handleWindowModeTypeSwitch = function () {
         var windowModeSelect = document.getElementById('window-mode');
         if (windowModeSelect) {
             var value = windowModeSelect.value;
@@ -46,7 +46,7 @@
         window.arkaneConnect.signUsing = value;
 
         if (windowModeSelect) {
-            windowModeSelect.addEventListener('change', function(e) {
+            windowModeSelect.addEventListener('change', function (e) {
                 window.arkaneConnect.windowMode = e.target.value;
                 window.arkaneConnect.signUsing = e.target.value;
                 if (localStorage) {
@@ -56,7 +56,7 @@
         }
     };
 
-    app.checkResultRequestParams = function() {
+    app.checkResultRequestParams = function () {
         var status = this.getQueryParam('status');
         if (status === 'SUCCESS') {
             app.log({status: status, result: app.extractResultFromQueryParams()});
@@ -68,7 +68,7 @@
         }
     };
 
-    app.extractResultFromQueryParams = function() {
+    app.extractResultFromQueryParams = function () {
         const validResultParams = ['transactionHash', 'signedTransaction', 'r', 's', 'v', 'signature', 'error', 'walletId'];
         const result = {};
         const regex = new RegExp(/[\?|\&]([^=]+)\=([^&]+)/g);
@@ -110,31 +110,21 @@
         $appLog.html(result + $appLog.html());
     }
 
-    app.log = function(txt,
-                       title) {
+    app.log = function (txt,
+                        title) {
         logger(txt, title)
     };
 
-    app.error = function(txt,
-                         title) {
+    app.error = function (txt,
+                          title) {
         logger(txt, title, 'danger')
     };
 
-    app.clearLog = function() {
+    app.clearLog = function () {
         $('#appLog').html('');
     };
 
-    app.changeNetwork = function() {
-        Arkane.changeNetwork(
-            {
-                name: $('#network-mgmt-rpc-name').val(),
-                nodeUrl: $('#network-mgmt-endpoint').val()
-            }
-        );
-        app.log(Arkane.arkaneSubProvider.network, 'Network changed')
-    };
-
-    app.getQueryParam = function(name) {
+    app.getQueryParam = function (name) {
         const url = new URL(window.location.href);
         const params = url.searchParams.getAll(name);
         if (params.length > 0) {
@@ -148,7 +138,7 @@
         return obj === Object(obj);
     }
 
-    $(function() {
+    $(function () {
         app.initApp();
     });
 
