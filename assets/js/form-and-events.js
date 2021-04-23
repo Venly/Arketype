@@ -17,6 +17,7 @@
         app.page.initEthereum();
         app.page.initMatic();
         app.page.initBsc();
+        app.page.initAvac();
         app.page.initTron();
         app.page.initGo();
         app.page.initVechain();
@@ -389,6 +390,93 @@
             walletId: fields.walletId,
             to: fields.to,
             value: {type: 'input', label: 'Amount (in BSC)', defaultValue: '0.0314'},
+            tokenAddress: {
+                type: 'input',
+                label: 'Token address',
+                placeholder: 'e.g. 0x6ff6c0ff1d68b964901f986d4c9fa3ac68346570'
+            },
+            data: fields.data,
+            name: fields.name,
+            nodeUrl: fields.nodeUrl,
+        });
+    };
+
+    app.page.initAvac = function () {
+        var secretType = 'AVAC';
+        var fields = {
+            walletId: {type: 'wallet-select', label: 'From'},
+            to: {type: 'input', label: 'To', defaultValue: '0x680800Dd4913021821A9C08D569eF4338dB8E9f6'},
+            value: {type: 'input', label: 'Amount (in WEI)', defaultValue: '31400000000000000'},
+            data: {type: 'textarea', label: 'Data (optional)', placeholder: 'Some test data'},
+            name: {type: 'input', label: 'Network name', placeholder: 'e.g. Rinkeby', network: true},
+            nodeUrl: {
+                type: 'input',
+                label: 'Network node URL',
+                placeholder: 'e.g. https://rinkeby.infura.io',
+                network: true
+            },
+        };
+        createSignForm(secretType, 'AVAC_TRANSACTION', fields);
+
+        createSignRawForm(secretType, 'AVAC_RAW', {
+            walletId: fields.walletId,
+            data: Object.assign({}, fields.data, {defaultValue: 'Some test data'}),
+            prefix: {type: 'checkbox', checked: true, label: 'Prefix'},
+            hash: {
+                type: 'checkbox',
+                checked: true,
+                label: 'Hash',
+                info: 'When prefix is checked, hash will always be set to \'true\''
+            }
+        });
+
+        createSignMessage(secretType, {
+            walletId: fields.walletId,
+            data: Object.assign({}, fields.data, {defaultValue: 'Some message', label: 'Message'}),
+        });
+
+        createSignEip712(secretType, {
+            walletId: fields.walletId,
+            data: Object.assign({}, fields.data, {
+                defaultValue: '{"types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"},{"name":"salt","type":"bytes32"}],"Bid":[{"name":"amount","type":"uint256"},{"name":"bidder","type":"Identity"}],"Identity":[{"name":"userId","type":"uint256"},{"name":"wallet","type":"address"}]},"domain":{"name":"My amazing dApp","version":"2","chainId":1,"verifyingContract":"0x1C56346CD2A2Bf3202F771f50d3D14a367B48070","salt":"0xf2d857f4a3edcb9b78b4d503bfe733db1e3f6cdc2b7971ee739626c97e86a558"},"primaryType":"Bid","message":{"amount":100,"bidder":{"userId":323,"wallet":"0x3333333333333333333333333333333333333333"}}}',
+                label: 'Data',
+                json: true
+            }),
+        })
+
+        createExecuteContractForm(secretType, {
+            walletId: {type: 'wallet-select', label: 'From'},
+            to: {type: 'input', label: 'Contract Address', defaultValue: '0xc4375b7de8af5a38a93548eb8453a498222c4ff2'},
+            value: {type: 'input', label: 'Amount (in WEI)', defaultValue: '0'},
+            functionName: {type: 'input', label: 'Function Name', defaultValue: 'approve'},
+            inputs: {
+                type: 'textarea',
+                label: 'Inputs',
+                defaultValue: '[{"type": "address", "value": "0xa7ce868f6490186ac57fa12174df770672ec0950"},{"type": "uint256", "value": "0"}]'
+            },
+            chainSpecificFields: {
+                type: 'textarea',
+                label: 'Chain specific fields',
+                defaultValue: '{"gasLimit": 145000, "gasPrice": 20000000000}',
+                dataName: 'chainSpecific'
+            },
+            name: {type: 'input', label: 'Network name', placeholder: 'e.g. TestNet', network: true},
+            nodeUrl: {
+                type: 'input',
+                label: 'Network node URL',
+                placeholder: 'e.g. https://testnet-avac.arkane.network',
+                network: true
+            }
+        });
+
+        fields.tokenAddress = {
+            type: "input",
+            label: "Token Address (optional)",
+        };
+        createExecuteForm(secretType, {
+            walletId: fields.walletId,
+            to: fields.to,
+            value: {type: 'input', label: 'Amount (in AVAC)', defaultValue: '0.0314'},
             tokenAddress: {
                 type: 'input',
                 label: 'Token address',
