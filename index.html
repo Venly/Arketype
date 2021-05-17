@@ -189,6 +189,9 @@
                         <a class="nav-item nav-link" id="nav-BSC-tab" data-toggle="tab" href=".tab-pane#tab-BSC"
                            role="tab" aria-controls="tab-BSC"
                            aria-selected="true">Binance SC</a>
+                        <a class="nav-item nav-link" id="nav-AVAC-tab" data-toggle="tab" href=".tab-pane#tab-AVAC"
+                           role="tab" aria-controls="tab-AVAC"
+                           aria-selected="true">Avalanche C</a>
                     </div>
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
@@ -432,6 +435,36 @@
                             </div>
                             <div class="mb-3 col-lg-6">
                                 <form data-form="execute-contract" data-chain="BSC" class="card bg-light"></form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade p-4 bg-white border" id="tab-AVAC" data-chain="AVAC" role="tabpanel"
+                         aria-labelledby="nav-AVAC-tab">
+                        <button type="button" data-chain="AVAC" class="btn btn-outline-primary get-wallets mb-3">
+                            Refresh Wallets
+                        </button>
+                        <button type="button" data-chain="AVAC" class="btn btn-outline-primary manage-wallets mb-3">
+                            Manage Wallets
+                        </button>
+
+                        <div class="row">
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign" data-chain="AVAC" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="execute" data-chain="AVAC" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign-raw" data-chain="AVAC" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign-eip712" data-chain="AVAC" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign-message" data-chain="AVAC" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="execute-contract" data-chain="AVAC" class="card bg-light"></form>
                             </div>
                         </div>
                     </div>

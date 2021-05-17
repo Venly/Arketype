@@ -253,6 +253,26 @@
                 );
             });
         }
+
+        var personalSignForm = document.querySelector('#personal-sign-form');
+        if (personalSignForm) {
+            personalSignForm.addEventListener('submit', function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+
+                //add this if a popup blocker is being triggered
+                window.Arkane.arkaneConnect().createSigner();
+
+                const data = $('textarea[name="data"]', personalSignForm).val();
+                const signer = $('select[name="from"]', personalSignForm).val()
+                window.web3.eth.sign(data, signer, function (err, result) {
+                    if (err || result.error) {
+                        return console.error(result);
+                    }
+                    app.log(result, 'Personal signature');
+                })
+            });
+        }
     }
 
     function updateWallets(wallets) {
