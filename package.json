@@ -3,9 +3,9 @@
   "version": "0.0.3",
   "description": "",
   "dependencies": {
-    "@arkane-network/arkane-connect": "1.25.0-develop.2",
+    "@arkane-network/arkane-connect": "1.27.0-develop.21",
     "@arkane-network/web3-arkane-provider": "0.24.0-develop.2",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "bootstrap": "^4.3.1",
     "jquery": "^3.4.1",
     "popper.js": "^1.15.0",
