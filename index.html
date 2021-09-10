@@ -192,6 +192,8 @@
                         <a class="nav-item nav-link" id="nav-AVAC-tab" data-toggle="tab" href=".tab-pane#tab-AVAC"
                            role="tab" aria-controls="tab-AVAC"
                            aria-selected="true">Avalanche C</a>
+                        <a class="nav-item nav-link" id="nav-HEDERA-tab" data-toggle="tab" href=".tab-pane#tab-HEDERA" role="tab" aria-controls="tab-HEDERA"
+                           aria-selected="true">Hedera</a>
                     </div>
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
@@ -466,6 +468,36 @@
                             <div class="mb-3 col-lg-6">
                                 <form data-form="execute-contract" data-chain="AVAC" class="card bg-light"></form>
                             </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade p-4 bg-white border" id="tab-HEDERA" data-chain="HEDERA" role="tabpanel"
+                         aria-labelledby="nav-HEDERA-tab">
+                        <button type="button" data-chain="HEDERA" class="btn btn-outline-primary get-wallets mb-3">
+                            Refresh Wallets
+                        </button>
+                        <button type="button" data-chain="HEDERA" class="btn btn-outline-primary manage-wallets mb-3">
+                            Manage Wallets
+                        </button>
+
+                        <div class="row">
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign" data-chain="HEDERA" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="execute" data-chain="HEDERA" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="associate-tokens" data-chain="HEDERA" class="card bg-light"></form>
+                            </div>
+<!--                            <div class="mb-3 col-lg-6">-->
+<!--                                <form data-form="sign-eip712" data-chain="HEDERA" class="card bg-light"></form>-->
+<!--                            </div>-->
+<!--                            <div class="mb-3 col-lg-6">-->
+<!--                                <form data-form="sign-message" data-chain="HEDERA" class="card bg-light"></form>-->
+<!--                            </div>-->
+<!--                            <div class="mb-3 col-lg-6">-->
+<!--                                <form data-form="execute-contract" data-chain="HEDERA" class="card bg-light"></form>-->
+<!--                            </div>-->
                         </div>
                     </div>
                 </div>

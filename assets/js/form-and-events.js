@@ -24,6 +24,7 @@
         app.page.initBitcoin();
         app.page.initLitecoin();
         app.page.initNeo();
+        app.page.initHedera();
         app.page.initialised = true;
     };
 
@@ -698,6 +699,37 @@
         });
     };
 
+    app.page.initHedera = function() {
+        var secretType = 'HEDERA';
+        var fields = {
+            walletId: {type: 'wallet-select', label: 'From'},
+            to: {type: 'input', label: 'To', defaultValue: '0.0.2278508'},
+            amount: {type: 'input', label: 'Amount (in HBAR)', defaultValue: '0.314'},
+            // data: {type: 'textarea', label: 'Data (optional)', placeholder: 'Some test data'},
+        };
+        createSignForm(secretType, 'HEDERA_HBAR_TRANSFER', fields);
+
+        var tokenAssociationFields = {
+            walletId: {type: 'wallet-select', label: 'From'},
+            tokenIds: {type: 'input', label: 'tokenIDs (comma separated)'}
+        }
+
+        createForm('Execute tokens association', secretType, 'associate-tokens', tokenAssociationFields, executeNativeTransaction, {
+            secretType,
+            type: 'HEDERA_TOKEN_ASSOCIATION',
+        });
+
+        fields.tokenAddress = {
+            type: "input",
+            label: "Token Address (optional)",
+        };
+        createExecuteForm(secretType, {
+            walletId: fields.walletId,
+            to: fields.to,
+            value: {type: 'input', label: 'Amount (in HBAR)', defaultValue: '0.0314'},
+        });
+    }
+
     function createFormField(id,
                              label,
                              secretType,
@@ -861,6 +893,10 @@
 
                 if (name === 'data' && fields.data.json) {
                     value = JSON.parse(value);
+                }
+
+                if (name === 'tokenIds') {
+                    value = value.split(',');
                 }
 
                 if (fields[name].clause) {

@@ -29,7 +29,7 @@
     function resolveEnv(appEnv) {
         switch (appEnv) {
             case 'local':
-                return '-tst1';
+                return '-qa';
             case 'prod':
                 return appEnv;
                 break;
