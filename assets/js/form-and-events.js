@@ -704,8 +704,7 @@
         var fields = {
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'To', defaultValue: '0.0.2278508'},
-            amount: {type: 'input', label: 'Amount (in HBAR)', defaultValue: '0.314'},
-            // data: {type: 'textarea', label: 'Data (optional)', placeholder: 'Some test data'},
+            amount: {type: 'input', label: 'Amount (in tinybar)', defaultValue: '314000000'},
         };
         createSignForm(secretType, 'HEDERA_HBAR_TRANSFER', fields);
 
