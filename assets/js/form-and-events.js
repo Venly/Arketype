@@ -55,23 +55,23 @@
     function signMessage(message) {
         console.debug('Signing message', message);
         window.arkaneConnect.createSigner().signMessage(message)
-            .then(function (result) {
-                app.log(result);
-            })
-            .catch(function (err) {
-                app.error(err);
-            });
+              .then(function(result) {
+                  app.log(result);
+              })
+              .catch(function(err) {
+                  app.error(err);
+              });
     }
 
     function signEip712(data) {
         console.log('Signing eip712 message', data);
         window.arkaneConnect.createSigner().signEip712(data)
-            .then(function (result) {
-                app.log(result);
-            })
-            .catch(function (err) {
-                app.error(err);
-            });
+              .then(function(result) {
+                  app.log(result);
+              })
+              .catch(function(err) {
+                  app.error(err);
+              });
     }
 
     function executeTransaction(executeData) {
@@ -315,7 +315,7 @@
         });
     };
 
-    app.page.initBsc = function () {
+    app.page.initBsc = function() {
         var secretType = 'BSC';
         var fields = {
             walletId: {type: 'wallet-select', label: 'From'},
@@ -402,7 +402,7 @@
         });
     };
 
-    app.page.initAvac = function () {
+    app.page.initAvac = function() {
         var secretType = 'AVAC';
         var fields = {
             walletId: {type: 'wallet-select', label: 'From'},
@@ -490,7 +490,7 @@
     };
 
 
-    app.page.initTron = function () {
+    app.page.initTron = function() {
         var secretType = 'TRON';
         var fields = {
             walletId: {type: 'wallet-select', label: 'From'},
@@ -718,13 +718,10 @@
             type: 'HEDERA_TOKEN_ASSOCIATION',
         });
 
-        fields.tokenAddress = {
-            type: "input",
-            label: "Token Address (optional)",
-        };
         createExecuteForm(secretType, {
             walletId: fields.walletId,
             to: fields.to,
+            tokenAddress: {type: "input", label: "Token ID (optional)"},
             value: {type: 'input', label: 'Amount (in HBAR)', defaultValue: '0.0314'},
         });
     }
