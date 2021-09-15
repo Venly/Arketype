@@ -3,7 +3,7 @@
   "version": "0.0.3",
   "description": "",
   "dependencies": {
-    "@arkane-network/arkane-connect": "1.27.0-develop.19",
+    "@arkane-network/arkane-connect": "1.27.0-develop.23",
     "@arkane-network/web3-arkane-provider": "0.24.0-develop.2",
     "axios": "^0.21.1",
     "bootstrap": "^4.3.1",
