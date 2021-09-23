@@ -21,7 +21,7 @@
     }
 
     function getWalletsBySecretType(secretType) {
-        return window.arkaneConnect.api.getWallets({secretType: secretType})
+        return window.venlyConnect.api.getWallets({secretType: secretType})
                      .then(function(wallets) {
                          app.log(wallets, 'Wallets ' + secretType);
                          wallets = wallets.filter((wallet) => wallet.walletType !== 'APPLICATION');
@@ -42,14 +42,14 @@
             el.addEventListener('click', function() {
                 var chain = this.dataset.chain;
                 if (app.getWindowMode() === 'POPUP') {
-                    window.arkaneConnect.flows.manageWallets(chain).then((result) => {
+                    window.venlyConnect.flows.manageWallets(chain).then((result) => {
                         app.log(result, 'manage-wallets finished');
                         getWalletsBySecretType(this.dataset.chain.toUpperCase());
                     }).catch((result) => {
                         app.error(result, 'manage-wallets');
                     });
                 } else {
-                    window.arkaneConnect.flows.manageWallets(chain, {redirectUri: app.redirectUri, correlationID: `${Date.now()}`});
+                    window.venlyConnect.flows.manageWallets(chain, {redirectUri: app.redirectUri, correlationID: `${Date.now()}`});
                 }
             });
         });
@@ -58,7 +58,7 @@
     function initLinkWalletsEvent() {
         document.getElementById('link-wallets').addEventListener('click', function() {
             if (app.getWindowMode() === 'POPUP') {
-                window.arkaneConnect.flows.linkWallets().then((result) => {
+                window.venlyConnect.flows.linkWallets().then((result) => {
                     app.log(result, 'link-wallets finished');
                     var chain = document.querySelector('#nav-tabContent > .active').dataset.chain;
                     getWalletsBySecretType(chain.toUpperCase());
@@ -66,7 +66,7 @@
                     app.error(result, 'link-wallets');
                 });
             } else {
-                window.arkaneConnect.flows.linkWallets({redirectUri: app.redirectUri});
+                window.venlyConnect.flows.linkWallets({redirectUri: app.redirectUri});
             }
         });
     }
@@ -74,7 +74,7 @@
     function initClaimWalletsEvent() {
         document.getElementById('claim-wallets').addEventListener('click', function () {
             if (app.getWindowMode() === 'POPUP') {
-                window.arkaneConnect.flows.claimWallets().then((result) => {
+                window.venlyConnect.flows.claimWallets().then((result) => {
                     app.log(result, 'claim-wallets finished');
                     var chain = document.querySelector('#nav-tabContent > .active').dataset.chain;
                     getWalletsBySecretType(chain.toUpperCase());
@@ -82,7 +82,7 @@
                     app.error(result, 'claim-wallets');
                 });
             } else {
-                window.arkaneConnect.flows.claimWallets({redirectUri: app.redirectUri});
+                window.venlyConnect.flows.claimWallets({redirectUri: app.redirectUri});
             }
         });
     }

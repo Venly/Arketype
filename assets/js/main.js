@@ -42,13 +42,13 @@
         } else {
             value = localStorage.getItem(app.localStorageKeys.windowMode);
         }
-        window.arkaneConnect.windowMode = value;
-        window.arkaneConnect.signUsing = value;
+        window.venlyConnect.windowMode = value;
+        window.venlyConnect.signUsing = value;
 
         if (windowModeSelect) {
             windowModeSelect.addEventListener('change', function (e) {
-                window.arkaneConnect.windowMode = e.target.value;
-                window.arkaneConnect.signUsing = e.target.value;
+                window.venlyConnect.windowMode = e.target.value;
+                window.venlyConnect.signUsing = e.target.value;
                 if (localStorage) {
                     localStorage.setItem(app.localStorageKeys.windowMode, e.target.value);
                 }

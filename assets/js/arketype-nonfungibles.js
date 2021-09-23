@@ -3,7 +3,7 @@
 
     $(function() {
         $(app).on('authenticated', function() {
-            window.arkaneConnect.api.getWallets({secretType: 'ETHEREUM'})
+            window.venlyConnect.api.getWallets({secretType: 'ETHEREUM'})
                   .then(function(wallets) {
                       app.log(wallets, 'Wallets');
                       wallets = wallets.filter((wallet) => wallet.walletType !== 'APPLICATION');
@@ -28,7 +28,7 @@
     }
 
     function getWallets(el) {
-        window.arkaneConnect.api.getWallets({secretType: getSelectedSecretType()})
+        window.venlyConnect.api.getWallets({secretType: getSelectedSecretType()})
               .then(function(wallets) {
                   if (el) {
                       el.dataset.success = 'true';
@@ -42,7 +42,7 @@
 
     function getTokens(walletId) {
         if (walletId) {
-            window.arkaneConnect.api.getNonfungibles(walletId)
+            window.venlyConnect.api.getNonfungibles(walletId)
                   .then(function(nonfungibles) {
                       app.log(nonfungibles, 'Nonfungibles');
                       app.page.tokens = nonfungibles;
@@ -143,7 +143,7 @@
     }
 
     function executeNftTransfer(executeData) {
-        window.arkaneConnect.createSigner().executeNftTransfer(executeData)
+        window.venlyConnect.createSigner().executeNftTransfer(executeData)
               .then(function(result) {
                   app.log(result);
               })

@@ -43,7 +43,7 @@
 
     function sign(signData) {
         console.debug('Signing', signData);
-        window.arkaneConnect.createSigner().sign(signData)
+        window.venlyConnect.createSigner().sign(signData)
               .then(function(result) {
                   app.log(result);
               })
@@ -54,7 +54,7 @@
 
     function signMessage(message) {
         console.debug('Signing message', message);
-        window.arkaneConnect.createSigner().signMessage(message)
+        window.venlyConnect.createSigner().signMessage(message)
               .then(function(result) {
                   app.log(result);
               })
@@ -65,7 +65,7 @@
 
     function signEip712(data) {
         console.log('Signing eip712 message', data);
-        window.arkaneConnect.createSigner().signEip712(data)
+        window.venlyConnect.createSigner().signEip712(data)
               .then(function(result) {
                   app.log(result);
               })
@@ -85,7 +85,7 @@
 
     function executeTransfer(executeData) {
         console.debug('Executing transaction', executeData);
-        window.arkaneConnect.createSigner().executeTransfer(executeData)
+        window.venlyConnect.createSigner().executeTransfer(executeData)
               .then(function(result) {
                   app.log(result);
               })
@@ -96,7 +96,7 @@
 
     function executeTokenTransfer(executeData) {
         console.debug('Executing token transaction', executeData);
-        window.arkaneConnect.createSigner().executeTokenTransfer(executeData)
+        window.venlyConnect.createSigner().executeTokenTransfer(executeData)
               .then(function(result) {
                   app.log(result);
               })
@@ -107,7 +107,7 @@
 
     function executeGasTransaction(executeData) {
         console.debug('Executing gas transaction', executeData);
-        window.arkaneConnect.createSigner().executeGasTransfer(executeData)
+        window.venlyConnect.createSigner().executeGasTransfer(executeData)
               .then(function(result) {
                   app.log(result);
               })
@@ -118,7 +118,7 @@
 
     function executeContract(executeData) {
         console.debug('Executing contract', executeData);
-        window.arkaneConnect.createSigner().executeContract(executeData)
+        window.venlyConnect.createSigner().executeContract(executeData)
               .then(function(result) {
                   app.log(result);
               })
@@ -129,7 +129,7 @@
 
     function executeNativeTransaction(executeData) {
         console.debug('Executing native transaction', executeData);
-        window.arkaneConnect.createSigner().executeNativeTransaction(executeData)
+        window.venlyConnect.createSigner().executeNativeTransaction(executeData)
               .then(function(result) {
                   app.log(result);
               })
@@ -187,7 +187,7 @@
 
     app.page.initGetProfileEvent = function() {
         document.getElementById('get-profile').addEventListener('click', function() {
-            window.arkaneConnect.api.getProfile().then(function(e) {
+            window.venlyConnect.api.getProfile().then(function(e) {
                 app.log(e);
             });
         });
@@ -989,9 +989,9 @@
         var $select = $(selector);
         var value = $select.val();
 
-        window.arkaneConnect.api.unlink(value)
+        window.venlyConnect.api.unlink(value)
               .then(function(result) {
-                  return window.arkaneConnect.api.getWallets({secretType: secretType})
+                  return window.venlyConnect.api.getWallets({secretType: secretType})
                                .then(function(wallets) {
                                    wallets = wallets.filter((wallet) => wallet.walletType !== 'APPLICATION');
                                    app.page.updateWallets(wallets, secretType);

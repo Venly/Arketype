@@ -88,7 +88,7 @@
 
     function initLogout() {
         $('#auth-logout').click(() => {
-            window.Arkane.arkaneConnect().logout()
+            window.Arkane.venlyConnect().logout()
                 .then(() => {
                     document.body.classList.remove('logged-in');
                     document.body.classList.add('not-logged-in');
@@ -106,7 +106,7 @@
 
     function initLinkWallets() {
         $('#link-wallets').click(() => {
-            window.Arkane.arkaneConnect()
+            window.Arkane.venlyConnect()
                 .linkWallets()
                 .then(function () {
                     getWallets();
@@ -116,7 +116,7 @@
 
     function initManageWallets() {
         $('#manage-wallets').click(() => {
-            window.Arkane.arkaneConnect()
+            window.Arkane.venlyConnect()
                 .manageWallets(app.secretType)
                 .then(function () {
                     getWallets();
@@ -138,7 +138,7 @@
                 e.stopPropagation();
                 e.preventDefault();
                 //add this if a popup blocker is being triggered
-                window.Arkane.arkaneConnect().createSigner();
+                window.Arkane.venlyConnect().createSigner();
 
                 var rawTransaction = {
                     from: $('select[name="from"]', signForm).val(),
@@ -167,7 +167,7 @@
                 e.preventDefault();
 
                 //add this if a popup blocker is being triggered
-                window.Arkane.arkaneConnect().createSigner();
+                window.Arkane.venlyConnect().createSigner();
 
                 var rawTransaction = {
                     from: $('select[name="from"]', executeForm).val(),
@@ -198,7 +198,7 @@
                     e.preventDefault();
 
                     //add this if a popup blocker is being triggered
-                    window.Arkane.arkaneConnect().createSigner();
+                    window.Arkane.venlyConnect().createSigner();
 
                     const data = $('textarea[name="data"]', eip712Form).val();
                     const signer = $('select[name="from"]', eip712Form).val()
