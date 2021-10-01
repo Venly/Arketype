@@ -4,9 +4,9 @@
     window.app = window.app || {};
 
     app.initApp = function() {
-        window.arkaneConnect = new ArkaneConnect(app.clientId, {environment: app.environment.connect, windowMode: 'REDIRECT'});
+        window.venlyConnect = new VenlyConnect(app.clientId, {environment: app.environment.connect, windowMode: 'REDIRECT'});
         app.handleWindowModeTypeSwitch();
-        window.arkaneConnect
+        window.venlyConnect
               .checkAuthenticated()
               .then((result) => {
                         $('input[name=redirect]').val(window.location.href);
@@ -26,7 +26,7 @@
             e.preventDefault();
             let idpHint = $(this).data('idp-hint');
             var windowMode = app.getWindowMode();
-            window.arkaneConnect.flows.authenticate({windowMode: windowMode, idpHint: idpHint}).then((result) => {
+            window.venlyConnect.flows.authenticate({windowMode: windowMode, idpHint: idpHint}).then((result) => {
                 return result.authenticated(app.handleAuthenticated)
                     .notAuthenticated((auth) => {
                         document.body.classList.add('not-logged-in');
@@ -37,7 +37,7 @@
         if (logoutButton) {
             logoutButton.addEventListener('click', function (e) {
                 e.preventDefault();
-                window.arkaneConnect
+                window.venlyConnect
                     .logout()
                     .then(() => {
                         app.handleLogout();
@@ -53,7 +53,7 @@
         $('#client-id').text(app.clientId);
         $('#auth-username').html('<strong>' + app.auth.idTokenParsed.name + '</strong><br/>' + app.auth.subject);
         app.updateToken(app.auth.token);
-        window.arkaneConnect.addOnTokenRefreshCallback(app.updateToken);
+        window.venlyConnect.addOnTokenRefreshCallback(app.updateToken);
         app.checkResultRequestParams();
         $(app).trigger('authenticated');
     };
@@ -64,7 +64,7 @@
         $('#client-id').text('');
         $('#auth-username').html('<strong></strong>');
         app.updateToken('');
-        window.arkaneConnect.addOnTokenRefreshCallback((token) => {
+        window.venlyConnect.addOnTokenRefreshCallback((token) => {
         });
         $(app).trigger('logout');
     };

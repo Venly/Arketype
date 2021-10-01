@@ -15,6 +15,14 @@ pipeline {
           }
         }
         stage('Docker Push') {
+          when {
+            anyOf {
+                branch 'develop'
+                branch 'master'
+                branch 'hotfix-*'
+                branch 'release-*'
+            }
+          }
           steps {
             withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
               sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"

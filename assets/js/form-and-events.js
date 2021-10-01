@@ -24,6 +24,7 @@
         app.page.initBitcoin();
         app.page.initLitecoin();
         app.page.initNeo();
+        app.page.initHedera();
         app.page.initialised = true;
     };
 
@@ -42,7 +43,7 @@
 
     function sign(signData) {
         console.debug('Signing', signData);
-        window.arkaneConnect.createSigner().sign(signData)
+        window.venlyConnect.createSigner().sign(signData)
               .then(function(result) {
                   app.log(result);
               })
@@ -53,24 +54,24 @@
 
     function signMessage(message) {
         console.debug('Signing message', message);
-        window.arkaneConnect.createSigner().signMessage(message)
-            .then(function (result) {
-                app.log(result);
-            })
-            .catch(function (err) {
-                app.error(err);
-            });
+        window.venlyConnect.createSigner().signMessage(message)
+              .then(function(result) {
+                  app.log(result);
+              })
+              .catch(function(err) {
+                  app.error(err);
+              });
     }
 
     function signEip712(data) {
         console.log('Signing eip712 message', data);
-        window.arkaneConnect.createSigner().signEip712(data)
-            .then(function (result) {
-                app.log(result);
-            })
-            .catch(function (err) {
-                app.error(err);
-            });
+        window.venlyConnect.createSigner().signEip712(data)
+              .then(function(result) {
+                  app.log(result);
+              })
+              .catch(function(err) {
+                  app.error(err);
+              });
     }
 
     function executeTransaction(executeData) {
@@ -84,7 +85,7 @@
 
     function executeTransfer(executeData) {
         console.debug('Executing transaction', executeData);
-        window.arkaneConnect.createSigner().executeTransfer(executeData)
+        window.venlyConnect.createSigner().executeTransfer(executeData)
               .then(function(result) {
                   app.log(result);
               })
@@ -95,7 +96,7 @@
 
     function executeTokenTransfer(executeData) {
         console.debug('Executing token transaction', executeData);
-        window.arkaneConnect.createSigner().executeTokenTransfer(executeData)
+        window.venlyConnect.createSigner().executeTokenTransfer(executeData)
               .then(function(result) {
                   app.log(result);
               })
@@ -106,7 +107,7 @@
 
     function executeGasTransaction(executeData) {
         console.debug('Executing gas transaction', executeData);
-        window.arkaneConnect.createSigner().executeGasTransfer(executeData)
+        window.venlyConnect.createSigner().executeGasTransfer(executeData)
               .then(function(result) {
                   app.log(result);
               })
@@ -117,7 +118,7 @@
 
     function executeContract(executeData) {
         console.debug('Executing contract', executeData);
-        window.arkaneConnect.createSigner().executeContract(executeData)
+        window.venlyConnect.createSigner().executeContract(executeData)
               .then(function(result) {
                   app.log(result);
               })
@@ -128,7 +129,7 @@
 
     function executeNativeTransaction(executeData) {
         console.debug('Executing native transaction', executeData);
-        window.arkaneConnect.createSigner().executeNativeTransaction(executeData)
+        window.venlyConnect.createSigner().executeNativeTransaction(executeData)
               .then(function(result) {
                   app.log(result);
               })
@@ -186,7 +187,7 @@
 
     app.page.initGetProfileEvent = function() {
         document.getElementById('get-profile').addEventListener('click', function() {
-            window.arkaneConnect.api.getProfile().then(function(e) {
+            window.venlyConnect.api.getProfile().then(function(e) {
                 app.log(e);
             });
         });
@@ -314,7 +315,7 @@
         });
     };
 
-    app.page.initBsc = function () {
+    app.page.initBsc = function() {
         var secretType = 'BSC';
         var fields = {
             walletId: {type: 'wallet-select', label: 'From'},
@@ -401,7 +402,7 @@
         });
     };
 
-    app.page.initAvac = function () {
+    app.page.initAvac = function() {
         var secretType = 'AVAC';
         var fields = {
             walletId: {type: 'wallet-select', label: 'From'},
@@ -489,7 +490,7 @@
     };
 
 
-    app.page.initTron = function () {
+    app.page.initTron = function() {
         var secretType = 'TRON';
         var fields = {
             walletId: {type: 'wallet-select', label: 'From'},
@@ -698,6 +699,33 @@
         });
     };
 
+    app.page.initHedera = function() {
+        var secretType = 'HEDERA';
+        var fields = {
+            walletId: {type: 'wallet-select', label: 'From'},
+            to: {type: 'input', label: 'To', defaultValue: '0.0.2278508'},
+            amount: {type: 'input', label: 'Amount (in tinybar)', defaultValue: '314000000'},
+        };
+        createSignForm(secretType, 'HEDERA_HBAR_TRANSFER', fields);
+
+        var tokenAssociationFields = {
+            walletId: {type: 'wallet-select', label: 'From'},
+            tokenIds: {type: 'input', label: 'tokenIDs (comma separated)'}
+        }
+
+        createForm('Execute tokens association', secretType, 'associate-tokens', tokenAssociationFields, executeNativeTransaction, {
+            secretType,
+            type: 'HEDERA_TOKEN_ASSOCIATION',
+        });
+
+        createExecuteForm(secretType, {
+            walletId: fields.walletId,
+            to: fields.to,
+            tokenAddress: {type: "input", label: "Token ID (optional)"},
+            value: {type: 'input', label: 'Amount (in HBAR)', defaultValue: '0.0314'},
+        });
+    }
+
     function createFormField(id,
                              label,
                              secretType,
@@ -863,6 +891,10 @@
                     value = JSON.parse(value);
                 }
 
+                if (name === 'tokenIds') {
+                    value = value.split(',');
+                }
+
                 if (fields[name].clause) {
                     clause[name] = value;
                 } else if (fields[name].network) {
@@ -957,9 +989,9 @@
         var $select = $(selector);
         var value = $select.val();
 
-        window.arkaneConnect.api.unlink(value)
+        window.venlyConnect.api.unlink(value)
               .then(function(result) {
-                  return window.arkaneConnect.api.getWallets({secretType: secretType})
+                  return window.venlyConnect.api.getWallets({secretType: secretType})
                                .then(function(wallets) {
                                    wallets = wallets.filter((wallet) => wallet.walletType !== 'APPLICATION');
                                    app.page.updateWallets(wallets, secretType);

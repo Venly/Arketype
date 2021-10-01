@@ -21,7 +21,7 @@
     app.environment = {
         env: app.env,
         connect: app.env + (app.isLocal ? '-local' : ''),
-        api: app.env === 'local' ? 'http://localhost:8581/api' : 'https://api' + resolvedEnv + '.arkane.network',
+        api: app.env === 'local' ? 'http://localhost:8581/api' : 'https://api-wallet-' + resolvedEnv + '.venly.io',
         login: 'https://login' + resolvedEnv + '.arkane.network',
         arketypeClientSecret: '02053a9d-8293-43c4-a201-f8669f1329af', // Only visible for demo purpose, this secret should be configured in application backend
     };
@@ -29,7 +29,7 @@
     function resolveEnv(appEnv) {
         switch (appEnv) {
             case 'local':
-                return '-tst1';
+                return '-qa';
             case 'prod':
                 return appEnv;
                 break;

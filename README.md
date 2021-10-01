@@ -1,5 +1,5 @@
 # Arketype <img align="right" src="https://github.com/ArkaneNetwork.png?size=30" />
-> Example project for arkane-connect
+> Example project for venly-connect
 
 ## Preparation
 

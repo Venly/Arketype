@@ -14,8 +14,8 @@
         if (idpHint) {
             options.authenticationOptions = {idpHint: idpHint}
         }
-        console.log('initializing arkane web3 provider with', options);
-        Arkane.createArkaneProviderEngine(options)
+        console.log('initializing venly web3 provider with', options);
+        Venly.createProviderEngine(options)
             .then(function (provider) {
                 window.web3 = new Web3(provider);
                 handleWeb3Loaded();
@@ -30,10 +30,10 @@
                             console.log('No wallet was linked to this application', reason);
                             break;
                         default:
-                            console.log('Something went wrong while creating the Arkane provider', reason);
+                            console.log('Something went wrong while creating the Venly provider', reason);
                     }
                 } else {
-                    console.log('Something went wrong while creating the Arkane provider');
+                    console.log('Something went wrong while creating the Venly provider');
                 }
             });
 
@@ -43,7 +43,7 @@
             if (idpHint) {
                 authenticationOptions.idpHint = idpHint;
             }
-            Arkane.authenticate(authenticationOptions).then(account => {
+            Venly.authenticate(authenticationOptions).then(account => {
                 if (account) {
                     document.body.classList.remove('not-logged-in');
                     document.body.classList.add('logged-in');
@@ -83,7 +83,7 @@
         $('#btn-secret-type').on('click', function (event) {
             let val = $('#network-mgmt-secret-type').find(":selected").text();
             console.log(val.toUpperCase(), 'switching');
-            Arkane.changeSecretType(val.toUpperCase()).then(provider => {
+            Venly.changeSecretType(val.toUpperCase()).then(provider => {
                 app.secretType = val.toUpperCase();
                 window.web3 = new Web3(provider);
                 handleWeb3Loaded();
@@ -99,7 +99,7 @@
         window.web3.eth.getChainId().then(network => {
             app.log(network, 'ChainID');
         });
-        Arkane.checkAuthenticated().then(authResult => {
+        Venly.checkAuthenticated().then(authResult => {
             if (authResult.isAuthenticated) {
                 document.body.classList.remove('not-logged-in');
                 document.body.classList.add('logged-in');
@@ -116,12 +116,12 @@
     }
 
     function changeSecretType() {
-        Arkane.changeSecretType()
+        Venly.changeSecretType()
     }
 
     function initLogout() {
         $('#auth-logout').click(() => {
-            window.Arkane.arkaneConnect().logout()
+            window.Venly.connect().logout()
                 .then(() => {
                     document.body.classList.remove('logged-in');
                     document.body.classList.add('not-logged-in');
@@ -139,7 +139,7 @@
 
     function initLinkWallets() {
         $('#link-wallets').click(() => {
-            window.Arkane.arkaneConnect()
+            window.Venly.connect()
                 .linkWallets()
                 .then(function () {
                     getWallets();
@@ -149,7 +149,7 @@
 
     function initManageWallets() {
         $('#manage-wallets').click(() => {
-            window.Arkane.arkaneConnect()
+            window.Venly.connect()
                 .manageWallets(app.secretType)
                 .then(function () {
                     getWallets();
@@ -171,7 +171,7 @@
                 e.stopPropagation();
                 e.preventDefault();
                 //add this if a popup blocker is being triggered
-                window.Arkane.arkaneConnect().createSigner();
+                window.Venly.connect().createSigner();
 
                 var rawTransaction = {
                     from: $('select[name="from"]', signForm).val(),
@@ -200,7 +200,7 @@
                 e.preventDefault();
 
                 //add this if a popup blocker is being triggered
-                window.Arkane.arkaneConnect().createSigner();
+                window.Venly.connect().createSigner();
 
                 var rawTransaction = {
                     from: $('select[name="from"]', executeForm).val(),
@@ -234,7 +234,7 @@
                 e.preventDefault();
 
                 //add this if a popup blocker is being triggered
-                window.Arkane.arkaneConnect().createSigner();
+                window.Venly.connect().createSigner();
 
                 const data = $('textarea[name="data"]', eip712Form).val();
                 const signer = $('select[name="from"]', eip712Form).val()
@@ -261,7 +261,7 @@
                 e.preventDefault();
 
                 //add this if a popup blocker is being triggered
-                window.Arkane.arkaneConnect().createSigner();
+                window.Venly.connect().createSigner();
 
                 const data = $('textarea[name="data"]', personalSignForm).val();
                 const signer = $('select[name="from"]', personalSignForm).val()

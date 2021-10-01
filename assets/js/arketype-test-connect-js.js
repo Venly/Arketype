@@ -28,19 +28,19 @@
     };
 
     Object.assign(app.page, {
-        getAvailableSecretTypes: wrap(() => window.arkaneConnect.api.getAvailableSecretTypes(), 'getAvailableSecretTypes'),
-        getWallets: wrap((secretType) => window.arkaneConnect.api.getWallets({secretType}), 'getWallets'),
-        getWallet: wrap((walletId) => window.arkaneConnect.api.getWallet(walletId), 'getWallet'),
-        getNonfungibles: wrap((walletId) => window.arkaneConnect.api.getNonfungibles(walletId), 'getNonfungibles'),
-        unlink: wrap((walletId) => window.arkaneConnect.api.unlink(walletId), 'unlink'),
-        getBalance: wrap((walletId) => window.arkaneConnect.api.getBalance(walletId), 'getBalance'),
-        getTokenBalances: wrap((walletId) => window.arkaneConnect.api.getTokenBalances(walletId), 'getTokenBalances'),
+        getAvailableSecretTypes: wrap(() => window.venlyConnect.api.getAvailableSecretTypes(), 'getAvailableSecretTypes'),
+        getWallets: wrap((secretType) => window.venlyConnect.api.getWallets({secretType}), 'getWallets'),
+        getWallet: wrap((walletId) => window.venlyConnect.api.getWallet(walletId), 'getWallet'),
+        getNonfungibles: wrap((walletId) => window.venlyConnect.api.getNonfungibles(walletId), 'getNonfungibles'),
+        unlink: wrap((walletId) => window.venlyConnect.api.unlink(walletId), 'unlink'),
+        getBalance: wrap((walletId) => window.venlyConnect.api.getBalance(walletId), 'getBalance'),
+        getTokenBalances: wrap((walletId) => window.venlyConnect.api.getTokenBalances(walletId), 'getTokenBalances'),
         getTokenBalance: wrap((walletId,
-                               tokenAddress) => window.arkaneConnect.api.getTokenBalance(walletId, tokenAddress), 'getTokenBalance'),
-        getProfile: wrap(() => window.arkaneConnect.api.getProfile(), 'getProfile'),
-        getPendingTransactions: wrap(() => window.arkaneConnect.api.getPendingTransactions(), 'getPendingTransactions'),
-        deleteTransaction: wrap((transactionId) => window.arkaneConnect.api.deleteTransaction(transactionId), 'deleteTransaction'),
-        getTransactionStatus: wrap((transactionHash, secretType) => window.arkaneConnect.api.getTransactionStatus(transactionHash, secretType), 'getTransactionStatus'),
+                               tokenAddress) => window.venlyConnect.api.getTokenBalance(walletId, tokenAddress), 'getTokenBalance'),
+        getProfile: wrap(() => window.venlyConnect.api.getProfile(), 'getProfile'),
+        getPendingTransactions: wrap(() => window.venlyConnect.api.getPendingTransactions(), 'getPendingTransactions'),
+        deleteTransaction: wrap((transactionId) => window.venlyConnect.api.deleteTransaction(transactionId), 'deleteTransaction'),
+        getTransactionStatus: wrap((transactionHash, secretType) => window.venlyConnect.api.getTransactionStatus(transactionHash, secretType), 'getTransactionStatus'),
     })
 
 })();
