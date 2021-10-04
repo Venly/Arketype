@@ -138,6 +138,17 @@
               });
     }
 
+    function importWallet(request) {
+        console.debug('Importing wallet', request);
+        window.venlyConnect.createSigner().importWallet(request)
+              .then(function(result) {
+                  app.log(result);
+              })
+              .catch(function(err) {
+                  app.error(err);
+              });
+    }
+
     app.page.updateWallets = function(wallets,
                                       secretType) {
         const dataSetName = 'wallets' + secretType.charAt(0).toUpperCase() + secretType.slice(1).toLowerCase();
@@ -255,6 +266,11 @@
             name: fields.name,
             nodeUrl: fields.nodeUrl,
         });
+
+        createImportWalletForm(secretType, {
+            walletId: fields.walletId,
+            to: {type: 'secret-type-select', label: 'To chain', defaultValue: 'MATIC', values: ['MATIC', 'BSC']},
+        })
     };
 
     app.page.initMatic = function() {
@@ -313,6 +329,11 @@
             name: fields.name,
             nodeUrl: fields.nodeUrl,
         });
+
+        createImportWalletForm(secretType, {
+            walletId: fields.walletId,
+            to: {type: 'secret-type-select', label: 'To chain', defaultValue: 'ETHEREUM', values: ['ETHEREUM']},
+        })
     };
 
     app.page.initBsc = function() {
@@ -400,6 +421,11 @@
             name: fields.name,
             nodeUrl: fields.nodeUrl,
         });
+
+        createImportWalletForm(secretType, {
+            walletId: fields.walletId,
+            to: {type: 'secret-type-select', label: 'To chain', defaultValue: 'ETHEREUM', values: ['ETHEREUM']},
+        })
     };
 
     app.page.initAvac = function() {
@@ -789,6 +815,19 @@
                 }
                 htmlFieldCol.appendChild(htmlField);
                 break;
+            case 'secret-type-select':
+                var htmlInputGroup = document.createElement('div');
+                htmlInputGroup.className = 'input-group';
+                htmlField = document.createElement('select');
+                for (var index in field.values) {
+                    var option = document.createElement('option');
+                    option.value = field.values[index];
+                    option.text = field.values[index];
+                    htmlField.appendChild(option)
+                }
+                htmlInputGroup.appendChild(htmlField);
+                htmlFieldCol.appendChild(htmlInputGroup);
+                break;
             default:
                 htmlField = document.createElement(field.type);
                 htmlFieldCol.appendChild(htmlField);
@@ -843,6 +882,7 @@
                 info: fields[name].info || false,
                 dataName: fields[name].dataName,
                 placeholder: fields[name].placeholder || name,
+                values: fields[name].values
             });
             fieldSet.appendChild(htmlField);
         }
@@ -981,6 +1021,13 @@
         createForm(`Execute gas transfer`, secretType, 'execute-gas', fields, executeGasTransaction, {
             secretType,
             type: 'GAS_TRANSFER',
+        });
+    }
+
+    function createImportWalletForm(secretType,
+                                    fields) {
+        createForm(`Export wallet to`, secretType, 'import-wallet', fields, importWallet, {
+            secretType
         });
     }
 
