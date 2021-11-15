@@ -127,6 +127,17 @@
               });
     }
 
+    function readContract(readData) {
+        console.debug('Reading contract', readData);
+        window.venlyConnect.api.readContract(readData)
+              .then(function(result) {
+                  app.log(result);
+              })
+              .catch(function(err) {
+                  app.error(err);
+              });
+    }
+
     function executeNativeTransaction(executeData) {
         console.debug('Executing native transaction', executeData);
         window.venlyConnect.createSigner().executeNativeTransaction(executeData)
@@ -310,6 +321,22 @@
             chainSpecificFields: {type: 'textarea', label: 'Chain specific fields', defaultValue: '{"gasLimit": 200000, "gasPrice": 0}', dataName: 'chainSpecific'},
             name: {type: 'input', label: 'Network name', placeholder: 'e.g. Rinkeby', network: true},
             nodeUrl: {type: 'input', label: 'Network node URL', placeholder: 'e.g. https://rinkeby.infura.io', network: true}
+        });
+
+        createReadContractForm(secretType, {
+            walletId: {type: 'wallet-select', label: 'From'},
+            contractAddress: {type: 'input', label: 'Contract Address', defaultValue: '0x78cB9c3977382d699EF458C071A3353A4553EF49'},
+            functionName: {type: 'input', label: 'Function Name', defaultValue: 'isApprovedForAll'},
+            inputs: {
+                type: 'textarea',
+                label: 'Inputs',
+                defaultValue: '[{"type": "address", "value": "0xA00Fe54522ab6100cdE81635A1DB78d7067D75FA"},{"type": "address", "value": "0x1ac1ca3665b5cd5fdd8bc76f924b76c2a2889d39"}]'
+            },
+            outputs: {
+                type: 'textarea',
+                label: 'Outputs',
+                defaultValue: '[{"type": "bool"}]'
+            }
         });
 
         fields.tokenAddress = {
@@ -923,6 +950,9 @@
                 if (name === 'inputs') {
                     value = JSON.parse(value);
                 }
+                if (name === 'outputs') {
+                    value = JSON.parse(value);
+                }
                 if (name === 'chainSpecificFields') {
                     value = JSON.parse(value);
                 }
@@ -1008,6 +1038,13 @@
         });
     }
 
+    function createReadContractForm(secretType,
+                                       fields) {
+        createForm('Read contract', secretType, 'read-contract', fields, readContract, {
+            secretType,
+            type: 'READ_CONTRACT',
+        });
+    }
 
     function createExecuteForm(secretType,
                                fields) {
