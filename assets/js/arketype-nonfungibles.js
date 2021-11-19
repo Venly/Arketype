@@ -91,12 +91,14 @@
 
                 var walletId = $('select[name="walletId"]', formTx).val();
                 var to = $('input[name="to"]', formTx).val();
+                var chainSpecificFields = $('input[name="chainSpecificFields"]', formTx).val();
+                chainSpecificFields = chainSpecificFields !== null && chainSpecificFields.length>0 ? JSON.parse(chainSpecificFields) : null;
                 var tokenAddress = $('input[name="tokenAddress"]', formTx).val();
                 var fromAddress = $('input[name="fromAddress"]', formTx).val();
                 var tokenId = $('select[name="tokenId"]', formTx).val();
                 var wallet = app.page.wallets.find((w) => w.id === walletId);
                 const transactionRequest = {
-                    secretType: wallet.secretType, walletId, to, from: fromAddress, tokenAddress, tokenId
+                    secretType: wallet.secretType, walletId, to, chainSpecificFields, from: fromAddress, tokenAddress, tokenId
                 };
                 if (wallet.secretType === 'ETHEREUM' && !transactionRequest.network) {
                     transactionRequest.network = {
