@@ -164,6 +164,7 @@
                                             <option value="VECHAIN">Vechain</option>
                                             <option value="MATIC">Matic</option>
                                             <option value="AVAC">Avalanche C</option>
+                                            <option value="HEDERA">Hedera</option>
                                         </select>
                                         <div class="input-group-append">
                                             <button type="button" class="btn btn-outline-secondary get-wallets" title="Refresh wallets">
@@ -190,6 +191,12 @@
                                 <label for="exec-to" class="col-sm-5 col-form-label">To</label>
                                 <div class="col-sm-7">
                                     <input id="exec-to" class="form-control" data-to="true" name="to" placeholder="To"/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="exec-chainSpecificFields" class="col-sm-5 col-form-label">chainSpecificFields</label>
+                                <div class="col-sm-7">
+                                    <input id="exec-chainSpecificFields" class="form-control" data-chainSpecificFields="true" name="chainSpecificFields" placeholder="chainSpecificFields"/>
                                 </div>
                             </div>
                             <div class="form-group row" style="display: none;">

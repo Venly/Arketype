@@ -776,6 +776,7 @@
             to: fields.to,
             tokenAddress: {type: "input", label: "Token ID (optional)"},
             value: {type: 'input', label: 'Amount (in HBAR)', defaultValue: '0.0314'},
+            chainSpecificFields: {type: 'textarea', label: 'Chain specific fields', defaultValue: '{"transactionMemo": "0.0.2810009"}', dataName: 'chainSpecific'},
         });
     }
 
