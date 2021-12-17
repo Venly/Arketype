@@ -3,11 +3,11 @@
 
     window.app = window.app || {};
 
-    if (window.location.href.indexOf("staging") > -1) {
+    if (window.location.href.indexOf("demo-staging") > -1) {
         app.env = 'staging';
-    } else if (window.location.href.indexOf("qa2") > -1) {
+    } else if (window.location.href.indexOf("demo-qa2") > -1) {
         app.env = 'qa2';
-    } else if (window.location.href.indexOf("demo.arkane.network") > -1) {
+    } else if (window.location.href.indexOf("demo") > -1) {
         app.env = 'prod';
     } else {
         app.env = 'qa';
