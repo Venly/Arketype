@@ -5,6 +5,8 @@
 
     if (window.location.href.indexOf("demo-staging") > -1) {
         app.env = 'staging';
+    } else if (window.location.href.indexOf("demo-qa") > -1) {
+        app.env = 'qa';
     } else if (window.location.href.indexOf("demo-qa2") > -1) {
         app.env = 'qa2';
     } else if (window.location.href.indexOf("demo") > -1) {
