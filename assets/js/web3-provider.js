@@ -41,7 +41,7 @@
         });
 
         $(app).on('authenticated', function () {
-            window.web3.eth.getAccounts(function (err, wallets) {
+            window.web3.eth.requestAccounts(function (err, wallets) {
                 app.log(wallets, 'Wallets');
                 updateWallets(wallets);
             });
@@ -80,7 +80,7 @@
     }
 
     function getWallets(el) {
-        window.web3.eth.getAccounts(function (err, wallets) {
+        window.web3.eth.requestAccounts(function (err, wallets) {
             app.log(wallets, 'Wallets');
             updateWallets(wallets);
         });
