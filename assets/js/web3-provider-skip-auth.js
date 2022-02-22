@@ -43,7 +43,7 @@
             if (idpHint) {
                 authenticationOptions.idpHint = idpHint;
             }
-            Venly.authenticate(authenticationOptions).then(account => {
+            window.web3.eth.requestAccounts().then(account => {
                 if (account) {
                     document.body.classList.remove('not-logged-in');
                     document.body.classList.add('logged-in');
