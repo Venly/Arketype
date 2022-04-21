@@ -268,6 +268,22 @@
             nodeUrl: {type: 'input', label: 'Network node URL', placeholder: 'e.g. https://rinkeby.infura.io', network: true}
         });
 
+        createReadContractForm(secretType, {
+            walletId: {type: 'wallet-select', label: 'From'},
+            contractAddress: {type: 'input', label: 'Contract Address', defaultValue: '0xd82049204D8514c637f150C7231BFefC5C4937Ec'},
+            functionName: {type: 'input', label: 'Function Name', defaultValue: 'isApprovedForAll'},
+            inputs: {
+                type: 'textarea',
+                label: 'Inputs',
+                defaultValue: '[{"type": "address", "value": "0xd82049204D8514c637f150C7231BFefC5C4937Ec"},{"type": "address", "value": "0x1ac1ca3665b5cd5fdd8bc76f924b76c2a2889d39"}]'
+            },
+            outputs: {
+                type: 'textarea',
+                label: 'Outputs',
+                defaultValue: '[{"type": "bool"}]'
+            }
+        });
+
         createExecuteForm(secretType, {
             walletId: fields.walletId,
             to: fields.to,
