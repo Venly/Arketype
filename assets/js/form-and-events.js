@@ -296,7 +296,7 @@
 
         createImportWalletForm(secretType, {
             walletId: fields.walletId,
-            to: {type: 'secret-type-select', label: 'To chain', defaultValue: 'MATIC', values: ['MATIC', 'BSC']},
+            to: {type: 'select', label: 'To chain', defaultValue: 'MATIC', values: ['MATIC', 'BSC']},
         })
     };
 
@@ -384,7 +384,7 @@
 
         createImportWalletForm(secretType, {
             walletId: fields.walletId,
-            to: {type: 'secret-type-select', label: 'To chain', defaultValue: 'ETHEREUM', values: ['ETHEREUM']},
+            to: {type: 'select', label: 'To chain', defaultValue: 'ETHEREUM', values: ['ETHEREUM']},
         })
     };
 
@@ -476,7 +476,7 @@
 
         createImportWalletForm(secretType, {
             walletId: fields.walletId,
-            to: {type: 'secret-type-select', label: 'To chain', defaultValue: 'ETHEREUM', values: ['ETHEREUM']},
+            to: {type: 'select', label: 'To chain', defaultValue: 'ETHEREUM', values: ['ETHEREUM']},
         })
     };
 
@@ -786,15 +786,20 @@
         };
         createSignForm(secretType, 'HEDERA_HBAR_TRANSFER', fields);
 
-        var tokenAssociationFields = {
-            walletId: {type: 'wallet-select', label: 'From'},
-            tokenIds: {type: 'input', label: 'tokenIDs (comma separated)'}
-        }
-
-        createForm('Execute tokens association', secretType, 'associate-tokens', tokenAssociationFields, executeNativeTransaction, {
+        createForm(
+            'Execute tokens association',
             secretType,
-            type: 'HEDERA_TOKEN_ASSOCIATION',
-        });
+            'associate-tokens',
+            {
+                walletId: {type: 'wallet-select', label: 'From'},
+                tokenIds: {type: 'input', label: 'tokenIDs (comma separated)'}
+            },
+            executeNativeTransaction,
+            {
+                secretType,
+                type: 'HEDERA_TOKEN_ASSOCIATION',
+            }
+        );
 
         createExecuteForm(secretType, {
             walletId: fields.walletId,
@@ -803,6 +808,25 @@
             value: {type: 'input', label: 'Amount (in HBAR)', defaultValue: '0.0314'},
             chainSpecificFields: {type: 'textarea', label: 'Chain specific fields', defaultValue: '{"transactionMemo": "0.0.2810009"}', dataName: 'chainSpecific'},
         });
+
+        createForm(
+            'Approve allowance',
+            secretType,
+            'approve-allowance',
+            {
+                walletId: fields.walletId,
+                allowanceType: {type: "select", label: 'Type', values: ['HBAR', 'TOKEN', 'NFT', 'NFT_ALL']},
+                spenderAccount: {type: "input", label: "Spender account"},
+                amount: {type: 'input', label: 'Amount'},
+                tokenId: {type: 'input', label: 'Token ID'},
+                serial: {type: 'input', label: 'Serial'},
+            },
+            executeNativeTransaction,
+            {
+                secretType,
+                type: 'HEDERA_APPROVE_ALLOWANCE',
+            }
+        );
     }
 
     function createFormField(id,
@@ -868,7 +892,7 @@
                 }
                 htmlFieldCol.appendChild(htmlField);
                 break;
-            case 'secret-type-select':
+            case 'select':
                 var htmlInputGroup = document.createElement('div');
                 htmlInputGroup.className = 'input-group';
                 htmlField = document.createElement('select');
@@ -1065,7 +1089,7 @@
     }
 
     function createReadContractForm(secretType,
-                                       fields) {
+                                    fields) {
         createForm('Read contract', secretType, 'read-contract', fields, readContract, {
             secretType,
             type: 'READ_CONTRACT',
