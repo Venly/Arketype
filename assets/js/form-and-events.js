@@ -786,6 +786,11 @@
         };
         createSignForm(secretType, 'HEDERA_HBAR_TRANSFER', fields);
 
+        createSignRawForm(secretType, 'HEDERA_RAW', {
+            walletId: {type: 'wallet-select', label: 'From'},
+            data: {type: 'textarea', label: 'Message', defaultValue: 'Sign this message to accept our terms.'},
+        });
+
         createForm(
             'Execute tokens association',
             secretType,
