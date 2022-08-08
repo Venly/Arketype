@@ -54,7 +54,7 @@
     }
 
     function initSelectToken() {
-        $('select[name="tokenId"]').on('change', function() {
+        $('select[name="tokenIdSel"]').on('change', function() {
             fillTokenDetails($(this).val())
         });
     }
@@ -69,7 +69,6 @@
         var $wallet = $('select[name="walletId"]');
         var walletId = $wallet.val();
         var address = $wallet.find('option[value="' + walletId + '"]').data('address');
-        $('input[name="fromAddress"]').val(address);
         getTokens(walletId);
     }
 
@@ -91,14 +90,16 @@
 
                 var walletId = $('select[name="walletId"]', formTx).val();
                 var to = $('input[name="to"]', formTx).val();
+                var from = $('input[name="from"]', formTx).val();
                 var chainSpecificFields = $('input[name="chainSpecificFields"]', formTx).val();
                 chainSpecificFields = chainSpecificFields !== null && chainSpecificFields.length>0 ? JSON.parse(chainSpecificFields) : null;
                 var tokenAddress = $('input[name="tokenAddress"]', formTx).val();
-                var fromAddress = $('input[name="fromAddress"]', formTx).val();
-                var tokenId = $('select[name="tokenId"]', formTx).val();
+                var tokenIdInp = $('input[name="tokenIdInp"]', formTx).val();
+                var tokenIdSel = $('select[name="tokenIdSel"]', formTx).val();
+                var tokenId = tokenIdInp ? tokenIdInp : tokenIdSel;
                 var wallet = app.page.wallets.find((w) => w.id === walletId);
                 const transactionRequest = {
-                    secretType: wallet.secretType, walletId, to, chainSpecificFields, from: fromAddress, tokenAddress, tokenId
+                    secretType: wallet.secretType, walletId, to, chainSpecificFields, from, tokenAddress, tokenId
                 };
                 if (wallet.secretType === 'ETHEREUM' && !transactionRequest.network) {
                     transactionRequest.network = {
@@ -130,7 +131,7 @@
     function updateTokens(walletId,
                           tokens) {
         var localWalletId = $('select[name="walletId"]').val();
-        var $tokenSelect = $('select[name="tokenId"]');
+        var $tokenSelect = $('select[name="tokenIdSel"]');
         var $tokenAddress = $('input[name="tokenAddress"]');
         $tokenSelect && $tokenSelect.empty();
         $tokenAddress.val('');
