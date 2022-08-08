@@ -25,6 +25,7 @@
         app.page.initLitecoin();
         app.page.initNeo();
         app.page.initHedera();
+        app.page.initImx();
         app.page.initialised = true;
     };
 
@@ -832,6 +833,27 @@
                 type: 'HEDERA_APPROVE_ALLOWANCE',
             }
         );
+    }
+
+    app.page.initImx = function() {
+        var secretType = 'IMX';
+        var fields = {
+            walletId: {type: 'wallet-select', label: 'From'},
+            to: {type: 'input', label: 'To', defaultValue: '0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE'},
+            amount: {type: 'input', label: 'Amount (Raw)', defaultValue: '314000000'},
+        };
+
+        createExecuteForm(secretType, {
+            walletId: fields.walletId,
+            to: fields.to,
+            value: {type: 'input', label: 'Amount (in ETH)', defaultValue: '0.0314'},
+            tokenAddress: {
+                type: 'input',
+                label: 'Token address',
+                placeholder: 'e.g. 0x6ff6c0ff1d68b964901f986d4c9fa3ac68346570'
+            },
+        });
+
     }
 
     function createFormField(id,
