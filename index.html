@@ -13,7 +13,8 @@
     <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/assets/css/auth.css"/>
     <link rel="stylesheet" href="/assets/css/arketype.css"/>
-    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <script src="/node_modules/@venly/connect/dist/connect.js"></script>
 </head>
 
@@ -194,6 +195,8 @@
                            aria-selected="true">Avalanche C</a>
                         <a class="nav-item nav-link" id="nav-HEDERA-tab" data-toggle="tab" href=".tab-pane#tab-HEDERA" role="tab" aria-controls="tab-HEDERA"
                            aria-selected="true">Hedera</a>
+                        <a class="nav-item nav-link" id="nav-IMX-tab" data-toggle="tab" href=".tab-pane#tab-IMX" role="tab" aria-controls="tab-IMX"
+                           aria-selected="true">IMX</a>
                     </div>
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
@@ -512,6 +515,21 @@
                             </div>
                             <div class="mb-3 col-lg-6">
                                 <form data-form="approve-allowance" data-chain="HEDERA" class="card bg-light"></form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade p-4 bg-white border" id="tab-IMX" data-chain="IMX" role="tabpanel"
+                         aria-labelledby="nav-IMX-tab">
+                        <button type="button" data-chain="IMX" class="btn btn-outline-primary get-wallets mb-3">
+                            Refresh Wallets
+                        </button>
+                        <button type="button" data-chain="IMX" class="btn btn-outline-primary manage-wallets mb-3">
+                            Manage Wallets
+                        </button>
+
+                        <div class="row">
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="execute" data-chain="IMX" class="card bg-light"></form>
                             </div>
                         </div>
                     </div>
