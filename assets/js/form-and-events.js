@@ -843,6 +843,11 @@
             amount: {type: 'input', label: 'Amount (Raw)', defaultValue: '314000000'},
         };
 
+        createSignRawForm(secretType, 'IMX_RAW', {
+            walletId: {type: 'wallet-select', label: 'From'},
+            data: {type: 'textarea', label: 'Message', defaultValue: 'Sign this message to accept our terms.'},
+        });
+
         createExecuteForm(secretType, {
             walletId: fields.walletId,
             to: fields.to,
