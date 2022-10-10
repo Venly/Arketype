@@ -9,6 +9,14 @@ pipeline {
     }
     stages {
         stage('Docker Build') {
+          when {
+            anyOf {
+                branch 'develop'
+                branch 'master'
+                branch 'hotfix-*'
+                branch 'release-*'
+            }
+          }
           steps {
             sh 'ls -l'
             sh 'docker build -t arkanenetwork/arkane-arketype:${BRANCH_NAME} .'
