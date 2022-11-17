@@ -36,8 +36,16 @@
 
 .twitter {
     border: 0;
-    width: 158px;
-    height: 28px;
+    width: 180px;
+    height: 35px;
     background: url('/assets/img/twitter-signin.png') no-repeat;
-    background-size: 158px 28px;
+    background-size: 180px 35px;
+}
+
+.apple {
+    border: 0;
+    width: 180px;
+    height: 35px;
+    background: url('/assets/img/apple-signin.jpg') no-repeat;
+    background-size: 180px 35px;
 }
