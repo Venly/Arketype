@@ -9,6 +9,7 @@
                 initManageWalletsEvent();
                 initLinkWalletsEvent();
                 initClaimWalletsEvent();
+                initPerformKYCEvent();
             }
         });
     });
@@ -42,6 +43,7 @@
             el.addEventListener('click', function() {
                 var chain = this.dataset.chain;
                 if (app.getWindowMode() === 'POPUP') {
+                    console.log('manageWallets', chain);
                     window.venlyConnect.flows.manageWallets(chain).then((result) => {
                         app.log(result, 'manage-wallets finished');
                         getWalletsBySecretType(this.dataset.chain.toUpperCase());
@@ -52,6 +54,22 @@
                     window.venlyConnect.flows.manageWallets(chain, {redirectUri: app.redirectUri, correlationID: `${Date.now()}`});
                 }
             });
+        });
+    }
+
+    function initPerformKYCEvent() {
+        document.getElementById('perform-kyc').addEventListener('click', function() {
+            if (app.getWindowMode() === 'POPUP') {
+                window.venlyConnect.flows.performKYC().then((result) => {
+                    app.log(result, 'Performing wallets finished');
+                    console.log(result, 'Performing wallets finished');
+                }).catch((result) => {
+                    app.error(result, 'perform-kyc');
+                    console.error(result, 'perform-kyc');
+                });
+            } else {
+                window.venlyConnect.flows.performKYC({redirectUri: app.redirectUri});
+            }
         });
     }
 
