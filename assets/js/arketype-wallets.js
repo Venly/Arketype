@@ -42,7 +42,6 @@
             el.addEventListener('click', function() {
                 var chain = this.dataset.chain;
                 if (app.getWindowMode() === 'POPUP') {
-                    console.log('manageWallets', chain);
                     window.venlyConnect.flows.manageWallets(chain).then((result) => {
                         app.log(result, 'manage-wallets finished');
                         getWalletsBySecretType(this.dataset.chain.toUpperCase());
