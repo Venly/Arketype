@@ -69,7 +69,7 @@
     };
 
     app.extractResultFromQueryParams = function () {
-        const validResultParams = ['transactionHash', 'signedTransaction', 'r', 's', 'v', 'signature', 'error', 'walletId'];
+        const validResultParams = ['transactionHash', 'signedTransaction', 'r', 's', 'v', 'signature', 'error', 'walletId', 'verification'];
         const result = {};
         const regex = new RegExp(/[\?|\&]([^=]+)\=([^&]+)/g);
         let requestParam = regex.exec(window.location.href);
