@@ -49,3 +49,8 @@
     background: url('/assets/img/apple-signin.jpg') no-repeat;
     background-size: 180px 35px;
 }
+
+.login-with-email-field {
+    width: 200px;
+    margin: auto;
+}

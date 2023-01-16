@@ -24,9 +24,15 @@
         var logoutButton = document.getElementById('auth-logout');
         $(".auth-loginlink").on('click', function (e) {
             e.preventDefault();
+            const emailHintEl = $(this).prev('.login-with-email-field')[0];
+
             let idpHint = $(this).data('idp-hint');
+            const emailHint = emailHintEl && idpHint === 'password'
+                ? emailHintEl.value
+                : null;
+
             var windowMode = app.getWindowMode();
-            window.venlyConnect.flows.authenticate({windowMode: windowMode, idpHint: idpHint}).then((result) => {
+            window.venlyConnect.flows.authenticate({windowMode: windowMode, idpHint: idpHint, emailHint}).then((result) => {
                 return result.authenticated(app.handleAuthenticated)
                     .notAuthenticated((auth) => {
                         document.body.classList.add('not-logged-in');
