@@ -6,7 +6,7 @@
 
   // Unpkg imports
 const Web3Modal = window.Web3Modal.default;
-const Venly = window.Venly;
+const Venly = new VenlySubProvider();
 const evmChains = window.evmChains;
 
 // Web3modal instance

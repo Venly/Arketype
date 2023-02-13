@@ -2,6 +2,8 @@
     'use strict';
 
     app.initApp = function () {
+        const Venly = new VenlySubProvider();
+        window.Venly = Venly;
         app.page = app.page || {};
         app.secretType = 'ETHEREUM';
         let idpHint = $(this).data('idp-hint');
