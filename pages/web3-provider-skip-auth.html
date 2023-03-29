@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="/assets/css/arketype.css"/>
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
           integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-    <script src="/node_modules/@venly/web3-provider/dist/web3-provider.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@venly/web3-provider@3.0.0-develop.2/umd/index.js"></script>
 </head>
 
 <body class="bg-light-gray not-logged-in" id="arketype">
@@ -45,6 +45,9 @@
                     <li class="nav-item active">
                         <a class="nav-link" href="/pages/web3-provider-skip-auth">Web3 Provider (skip auth)<span
                                 class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pages/ethers">Ethers.js</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/pages/nonfungibles">Nonfungibles</a>
@@ -94,318 +97,166 @@
 </div>
 
 <div class="bg-light py-5 auth-logged-in">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12 mb-4">
-                <div class="mb-5 row">
-                    <h4 class="mb-3 col-12">Actions</h4>
-                    <div class="col-12 col-md-6">
-                        <button type="button" class="btn btn-primary" id="auth-logout">Logout</button>
-                    </div>
-                </div>
+  <div class="container">
+      <div class="row">
+          <div class="col-md-6 mb-4">
+              <div class="mb-5">
+                  <h4 class="mb-3">User</h4>
+                  <div class="form-group row">
+                      <label class="col-sm-3 col-form-label">Actions</label>
+                      <div class="col-sm-9 form-row align-items-center">
+                          <div class="col-auto">
+                              <button type="button" class="btn btn-primary" id="auth-logout">Logout</button>
+                          </div>
+                      </div>
+                  </div>
+        
+                  <div class="mb-8 mt-4" id="network-management">
+                      <h4 class="mb-3">Network</h4>
+                      <div class="form-group row">
+                          <label for="sign-to" class="col-sm-3 col-form-label">Secret Type</label>
+                          <div class="col-sm-5">
+                              <select class="form-control" id="network-mgmt-secret-type"
+                                      name="network-mgmt-secret-type">
+                                  <option value="ETHEREUM">ETHEREUM</option>
+                                  <option value="BSC">BSC</option>
+                                  <option value="MATIC">MATIC</option>
+                                  <option value="AVAC">AVAC</option>
+                              </select>
+                          </div>
+                      </div>
+                      <div class="form-group row">
+            <label for="sign-to" class="col-sm-3 col-form-label"></label>
+            <div class="col-sm-5">
+              <button class="btn btn-secondary w-100" id="btn-secret-type">Change secret type</button>
             </div>
-            <div class="col-md-12 mb-4">
-                <h4 class="d-flex justify-content-between align-items-center mb-3">
-                    <span class="text-muted">Logs</span>
-                    <span class="badge badge-secondary badge-pill"></span>
-                </h4>
-                <div id="appLog" class="form-control"></div>
+                      </div>
+                  </div>
 
-                <div class="card p-2">
-                    <button class="btn btn-secondary" onclick="app.clearLog()">Clear logs</button>
-                </div>
-            </div>
-
-            <div class="col-md-12 mb-4">
-                <div class="mb-8 row" id="network-management">
-                    <h4 class="mb-3 col-12">Secret Type</h4>
-                    <div class="col-12 col-md-12">
-
-                        <div class="form-group row">
-                            <label for="sign-to" class="col-sm-5 col-form-label">Secret Type</label>
-                            <div class="col-sm-7">
-                                <select class="form-control" id="network-mgmt-secret-type"
-                                        name="network-mgmt-secret-type">
-                                    <option value="ETHEREUM">ETHEREUM</option>
-                                    <option value="BSC">BSC</option>
-                                    <option value="MATIC">MATIC</option>
-                                    <option value="AVAC">AVAC</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="card p-2">
-                            <button class="btn btn-secondary" id="btn-secret-type">Change secret type</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-12 mb-4">
-                <div class="mb-5 row" id="wallet-management">
-                    <h4 class="mb-3 col-12">Wallets</h4>
-                    <div class="col-12 col-md-6">
-                        <button type="button" id="link-wallets" class="btn btn-outline-primary">
-                            Link Wallets
-                        </button>
-                        <button type="button" id="manage-wallets" class="btn btn-outline-primary">
-                            Manage Wallets
-                        </button>
-                        <button type="button" id="refresh-wallets" class="btn btn-outline-primary">
-                            Refresh Wallets
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-12 p-4 bg-white border">
-                <div class="row">
-                    <div class="mb-3 col-lg-6">
-                        <form id="sign-form" data-form="request" class="card bg-light">
-                            <fieldset class="card-body">
-                                <legend class="card-title">Sign transaction</legend>
-
-                                <div class="form-group row">
-                                    <label for="sign-from" class="col-sm-5 col-form-label">From</label>
-                                    <div class="col-sm-7">
-                                        <div class="input-group">
-                                            <select id="sign-from" class="form-control" data-from="true"
-                                                    name="from"></select>
-                                            <div class="input-group-append">
-                                                <button type="button" class="btn btn-outline-secondary"
-                                                        onclick="app.copySelectDataAddress('#sign-from')"
-                                                        title="Copy address">
-                                                    <i class="fa fa-copy"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label for="sign-to" class="col-sm-5 col-form-label">To</label>
-                                    <div class="col-sm-7">
-                                        <input id="sign-to" class="form-control" data-to="true" name="to"
-                                               placeholder="To"/>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label for="sign-amount" class="col-sm-5 col-form-label">Value (in wei,
-                                        optional)</label>
-                                    <div class="col-sm-7">
-                                        <input id="sign-amount" class="form-control" data-amount="true" name="value"
-                                               placeholder="value" value="314000000000000000"/>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label for="sign-gas" class="col-sm-5 col-form-label">Gas</label>
-                                    <div class="col-sm-7">
-                                        <input id="sign-gas" type="number" class="form-control" data-gas="true"
-                                               name="gas" placeholder="Gas" value="500000"/>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label for="sign-gas-price" class="col-sm-5 col-form-label">Gas Price (in wei,
-                                        optional)</label>
-                                    <div class="col-sm-7">
-                                        <input id="sign-gas-price" type="number" class="form-control"
-                                               data-gas-price="true" name="gas-price" placeholder="Gas Price"/>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label for="sign-gas-price" class="col-sm-5 col-form-label">Nonce (optional)</label>
-                                    <div class="col-sm-7">
-                                        <input id="sign-nonce" type="number" class="form-control" data-nonce="true"
-                                               name="nonce" placeholder="Nonce"/>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label for="sign-data" class="col-sm-5 col-form-label">Data (optional)</label>
-                                    <div class="col-sm-7">
-                                        <textarea id="sign-data" class="form-control" data-data="true" name="data"
-                                                  rows="4"></textarea>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="offset-5 col-7">
-                                        <button type="submit" value="sign" class="btn btn-primary">Sign Transaction
-                                        </button>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </form>
-                    </div>
-                    <div class="mb-3 col-lg-6">
-                        <form id="execute-form" data-form="request" class="card bg-light">
-                            <fieldset class="card-body">
-                                <legend class="card-title">Execute transaction</legend>
-
-                                <div class="form-group row">
-                                    <label for="exec-from" class="col-sm-5 col-form-label">From</label>
-                                    <div class="col-sm-7">
-                                        <div class="input-group">
-                                            <select id="exec-from" class="form-control" data-from="true"
-                                                    name="from"></select>
-                                            <div class="input-group-append">
-                                                <button type="button" class="btn btn-outline-secondary"
-                                                        onclick="app.copySelectDataAddress('#exec-from')"
-                                                        title="Copy address">
-                                                    <i class="fa fa-copy"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label for="exec-to" class="col-sm-5 col-form-label">To</label>
-                                    <div class="col-sm-7">
-                                        <input id="exec-to" class="form-control" data-to="true" name="to"
-                                               placeholder="To"/>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label for="exec-amount" class="col-sm-5 col-form-label">Value (in wei,
-                                        optional)</label>
-                                    <div class="col-sm-7">
-                                        <input id="exec-amount" class="form-control" data-amount="true" name="value"
-                                               placeholder="value" value="314000000000000000"/>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label for="exec-gas" class="col-sm-5 col-form-label">Gas</label>
-                                    <div class="col-sm-7">
-                                        <input id="exec-gas" type="number" class="form-control" data-gas="true"
-                                               name="gas" placeholder="Gas" value="500000"/>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label for="exec-gas-price" class="col-sm-5 col-form-label">Gas Price (in wei,
-                                        optional)</label>
-                                    <div class="col-sm-7">
-                                        <input id="exec-gas-price" type="number" class="form-control"
-                                               data-gas-price="true" name="gas-price" placeholder="Gas Price"/>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label for="exec-gas-price" class="col-sm-5 col-form-label">Nonce (optional)</label>
-                                    <div class="col-sm-7">
-                                        <input id="exec-nonce" type="number" class="form-control" data-nonce="true"
-                                               name="nonce" placeholder="Nonce"/>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label for="exec-data" class="col-sm-5 col-form-label">Data (optional)</label>
-                                    <div class="col-sm-7">
-                                        <textarea id="exec-data" class="form-control" data-data="true" name="data"
-                                                  rows="4"></textarea>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="offset-5 col-7">
-                                        <button type="submit" value="execute" class="btn btn-primary">Execute
-                                            Transaction
-                                        </button>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </form>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="mb-3 col-lg-6">
-                        <form id="eip712-form" data-form="request" class="card bg-light">
-                            <fieldset class="card-body">
-                                <legend class="card-title">Sign typed data (EIP712)</legend>
-
-
-                                <div class="form-group row">
-                                    <label for="sign-from" class="col-sm-5 col-form-label">From</label>
-                                    <div class="col-sm-7">
-                                        <div class="input-group">
-                                            <select id="eip712-from" class="form-control" data-from="true"
-                                                    name="from"></select>
-                                            <div class="input-group-append">
-                                                <button type="button" class="btn btn-outline-secondary"
-                                                        onclick="app.copySelectDataAddress('#eip712-from')"
-                                                        title="Copy address">
-                                                    <i class="fa fa-copy"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label for="eip712-data" class="col-sm-5 col-form-label">EIP712 data</label>
-                                    <div class="col-sm-7">
-                                        <textarea id="eip712-data" class="form-control" data-data="true" name="data"
-                                                  rows="4">{"types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"},{"name":"salt","type":"bytes32"}],"Bid":[{"name":"amount","type":"uint256"},{"name":"bidder","type":"Identity"}],"Identity":[{"name":"userId","type":"uint256"},{"name":"wallet","type":"address"}]},"domain":{"name":"My amazing dApp","version":"2","chainId":4,"verifyingContract":"0x1C56346CD2A2Bf3202F771f50d3D14a367B48070","salt":"0xf2d857f4a3edcb9b78b4d503bfe733db1e3f6cdc2b7971ee739626c97e86a558"},"primaryType":"Bid","message":{"amount":100,"bidder":{"userId":323,"wallet":"0x3333333333333333333333333333333333333333"}}}</textarea>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="offset-5 col-7">
-                                        <button type="submit" value="execute" class="btn btn-primary">Sign</button>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </form>
-                    </div>
-                    <div class="mb-3 col-lg-6">
-                        <form id="personal-sign-form" data-form="request" class="card bg-light">
-                            <fieldset class="card-body">
-                                <legend class="card-title">Personal sign</legend>
-
-
-                                <div class="form-group row">
-                                    <label for="sign-from" class="col-sm-5 col-form-label">From</label>
-                                    <div class="col-sm-7">
-                                        <div class="input-group">
-                                            <select id="personal-sign-from" class="form-control" data-from="true"
-                                                    name="from"></select>
-                                            <div class="input-group-append">
-                                                <button type="button" class="btn btn-outline-secondary"
-                                                        onclick="app.copySelectDataAddress('#personal-sign-from')"
-                                                        title="Copy address">
-                                                    <i class="fa fa-copy"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label for="eip712-data" class="col-sm-5 col-form-label">Data</label>
-                                    <div class="col-sm-7">
-                                        <textarea id="personal-sign-data" class="form-control" data-data="true"
-                                                  name="data"
-                                                  rows="4">I hereby agree that this is awesome!</textarea>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="offset-5 col-7">
-                                        <button type="submit" value="execute" class="btn btn-primary">Sign</button>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </form>
-                    </div>
-                </div>
-            </div>
+        <div class="mt-4 row" id="wallet-management">
+          <h4 class="mb-3 col-12">Wallets</h4>
+          <div class="col-12">
+            <button type="button" id="link-wallets" class="btn btn-outline-primary">
+              Link Wallets
+            </button>
+            <button type="button" id="manage-wallets" class="btn btn-outline-primary">
+              Manage Wallets
+            </button>
+            <button type="button" id="refresh-wallets" class="btn btn-outline-primary">
+              Refresh Wallets
+            </button>
+          </div>
         </div>
-    </div>
+
+              </div>
+          </div>
+
+          <div class="col-md-6 mb-4">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">Logs</span>
+                <span class="badge badge-secondary badge-pill"></span>
+            </h4>
+            <div id="appLog" class="form-control"></div>
+
+            <div class="card mt-3">
+                <button class="btn btn-secondary" onclick="app.clearLog()">Clear logs</button>
+            </div>
+          </div>
+
+          <div class="col-md-12 p-4 bg-white border">
+              <div class="row" style="height: 700px">
+                  <div class="mb-3 col-lg-6">
+                      <form id="sign-form" data-form="request" class="card bg-light">
+                          <fieldset class="card-body">
+
+                              <div class="form-group row">
+                                  <label for="sign-from" class="col-sm-2 col-form-label">Method</label>
+                                  <div class="col-sm-10">
+                                      <div class="input-group">
+                                          <select id="sign-method" class="form-control" name="method">
+                                            <option>eth.call</option>
+                                            <option>eth.estimateGas</option>
+                                            <option>eth.getAccounts</option>
+                                            <option>eth.getBalance</option>
+                                            <option>eth.getBlock</option>
+                                            <option>eth.getBlockNumber</option>
+                                            <option>eth.getBlockTransactionCount</option>
+                                            <option>eth.getBlockUncleCount</option>
+                                            <option>eth.getChainId</option>
+                                            <option>eth.getCode</option>
+                                            <option>eth.getCoinbase</option>
+                                            <option>eth.getFeeHistory</option>
+                                            <option>eth.getGasPrice</option>
+                                            <option>eth.getHashrate</option>
+                                            <option>eth.getNodeInfo</option>
+                                            <option>eth.getPastLogs</option>
+                                            <option>eth.getPendingTransactions</option>
+                                            <option>eth.getProof</option>
+                                            <option>eth.getProtocolVersion</option>
+                                            <option>eth.getStorageAt</option>
+                                            <option>eth.getTransaction</option>
+                                            <option>eth.getTransactionCount</option>
+                                            <option>eth.getTransactionFromBlock</option>
+                                            <option>eth.getTransactionReceipt</option>
+                                            <option>eth.getUncle</option>
+                                            <option>eth.isMining</option>
+                                            <option>eth.isSyncing</option>
+                                            <option>eth.requestAccounts</option>
+                                            <option>eth.sendSignedTransaction</option>
+                                            <option>eth.sendTransaction</option>
+                                            <option>eth.sign</option>
+                                            <option>eth.signTransaction</option>
+                                            <option>currentProvider.request</option>
+                                          </select>
+                                      </div>
+                                  </div>
+                              </div>
+
+                              <div class="form-group row">
+                                  <label for="sign-from" class="col-sm-2 col-form-label">From</label>
+                                  <div class="col-sm-10">
+                                      <div class="input-group">
+                                          <select id="sign-from" class="form-control" data-from="true" name="from">
+                                              <option>loading...</option>
+                                          </select>
+                                          <div class="input-group-append">
+                                              <button type="button" class="btn btn-outline-secondary"
+                                                      onclick="app.copySelectDataAddress('#sign-from')"
+                                                      title="Copy address">
+                                                  <i class="fa fa-copy"></i>
+                                              </button>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+
+                              <div class="form-group row">
+                                  <label for="sign-data" class="col-sm-2 col-form-label">Params</label>
+                                  <div class="col-sm-10">
+                                      <textarea id="sign-data" class="form-control" data-data="true" name="params"
+                                                rows="12"></textarea>
+                                  </div>
+                              </div>
+                              <div class="row">
+                                  <div class="offset-2 col-10">
+                                      <button type="submit" value="sign" class="btn btn-primary d-flex align-items-center justify-content-center w-100">
+                                          <span>Submit</span>
+                                          <div class="spinner-border spinner-border-sm text-light position-absolute" role="status"></div>
+                                      </button>
+                                  </div>
+                              </div>
+                          </fieldset>
+                      </form>
+                  </div>
+                  <div class="mb-3 col-lg-6 h-100">
+                      <div class="card card-body h-100 overflow-auto" id="documentation">
+                          
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
 </div>
 
 <div class="bg-dark mt-auto">
@@ -420,6 +271,25 @@
     </div>
 </div>
 
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <h5 class="modal-title"></h5>
+		  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		  </button>
+		</div>
+		<div class="modal-body" style="white-space: pre-wrap; min-height: 150px; max-height: 70vh; overflow: auto">
+		  
+		</div>
+		<div class="modal-footer">
+		  <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+		</div>
+	  </div>
+	</div>
+</div>
+
 <script src="/node_modules/jquery/dist/jquery.min.js"></script>
 <script src="/assets/js/vendor/modernizr-custom.js"></script>
 <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
@@ -427,7 +297,7 @@
 <script src="/assets/js/plugins.js"></script>
 <script src="/assets/js/settings.js"></script>
 <script src="/assets/js/main.js"></script>
-<script src="/assets/js/web3-provider-skip-auth.js"></script>
+<script type="module" src="/assets/js/web3-provider-skip-auth.js"></script>
 
 </body>
 

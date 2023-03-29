@@ -1,7 +1,10 @@
+import { defaultParams } from "../constants/params.js";
+
 (function () {
     'use strict';
 
     app.initApp = function () {
+      $('#documentation').load('/assets/docs/web3js.html');
         app.page = app.page || {};
         app.secretType = 'ETHEREUM';
         let idpHint = $(this).data('idp-hint');
@@ -166,113 +169,62 @@
 
     function initRequestTransactionForm() {
         var signForm = document.querySelector('#sign-form');
-        if (signForm) {
-            signForm.addEventListener('submit', function (e) {
-                e.stopPropagation();
-                e.preventDefault();
-                //add this if a popup blocker is being triggered
-                window.Venly.connect().createSigner();
-
-                var rawTransaction = {
-                    from: $('select[name="from"]', signForm).val(),
-                    to: $('input[name="to"]', signForm).val(),
-                    value: $('input[name="value"]', signForm).val(),
-                    gas: $('input[name="gas"]', signForm).val() || undefined,
-                    gasPrice: $('input[name="gas-price"]', signForm).val() || undefined,
-                    nonce: $('input[name="nonce"]', signForm).val() || undefined,
-                    data: $('textarea[name="data"]', signForm).val() || undefined,
-                };
-
-                window.web3.eth.signTransaction(rawTransaction, (err, result) => {
-                    if (err) {
-                        app.error("error: " + err.message ? err.message : JSON.stringify(err));
-                    } else {
-                        app.log(result);
-                    }
-                });
-            });
+        if (signForm) {            
+          $('select[name="method"]', signForm).on('change', function() {
+            $('[name="params"]').val(defaultParams[this.value]);
+            $(`#web3-eth > .section`).hide();
+            const sectionId = this.value.split('.').pop().toLowerCase();
+            $(`#web3-eth > .section#${sectionId}`).show();
+            $('select[name="from"]').trigger('change');
+          });
+          $('select[name="method"]', signForm).trigger('change');
+  
+          $('select[name="from"]', signForm).on('change', function() {
+            const params = $('[name="params"]');
+            const value = params.val();
+            if (value.startsWith('{'))
+              params.val(value.replace(/"from": "(.*?)"/, `"from": "${this.value}"`));
+            else
+              params.val(value.replace(/"(address|loading...)"/g, `"${this.value}"`));
+          });
+  
+          signForm.addEventListener('submit', function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            //add this if a popup blocker is being triggered
+            //window.Venly.connect().createSigner();
+            const submit = $('button[type="submit"]', signForm);
+            const method = $('[name="method"]', signForm).val();
+  
+            try {
+              const params = $('[name="params"]', signForm).val();
+              const args = JSON.parse('[' + params + ']');
+              submit.attr('disabled', true);
+  
+              let fn = window.web3;
+              for (let split of method.split('.'))
+                fn = fn[split];
+              fn.apply(window.web3.currentProvider, args).then(res => {
+                showModal('Result', JSON.stringify(res, null, 2))
+                app.log(res, method);
+              }).catch((err) => {
+                showModal('Error', err.message || JSON.stringify(err, null, 2));
+                app.error("error: " + err.message || JSON.stringify(err), method);
+              }).finally(() => submit.removeAttr('disabled'));
+            }
+            catch (err) {
+              console.log(err.message);
+              submit.removeAttr('disabled');
+            }
+          });
         }
+    }
 
-        var executeForm = document.querySelector('#execute-form');
-        if (executeForm) {
-            executeForm.addEventListener('submit', function (e) {
-                e.stopPropagation();
-                e.preventDefault();
-
-                //add this if a popup blocker is being triggered
-                window.Venly.connect().createSigner();
-
-                var rawTransaction = {
-                    from: $('select[name="from"]', executeForm).val(),
-                    to: $('input[name="to"]', executeForm).val(),
-                    value: $('input[name="value"]', executeForm).val(),
-                    gas: $('input[name="gas"]', executeForm).val() || undefined,
-                    gasPrice: $('input[name="gas-price"]', executeForm).val() || undefined,
-                    nonce: $('input[name="nonce"]', executeForm).val() || undefined,
-                    data: $('textarea[name="data"]', executeForm).val() || undefined,
-                };
-                window.web3.eth.sendTransaction(rawTransaction, function (err, hash) {
-                    if (err) console.error(err);
-                })
-                    .on('transactionHash', function (hash) {
-                        app.log(hash, 'Tx hash');
-                    })
-                    .on('receipt', function (receipt) {
-                        app.log(receipt, 'Tx receipt');
-                    })
-                    .on('error', function (err) {
-                        app.error("error: " + err.message ? err.message : JSON.stringify(err));
-                    });
-
-            });
-        }
-
-        var eip712Form = document.querySelector('#eip712-form');
-        if (eip712Form) {
-            eip712Form.addEventListener('submit', function (e) {
-                e.stopPropagation();
-                e.preventDefault();
-
-                //add this if a popup blocker is being triggered
-                window.Venly.connect().createSigner();
-
-                const data = $('textarea[name="data"]', eip712Form).val();
-                const signer = $('select[name="from"]', eip712Form).val()
-                window.web3.currentProvider.sendAsync(
-                    {
-                        method: "eth_signTypedData_v3",
-                        params: [signer, data],
-                        from: signer
-                    },
-                    function (err, result) {
-                        if (err || result.error) {
-                            return console.error(result);
-                        }
-                        app.log(result, 'EIP712 signature');
-                    }
-                );
-            });
-        }
-
-        var personalSignForm = document.querySelector('#personal-sign-form');
-        if (personalSignForm) {
-            personalSignForm.addEventListener('submit', function (e) {
-                e.stopPropagation();
-                e.preventDefault();
-
-                //add this if a popup blocker is being triggered
-                window.Venly.connect().createSigner();
-
-                const data = $('textarea[name="data"]', personalSignForm).val();
-                const signer = $('select[name="from"]', personalSignForm).val()
-                window.web3.eth.sign(data, signer, function (err, result) {
-                    if (err || result.error) {
-                        return console.error(result);
-                    }
-                    app.log(result, 'Personal signature');
-                })
-            });
-        }
+    function showModal(title, message) {
+      const modal = $('#modal');
+      $('.modal-title', modal).html(title);
+      $('.modal-body', modal).html(message);
+      modal.modal();
     }
 
     function updateWallets(wallets) {
@@ -284,6 +236,7 @@
                 {value: wallet, text: wallet, 'data-address': wallet}
             )));
         }
+        walletsSelect.trigger('change');
     }
 
     function clearWallets() {
