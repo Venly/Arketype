@@ -57,7 +57,8 @@
         document.body.classList.remove('not-logged-in');
         document.body.classList.add('logged-in');
         $('#client-id').text(app.clientId);
-        $('#auth-username').html('<strong>' + app.auth.idTokenParsed.name + '</strong><br/>' + app.auth.subject);
+        $('#auth-username-name').text(app.auth.idTokenParsed.name);
+        $('#auth-username-id').text(app.auth.subject);
         app.updateToken(app.auth.token);
         window.venlyConnect.addOnTokenRefreshCallback(app.updateToken);
         app.checkResultRequestParams();
