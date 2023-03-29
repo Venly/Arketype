@@ -39,15 +39,15 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/pages/simple-get-wallets">Simple Connect Example</a>
                     </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" href="/pages/web3-provider">Web3 Provider<span
-                                class="sr-only">(current)</span></a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pages/web3-provider">Web3 Provider</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/pages/web3-provider-skip-auth">Web3 Provider (skip auth)</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item active">
                         <a class="nav-link" href="/pages/ethers">Ethers.js</a>
+                        <span class="sr-only">(current)</span>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/pages/nonfungibles">Nonfungibles</a>
@@ -174,39 +174,43 @@
                                     <div class="col-sm-10">
                                         <div class="input-group">
                                             <select id="sign-method" class="form-control" name="method">
-                                              <option>eth.call</option>
-                                              <option>eth.estimateGas</option>
-                                              <option>eth.getAccounts</option>
-                                              <option>eth.getBalance</option>
-                                              <option>eth.getBlock</option>
-                                              <option>eth.getBlockNumber</option>
-                                              <option>eth.getBlockTransactionCount</option>
-                                              <option>eth.getBlockUncleCount</option>
-                                              <option>eth.getChainId</option>
-                                              <option>eth.getCode</option>
-                                              <option>eth.getCoinbase</option>
-                                              <option>eth.getFeeHistory</option>
-                                              <option>eth.getGasPrice</option>
-                                              <option>eth.getHashrate</option>
-                                              <option>eth.getNodeInfo</option>
-                                              <option>eth.getPastLogs</option>
-                                              <option>eth.getPendingTransactions</option>
-                                              <option>eth.getProof</option>
-                                              <option>eth.getProtocolVersion</option>
-                                              <option>eth.getStorageAt</option>
-                                              <option>eth.getTransaction</option>
-                                              <option>eth.getTransactionCount</option>
-                                              <option>eth.getTransactionFromBlock</option>
-                                              <option>eth.getTransactionReceipt</option>
-                                              <option>eth.getUncle</option>
-                                              <option>eth.isMining</option>
-                                              <option>eth.isSyncing</option>
-                                              <option>eth.requestAccounts</option>
-                                              <option>eth.sendSignedTransaction</option>
-                                              <option>eth.sendTransaction</option>
-                                              <option>eth.sign</option>
-                                              <option>eth.signTransaction</option>
-                                              <option>currentProvider.request</option>
+                                              <option>provider.listAccounts</option>
+                                              <option>provider.getBalance</option>
+                                              <option>provider.getCode</option>
+                                              <option>provider.getStorageAt</option>
+                                              <option>provider.getTransactionCount</option>
+                                              <option>provider.getBlock</option>
+                                              <option>provider.getBlockWithTransactions</option>
+                                              <option>provider.getAvatar</option>
+                                              <option>provider.getResolver</option>
+                                              <option>provider.lookupAddress</option>
+                                              <option>provider.resolveName</option>
+                                              <option>provider.getLogs</option>
+                                              <option>provider.getNetwork</option>
+                                              <option>provider.getBlockNumber</option>
+                                              <option>provider.getGasPrice</option>
+                                              <option>provider.getFeeData</option>
+                                              <option>provider.call</option>
+                                              <option>provider.estimateGas</option>
+                                              <option>provider.getTransaction</option>
+                                              <option>provider.getTransactionReceipt</option>
+                                              <option>provider.sendTransaction</option>
+                                              <option>provider.waitForTransaction</option>
+                                              <option>signer.getAddress</option>
+                                              <option>signer.getBalance</option>
+                                              <option>signer.getChainId</option>
+                                              <option>signer.getGasPrice</option>
+                                              <option>signer.getTransactionCount</option>
+                                              <option>signer.call</option>
+                                              <option>signer.estimateGas</option>
+                                              <option>signer.resolveName</option>
+                                              <option>signer.signMessage</option>
+                                              <option>signer.signTransaction</option>
+                                              <option>signer.sendTransaction</option>
+                                              <option>signer._signTypedData</option>
+                                              <option>signer.checkTransaction</option>
+                                              <option>signer.populateTransaction</option>
+                                              <option>provider.provider.request</option>
                                             </select>
                                         </div>
                                     </div>
@@ -294,10 +298,11 @@
 <script src="/assets/js/vendor/modernizr-custom.js"></script>
 <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
 <script src="/node_modules/web3/dist/web3.min.js"></script>
+<script src="/node_modules/ethers/dist/ethers.umd.min.js"></script>
 <script src="/assets/js/plugins.js"></script>
 <script src="/assets/js/settings.js"></script>
 <script src="/assets/js/main.js"></script>
-<script type="module" src="/assets/js/web3-provider.js"></script>
+<script type="module" src="/assets/js/ethers.js"></script>
 
 </body>
 

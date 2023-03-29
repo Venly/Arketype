@@ -1,10 +1,10 @@
-import { defaultParams } from "../constants/params.js";
+import { defaultParams } from "../constants/ethers-params.js";
 
 (function () {
   'use strict';
   
   app.initApp = function () {
-    $('#documentation').load('/assets/docs/web3js.html');
+    $('#documentation').load('/assets/docs/ethersjs.html');
     app.page = app.page || {};
         app.secretType = 'ETHEREUM';
         $('.auth-loginlink').on('click', function (event) {
@@ -18,11 +18,10 @@ import { defaultParams } from "../constants/params.js";
                 options.authenticationOptions = {idpHint: idpHint}
             }
 
-            console.log('initializing arkane web3 provider with', options);
+            console.log('initializing ethers provider with', options);
             Venly.createProviderEngine(options)
                 .then(function (provider) {
-                    window.web3 = new Web3(provider);
-                    handleWeb3Loaded();
+                    handleLoaded(provider);
                     handleAuthenticated();
                 })
                 .catch((reason) => {
@@ -35,20 +34,16 @@ import { defaultParams } from "../constants/params.js";
                                 console.log('No wallet was linked to this application', reason);
                                 break;
                             default:
-                                console.log('Something went wrong while creating the Arkane provider', reason);
+                                console.log('Something went wrong while creating the Venly provider', reason);
                         }
                     } else {
-                        console.log('Something went wrong while creating the Arkane provider');
+                        console.log('Something went wrong while creating the Venly provider');
                     }
                 });
         });
 
         $(app).on('authenticated', function () {
-            window.web3.eth.requestAccounts(function (err, wallets) {
-                app.log(wallets, 'Wallets');
-                updateWallets(wallets);
-            });
-
+            getWallets();
             if (!app.page.initialised) {
                 initLogout();
                 initWalletControls();
@@ -61,18 +56,19 @@ import { defaultParams } from "../constants/params.js";
             console.log(val.toUpperCase(), 'switching');
             Venly.changeSecretType(val.toUpperCase()).then(provider => {
                 app.secretType = val.toUpperCase();
-                window.web3 = new Web3(provider);
-                handleWeb3Loaded();
+                handleLoaded(provider);
                 getWallets();
             });
 
         });
     };
 
-    function handleWeb3Loaded() {
-        app.log(window.web3.version, 'web3 version');
-        window.web3.eth.getChainId().then(network => {
-            app.log(network, 'ChainID');
+    function handleLoaded(provider) {
+        window.provider = new window.ethers.providers.Web3Provider(provider);
+        window.signer = window.provider.getSigner();
+        app.log(window.ethers.version, 'ethers version');
+        window.provider.getNetwork().then(network => {
+          app.log(network.chainId, 'ChainID');
         });
     }
 
@@ -82,10 +78,10 @@ import { defaultParams } from "../constants/params.js";
         $(app).trigger('authenticated');
     }
 
-    function getWallets(el) {
-        window.web3.eth.requestAccounts(function (err, wallets) {
-            app.log(wallets, 'Wallets');
-            updateWallets(wallets);
+    function getWallets() {
+        window.provider.send('eth_requestAccounts').then(wallets => {
+          app.log(wallets, 'Wallets');
+          updateWallets(wallets);
         });
     }
 
@@ -134,17 +130,14 @@ import { defaultParams } from "../constants/params.js";
     }
 
 
-    async function initRequestTransactionForm() {
+    function initRequestTransactionForm() {
       var signForm = document.querySelector('#sign-form');
       if (signForm) {            
         $('select[name="method"]', signForm).on('change', function() {
           $('[name="params"]').val(defaultParams[this.value]);
-          $(`#web3-eth > .section`).hide();
-          const sectionId = this.value.split('.').pop().toLowerCase();
-          $(`#web3-eth > .section#${sectionId}`).show();
+          document.querySelector(`[name="${this.value.split('.').join('-')}"]`).scrollIntoView({ behavior: 'instant' });
           $('select[name="from"]').trigger('change');
         });
-        $('select[name="method"]', signForm).trigger('change');
 
         $('select[name="from"]', signForm).on('change', function() {
           const params = $('[name="params"]');
@@ -155,7 +148,7 @@ import { defaultParams } from "../constants/params.js";
             params.val(value.replace(/"(address|loading...)"/g, `"${this.value}"`));
         });
 
-        signForm.addEventListener('submit', function (e) {
+        signForm.addEventListener('submit', async function (e) {
           e.stopPropagation();
           e.preventDefault();
           //add this if a popup blocker is being triggered
@@ -168,19 +161,18 @@ import { defaultParams } from "../constants/params.js";
             const args = JSON.parse('[' + params + ']');
             submit.attr('disabled', true);
 
-            let fn = window.web3;
-            for (let split of method.split('.'))
-              fn = fn[split];
-            fn.apply(null, args).then(res => {
-              showModal('Result', JSON.stringify(res, null, 2))
-              app.log(res, method);
-            }).catch((err) => {
-              showModal('Error', err.message || JSON.stringify(err, null, 2));
-              app.error("error: " + err.message || JSON.stringify(err), method);
-            }).finally(() => submit.removeAttr('disabled'));
+            let fn = window;
+            let split = method.split('.');
+            for (let item of split)
+              fn = fn[item];
+            const res = await fn.apply(window[split[0]], args);
+            showModal('Result', JSON.stringify(res, null, 2));
+            app.log(res, method);
+            submit.removeAttr('disabled');
           }
           catch (err) {
-            console.log(err.message);
+            showModal('Error', err.message || JSON.stringify(err, null, 2));
+            app.error("error: " + err.message || JSON.stringify(err), method);
             submit.removeAttr('disabled');
           }
         });

@@ -4,10 +4,10 @@
   "description": "",
   "dependencies": {
     "@venly/connect": "1.41.0-develop.17",
-    "@venly/web3-provider": "^0.33.0",
     "@venly/web3modal": "1.9.5-develop.1",
     "axios": "^0.21.1",
     "bootstrap": "^4.3.1",
+    "ethers": "^5.7.2",
     "jquery": "^3.4.1",
     "popper.js": "^1.15.0",
     "web3": "1.8.0"

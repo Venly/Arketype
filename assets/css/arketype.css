@@ -87,3 +87,191 @@ body {
 .async-loading {
     position: relative;
 }
+
+button .spinner-border {
+  visibility: hidden;
+}
+button:disabled span {
+  visibility: hidden;
+}
+button:disabled .spinner-border {
+  visibility: visible;
+}
+
+
+
+#web3-eth > .section, #web3-eth hr {
+  display: none;
+}
+#documentation a {
+  pointer-events: none;
+}
+#web3-eth h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 23px;
+}
+#web3-eth h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+#web3-eth h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+#web3-eth p {
+  margin-bottom: 24px;
+}
+#web3-eth .headerlink {
+  display: none;
+}
+#web3-eth code {
+  white-space: nowrap;
+  max-width: 100%;
+  background: #fff;
+  border: solid 1px #e1e4e5;
+  font-size: 12px;
+  padding: 2px 5px;
+  color: #E74C3C;
+  overflow-x: auto;
+}
+#web3-eth .highlight {
+  background: #eeffcc;
+  border: 1px solid #e1e4e5;
+  overflow-x: auto;
+  margin: 1px 0 24px 0;
+}
+#web3-eth pre {
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 0;
+  padding: 12px 12px;
+}
+#web3-eth .highlight .s2 {
+  color: #4070a0;
+}
+#web3-eth ol {
+  padding-left: 24px;
+}
+#web3-eth ul {
+  padding-left: 24px;
+  list-style: disc;
+}
+#web3-eth dt {
+  margin-bottom: 12px;
+}
+
+#ethersjs {
+  font-size: 16px;
+}
+#ethersjs .signature .path {
+  font-style: italic;
+}
+#ethersjs .signature .symbol {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+#ethersjs .signature .method {
+  color: #555;
+  font-weight: bold;
+}
+#ethersjs .signature .param {
+  font-style: italic;
+}
+#ethersjs .arrow {
+  color: #888;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+#ethersjs .returns {
+  color: #888;
+  font-style: italic;
+}
+#ethersjs .property p {
+  margin-top: 4px;
+  padding-left: 30px;
+}
+#ethersjs a {
+  text-decoration: none;
+  color: #66e;
+}
+#ethersjs div.code {
+  background: #f8f8ff;
+  border: 2px solid #88a;
+  color: #000;
+  margin: 20px 0 30px 0;
+  padding: 15px 20px;
+  font-family: monospace;
+  white-space: pre;
+  overflow: auto;
+}
+#ethersjs div.code .result.ok {
+  color: #00a;
+  font-style: italic;
+  opacity: 0.7;
+}
+#ethersjs .anchors {
+  display: none;
+}
+#ethersjs [name^="provider"], #ethersjs [name^="signer"] {
+  position: absolute;
+  margin-top: -20px;
+}
+#ethersjs h2 {
+  font-size: 24px;
+  font-weight: 700;
+  padding-top: 30px;
+  border-top: 1px solid #ddd;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+#ethersjs h2:first-child {
+  padding-top: 0;
+  border-top: none;
+  margin-top: 0;
+}
+#ethersjs h1 {
+  font-size: 28px;
+  margin-bottom: 18px;
+}
+#ethersjs h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 20px 0;
+}
+.definition.container-box.note {
+  border: 2px solid #184e80;
+}
+.definition.container-box {
+  border-radius: 5px;
+  margin-left: 30px;
+  margin-bottom: 30px;
+  margin-top: 30px;
+  overflow: hidden;
+  padding: 0;
+  position: relative;
+}
+.definition.container-box.note .term {
+  background-color: #65a9e9;
+}
+.definition.container-box .term {
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 5px 15px;
+}
+.definition.container-box p:first-child {
+  padding-top: 15px;
+}
+.definition.container-box p {
+  font-size: 16px;
+  padding: 0px 30px;
+}
+.definition.container-box.warning {
+  border: 2px solid #804e18;
+}
+.definition.container-box.warning .term {
+  background-color: #cf7a00;
+}
