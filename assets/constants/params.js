@@ -112,8 +112,12 @@ false`,
 
 "currentProvider.request": 
 `{
-  "method": "eth_accounts",
-  "params": []
+  "method": "wallet_switchEthereumChain",
+  "params": [
+    {
+      "chainId": "0x13881"
+    }
+  ]
 }`,
 
 }

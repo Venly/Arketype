@@ -20,8 +20,7 @@ import { defaultParams } from "../constants/params.js";
         console.log('initializing venly web3 provider with', options);
         Venly.createProviderEngine(options)
             .then(function (provider) {
-                window.web3 = new Web3(provider);
-                handleWeb3Loaded();
+                handleWeb3Loaded(provider);
             })
             .catch((reason) => {
                 if (reason) {
@@ -97,7 +96,8 @@ import { defaultParams } from "../constants/params.js";
         });
     };
 
-    function handleWeb3Loaded() {
+    function handleWeb3Loaded(provider) {
+        window.web3 = new Web3(provider);
         app.log(window.web3.version, 'web3 version');
         window.web3.eth.getChainId().then(network => {
             app.log(network, 'ChainID');
@@ -207,6 +207,8 @@ import { defaultParams } from "../constants/params.js";
               fn.apply(window.web3.currentProvider, args).then(res => {
                 showModal('Result', JSON.stringify(res, null, 2))
                 app.log(res, method);
+                if (args[0]?.method == 'wallet_switchEthereumChain')
+                  handleWeb3Loaded(Venly._provider);
               }).catch((err) => {
                 showModal('Error', err.message || JSON.stringify(err, null, 2));
                 app.error("error: " + err.message || JSON.stringify(err), method);
