@@ -168,6 +168,9 @@ import { defaultParams } from "../constants/ethers-params.js";
             const res = await fn.apply(window[split[0]], args);
             showModal('Result', JSON.stringify(res, null, 2));
             app.log(res, method);
+            if (args[0]?.method == 'wallet_switchEthereumChain') {
+              handleLoaded(Venly._provider);
+            }
             submit.removeAttr('disabled');
           }
           catch (err) {
