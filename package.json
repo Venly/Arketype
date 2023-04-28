@@ -3,7 +3,7 @@
   "version": "0.0.3",
   "description": "",
   "dependencies": {
-    "@venly/connect": "1.41.0-develop.37",
+    "@venly/connect": "^2.0.0-develop.2",
     "@venly/web3modal": "1.9.5-develop.1",
     "axios": "^0.21.1",
     "bootstrap": "^4.3.1",
