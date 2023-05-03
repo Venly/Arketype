@@ -67,23 +67,6 @@ pipeline {
                 }
             }
         }
-        stage('Merge back to develop') {
-            when {
-                anyOf {
-                    branch 'hotfix-*'
-                    branch 'release-*'
-                }
-            }
-            steps {
-                withCredentials([gitUsernamePassword(credentialsId: 'GITHUB_CRED', gitToolName: 'Default')]) {
-                    sh 'git reset --hard'
-                    sh 'git fetch --no-tags origin develop:develop'
-                    sh 'git checkout develop'
-                    sh 'git merge ${GIT_COMMIT}'
-                    sh 'git push origin develop:develop'
-                }
-            }
-        }
     }
     post {
         failure {
