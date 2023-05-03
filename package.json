@@ -1,6 +1,6 @@
 {
   "name": "arketype",
-  "version": "0.0.4-develop.4",
+  "version": "0.1.0-SNAPSHOT.0",
   "description": "",
   "dependencies": {
     "@venly/connect": "^2.0.0-develop.2",
