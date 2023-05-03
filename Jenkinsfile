@@ -17,9 +17,13 @@ pipeline {
                 }
             }
             steps {
-                sh "git config --global user.email \"jenkins@arkane.network\""
-                sh "git config --global user.name \"Jenkins\""
-                sh "npm version prerelease --preid=develop"
+                script {
+                    def packageFile = readJSON file: 'package.json'
+                    env.ORIGINAL_VERSION = packageFile.version
+                    sh "git config --global user.email \"jenkins@arkane.network\""
+                    sh "git config --global user.name \"Jenkins\""
+                    sh "npm version prerelease --preid=develop"
+                }
             }
         }
         stage('Docker Build') {
@@ -87,6 +91,13 @@ pipeline {
                 always {
                     cleanWs(deleteDirs: true, patterns: [[pattern: '.git', type: 'INCLUDE']])
                 }
+            }
+        }
+    }
+    post {
+        failure {
+            script {
+                sh 'git tag -d v${ORIGINAL_VERSION}'
             }
         }
     }
