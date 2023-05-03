@@ -213,6 +213,8 @@
                            aria-selected="true">Hedera</a>
                         <a class="nav-item nav-link" id="nav-IMX-tab" data-toggle="tab" href=".tab-pane#tab-IMX" role="tab" aria-controls="tab-IMX"
                            aria-selected="true">IMX</a>
+                        <a class="nav-item nav-link" id="nav-ARBITRUM-tab" data-toggle="tab" href=".tab-pane#tab-ARBITRUM" role="tab" aria-controls="tab-ARBITRUM"
+                           aria-selected="true">Arbitrum</a>
                     </div>
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
@@ -283,6 +285,41 @@
                             </div>
                             <div class="mb-3 col-lg-6">
                                 <form data-form="import-wallet" data-chain="MATIC" class="card bg-light"></form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade p-4 bg-white border" id="tab-ARBITRUM" data-chain="ARBITRUM" role="tabpanel" aria-labelledby="nav-ARBITRUM-tab">
+                        <button type="button" data-chain="ARBITRUM" class="btn btn-outline-primary get-wallets mb-3">
+                            Refresh Wallets
+                        </button>
+                        <button type="button" data-chain="ARBITRUM" class="btn btn-outline-primary manage-wallets mb-3">
+                            Manage Wallets
+                        </button>
+
+                        <div class="row">
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign" data-chain="ARBITRUM" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="execute" data-chain="ARBITRUM" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign-raw" data-chain="ARBITRUM" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign-message" data-chain="ARBITRUM" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign-eip712" data-chain="ARBITRUM" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="execute-contract" data-chain="ARBITRUM" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="read-contract" data-chain="ARBITRUM" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="import-wallet" data-chain="ARBITRUM" class="card bg-light"></form>
                             </div>
                         </div>
                     </div>
