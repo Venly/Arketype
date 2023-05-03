@@ -22,21 +22,6 @@ pipeline {
                 sh "npm version prerelease --preid=develop"
             }
         }
-        stage('Push bumped version to GitHub') {
-            when {
-                anyOf {
-                    branch 'develop'
-                    branch 'hotfix-*'
-                    branch 'release-*'
-                }
-            }
-            steps {
-                withCredentials([gitUsernamePassword(credentialsId: 'GITHUB_CRED', gitToolName: 'Default')]) {
-                    sh 'git push origin HEAD:${BRANCH_NAME}'
-                    sh 'git push --tags'
-                }
-            }
-        }
         stage('Docker Build') {
             when {
                 anyOf {
@@ -67,6 +52,21 @@ pipeline {
                 }
             }
         }
+        stage('Push bumped version to GitHub') {
+            when {
+                anyOf {
+                    branch 'develop'
+                    branch 'hotfix-*'
+                    branch 'release-*'
+                }
+            }
+            steps {
+                withCredentials([gitUsernamePassword(credentialsId: 'GITHUB_CRED', gitToolName: 'Default')]) {
+                    sh 'git push origin HEAD:${BRANCH_NAME}'
+                    sh 'git push --tags'
+                }
+            }
+        }
         stage('Merge back to develop') {
             when {
                 anyOf {
@@ -87,6 +87,15 @@ pipeline {
                 always {
                     cleanWs(deleteDirs: true, patterns: [[pattern: '.git', type: 'INCLUDE']])
                 }
+            }
+        }
+    }
+    post {
+        failure {
+            script {
+                def packageFile = readJSON file: 'package.json'
+                env.BUMPED_VERSION = packageFile.version
+                sh 'git tag -d v${BUMPED_VERSION}'
             }
         }
     }
