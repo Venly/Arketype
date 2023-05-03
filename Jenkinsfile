@@ -8,20 +8,6 @@ pipeline {
         timeout(time: 15, unit: 'MINUTES')
     }
     stages {
-        stage('Bump version') {
-            when {
-                anyOf {
-                    branch 'develop'
-                    branch 'hotfix-*'
-                    branch 'release-*'
-                }
-            }
-            steps {
-                sh "git config --global user.email \"jenkins@venly.io\""
-                sh "git config --global user.name \"Jenkins\""
-                sh "npm version prerelease --preid=develop"
-            }
-        }
         stage('Docker Build') {
             when {
                 anyOf {
@@ -52,30 +38,25 @@ pipeline {
                 }
             }
         }
-        stage('Push bumped version to GitHub') {
+        stage('Merge back to develop') {
             when {
                 anyOf {
-                    branch 'develop'
                     branch 'hotfix-*'
                     branch 'release-*'
                 }
             }
             steps {
                 withCredentials([gitUsernamePassword(credentialsId: 'GITHUB_CRED', gitToolName: 'Default')]) {
-                    sh 'git push origin HEAD:${BRANCH_NAME}'
-                    sh 'git push --tags'
+                    sh 'git reset --hard'
+                    sh 'git fetch --no-tags origin develop:develop'
+                    sh 'git checkout develop'
+                    sh 'git merge ${GIT_COMMIT}'
+                    sh 'git push origin develop:develop'
                 }
             }
         }
     }
     post {
-        failure {
-            script {
-                def packageFile = readJSON file: 'package.json'
-                env.BUMPED_VERSION = packageFile.version
-                sh 'git tag -d v${BUMPED_VERSION}'
-            }
-        }
         cleanup {
             cleanWs(deleteDirs: true, patterns: [[pattern: '.git', type: 'INCLUDE']])
         }
