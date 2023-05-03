@@ -87,11 +87,6 @@ pipeline {
                     sh 'git push origin develop:develop'
                 }
             }
-            post {
-                always {
-                    cleanWs(deleteDirs: true, patterns: [[pattern: '.git', type: 'INCLUDE']])
-                }
-            }
         }
     }
     post {
@@ -99,6 +94,9 @@ pipeline {
             script {
                 sh 'git tag -d v${ORIGINAL_VERSION}'
             }
+        }
+        cleanup {
+            cleanWs(deleteDirs: true, patterns: [[pattern: '.git', type: 'INCLUDE']])
         }
     }
 }
