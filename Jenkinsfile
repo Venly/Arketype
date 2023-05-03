@@ -17,9 +17,13 @@ pipeline {
                 }
             }
             steps {
-                sh "git config --global user.email \"jenkins@arkane.network\""
-                sh "git config --global user.name \"Jenkins\""
-                sh "npm version prerelease --preid=develop"
+                script {
+                    def packageFile = readJSON file: 'package.json'
+                    env.ORIGINAL_VERSION = packageFile.version
+                    sh "git config --global user.email \"jenkins@arkane.network\""
+                    sh "git config --global user.name \"Jenkins\""
+                    sh "npm version prerelease --preid=develop"
+                }
             }
         }
         stage('Docker Build') {
@@ -75,7 +79,7 @@ pipeline {
                 }
             }
             steps {
-                withCredentials([usernamePassword(credentialsId: 'GITHUB_CRED', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                withCredentials([gitUsernamePassword(credentialsId: 'GITHUB_CRED', gitToolName: 'Default')]) {
                     sh 'git reset --hard'
                     sh 'git fetch --no-tags origin develop:develop'
                     sh 'git checkout develop'
@@ -83,20 +87,16 @@ pipeline {
                     sh 'git push origin develop:develop'
                 }
             }
-            post {
-                always {
-                    cleanWs(deleteDirs: true, patterns: [[pattern: '.git', type: 'INCLUDE']])
-                }
-            }
         }
     }
     post {
         failure {
             script {
-                def packageFile = readJSON file: 'package.json'
-                env.BUMPED_VERSION = packageFile.version
-                sh 'git tag -d v${BUMPED_VERSION}'
+                sh 'git tag -d v${ORIGINAL_VERSION}'
             }
+        }
+        cleanup {
+            cleanWs(deleteDirs: true, patterns: [[pattern: '.git', type: 'INCLUDE']])
         }
     }
 }
