@@ -90,13 +90,4 @@ pipeline {
             }
         }
     }
-    post {
-        failure {
-            script {
-                def packageFile = readJSON file: 'package.json'
-                env.BUMPED_VERSION = packageFile.version
-                sh 'git tag -d v${BUMPED_VERSION}'
-            }
-        }
-    }
 }
