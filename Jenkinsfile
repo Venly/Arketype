@@ -8,24 +8,6 @@ pipeline {
         timeout(time: 15, unit: 'MINUTES')
     }
     stages {
-        stage('Bump version') {
-            when {
-                anyOf {
-                    branch 'develop'
-                    branch 'hotfix-*'
-                    branch 'release-*'
-                }
-            }
-            steps {
-                script {
-                    def packageFile = readJSON file: 'package.json'
-                    env.ORIGINAL_VERSION = packageFile.version
-                    sh "git config --global user.email \"jenkins@arkane.network\""
-                    sh "git config --global user.name \"Jenkins\""
-                    sh "npm version prerelease --preid=develop"
-                }
-            }
-        }
         stage('Docker Build') {
             when {
                 anyOf {
@@ -56,21 +38,6 @@ pipeline {
                 }
             }
         }
-        stage('Push bumped version to GitHub') {
-            when {
-                anyOf {
-                    branch 'develop'
-                    branch 'hotfix-*'
-                    branch 'release-*'
-                }
-            }
-            steps {
-                withCredentials([gitUsernamePassword(credentialsId: 'GITHUB_CRED', gitToolName: 'Default')]) {
-                    sh 'git push origin HEAD:${BRANCH_NAME}'
-                    sh 'git push --tags'
-                }
-            }
-        }
         stage('Merge back to develop') {
             when {
                 anyOf {
@@ -90,10 +57,8 @@ pipeline {
         }
     }
     post {
-        failure {
-            script {
-                sh 'git tag -d v${ORIGINAL_VERSION}'
-            }
+        cleanup {
+            cleanWs(deleteDirs: true, patterns: [[pattern: '.git', type: 'INCLUDE']])
         }
         cleanup {
             cleanWs(deleteDirs: true, patterns: [[pattern: '.git', type: 'INCLUDE']])
