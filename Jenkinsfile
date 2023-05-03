@@ -52,9 +52,13 @@ pipeline {
                 }
             }
         }
-        stage('Push new version to GitHub') {
+        stage('Push bumped version to GitHub') {
             when {
-
+                anyOf {
+                    branch 'develop'
+                    branch 'hotfix-*'
+                    branch 'release-*'
+                }
             }
             steps {
                 withCredentials([usernamePassword(credentialsId: 'GITHUB_CRED', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
