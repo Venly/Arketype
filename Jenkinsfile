@@ -17,7 +17,7 @@ pipeline {
                 }
             }
             steps {
-                sh "git config --global user.email \"jenkins@arkane.network\""
+                sh "git config --global user.email \"jenkins@venly.io\""
                 sh "git config --global user.name \"Jenkins\""
                 sh "npm version prerelease --preid=develop"
             }
