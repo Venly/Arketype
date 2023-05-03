@@ -22,6 +22,21 @@ pipeline {
                 sh "npm version prerelease --preid=develop"
             }
         }
+        stage('Push bumped version to GitHub') {
+            when {
+                anyOf {
+                    branch 'develop'
+                    branch 'hotfix-*'
+                    branch 'release-*'
+                }
+            }
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'GITHUB_CRED', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                    sh 'git push origin HEAD:${BRANCH_NAME}'
+                    sh 'git push --tags'
+                }
+            }
+        }
         stage('Docker Build') {
             when {
                 anyOf {
@@ -49,21 +64,6 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
                     sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
                     sh "docker push arkanenetwork/arkane-arketype:${BRANCH_NAME} && echo 'pushed'"
-                }
-            }
-        }
-        stage('Push bumped version to GitHub') {
-            when {
-                anyOf {
-                    branch 'develop'
-                    branch 'hotfix-*'
-                    branch 'release-*'
-                }
-            }
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'GITHUB_CRED', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                    sh 'git push'
-                    sh 'git push --tags'
                 }
             }
         }
