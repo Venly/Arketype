@@ -17,13 +17,9 @@ pipeline {
                 }
             }
             steps {
-                script {
-                    def packageFile = readJSON file: 'package.json'
-                    env.ORIGINAL_VERSION = packageFile.version
-                    sh "git config --global user.email \"jenkins@arkane.network\""
-                    sh "git config --global user.name \"Jenkins\""
-                    sh "npm version prerelease --preid=develop"
-                }
+                sh "git config --global user.email \"jenkins@arkane.network\""
+                sh "git config --global user.name \"Jenkins\""
+                sh "npm version prerelease --preid=develop"
             }
         }
         stage('Docker Build') {
@@ -92,7 +88,9 @@ pipeline {
     post {
         failure {
             script {
-                sh 'git tag -d v${ORIGINAL_VERSION}'
+                def packageFile = readJSON file: 'package.json'
+                env.BUMPED_VERSION = packageFile.version
+                sh 'git tag -d v${BUMPED_VERSION}'
             }
         }
         cleanup {
