@@ -52,7 +52,18 @@ pipeline {
                 }
             }
         }
-        stage ('Merge back to develop') {
+        stage('Push new version to GitHub') {
+            when {
+
+            }
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'GITHUB_CRED', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                    sh 'git push'
+                    sh 'git push --tags'
+                }
+            }
+        }
+        stage('Merge back to develop') {
             when {
                 anyOf {
                     branch 'hotfix-*'
