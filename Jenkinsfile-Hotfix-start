@@ -1,0 +1,58 @@
+pipeline {
+    agent any
+    environment {
+        GITHUB_CREDS = credentials('GITHUB_CRED')
+    }
+    options {
+        disableConcurrentBuilds()
+        timeout(time: 15, unit: 'MINUTES')
+    }
+    stages {
+        stage('Initialize env') {
+            steps {
+                sh "git config --global user.email \"jenkins@arkane.network\""
+                sh "git config --global user.name \"Jenkins\""
+                withCredentials([gitUsernamePassword(credentialsId: 'GITHUB_CRED', gitToolName: 'Default')]) {
+                    sh 'git fetch -p'
+                }
+            }
+        }
+        stage ('Create hotfix version + branch') {
+            steps {
+                sh 'npm version prepatch --preid=SNAPSHOT --git-tag-version=false'
+                script {
+                    def packageFile = readJSON file: 'package.json'
+                    env.RAW_HOTFIX_VERSION = packageFile.version
+                    def versionMatcher = env.RAW_HOTFIX_VERSION =~ /(\d*\.\d*\.\d*)/
+                    if (versionMatcher.size() > 0) {
+                        env.HOTFIX_VERSION = versionMatcher[0][0]
+                    }
+                }
+                sh 'git checkout -b hotfix-${HOTFIX_VERSION}'
+                sh 'git commit -am "Create hotfix version"'
+                withCredentials([gitUsernamePassword(credentialsId: 'GITHUB_CRED', gitToolName: 'Default')]) {
+                    sh 'git push origin HEAD:refs/heads/hotfix-${HOTFIX_VERSION}'
+                }
+            }
+        }
+        stage('Merge hotfix-branch back to develop') {
+            steps {
+                sh 'git checkout develop'
+                script {
+                    def packageFile = readJSON file: 'package.json'
+                    env.DEVELOP_VERSION = packageFile.version
+                }
+                sh "npm version ${RAW_HOTFIX_VERSION} --git-tag-version=false"
+                sh 'git commit -am "Update develop to hotfix version to avoid merge conflicts"'
+                sh "git merge hotfix-${HOTFIX_VERSION}"
+                sh "npm version ${DEVELOP_VERSION} --git-tag-version=false"
+                sh 'git commit -am "Update develop version back to pre-merge state"'
+            }
+        }
+    }
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}

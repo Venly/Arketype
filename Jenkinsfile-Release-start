@@ -1,0 +1,50 @@
+pipeline {
+    agent any
+    environment {
+        GITHUB_CREDS = credentials('GITHUB_CRED')
+    }
+    options {
+        disableConcurrentBuilds()
+        timeout(time: 15, unit: 'MINUTES')
+    }
+    stages {
+        stage('Initialize env') {
+            steps {
+                sh "git config --global user.email \"jenkins@arkane.network\""
+                sh "git config --global user.name \"Jenkins\""
+            }
+        }
+        stage ('Create release branch') {
+            steps {
+                script {
+                    def packageFile = readJSON file: 'package.json'
+                    env.RAW_RELEASE_VERSION = packageFile.version
+                    def versionMatcher = env.RAW_RELEASE_VERSION =~ /(\d*\.\d*\.\d*)/
+                    if (versionMatcher.size() > 0) {
+                        env.RELEASE_VERSION = versionMatcher[0][0]
+                    }
+                }
+                sh "git checkout develop"
+                sh "git checkout -b release-${RELEASE_VERSION}"
+                withCredentials([gitUsernamePassword(credentialsId: 'GITHUB_CRED', gitToolName: 'Default')]) {
+                    sh 'git push origin HEAD:refs/heads/release-${RELEASE_VERSION}'
+                }
+            }
+        }
+        stage ('Bump develop version') {
+            steps {
+                sh "git checkout develop"
+                sh "npm version preminor --preid=SNAPSHOT --git-tag-version=false"
+                sh 'git commit -am "bump develop version"'
+                withCredentials([gitUsernamePassword(credentialsId: 'GITHUB_CRED', gitToolName: 'Default')]) {
+                    sh 'git push origin HEAD:refs/heads/develop'
+                }
+            }
+        }
+    }
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}

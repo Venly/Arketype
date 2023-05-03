@@ -1,0 +1,75 @@
+pipeline {
+    agent any
+    environment {
+        GITHUB_CREDS = credentials('GITHUB_CRED')
+    }
+    options {
+        disableConcurrentBuilds()
+        timeout(time: 15, unit: 'MINUTES')
+    }
+    stages {
+        stage('Initialize env') {
+            steps {
+                sh "git config --global user.email \"jenkins@arkane.network\""
+                sh "git config --global user.name \"Jenkins\""
+                withCredentials([gitUsernamePassword(credentialsId: 'GITHUB_CRED', gitToolName: 'Default')]) {
+                    sh 'git fetch -p'
+                }
+                script {
+                    env.RELEASE_BRANCH = sh (script: 'git branch -a | grep origin/release- | cut -d \'/\' -f 3', returnStdout: true).trim()
+                }
+                echo env.RELEASE_BRANCH
+            }
+        }
+        stage('Finalise version') {
+            steps {
+                sh "git checkout ${RELEASE_BRANCH}"
+                sh "npm version minor"
+                script {
+                    def packageFile = readJSON file: 'package.json'
+                    env.RELEASE_VERSION = packageFile.version
+                }
+            }
+        }
+        stage('Merge to master') {
+            steps {
+                sh "git checkout master"
+                sh "git merge ${RELEASE_BRANCH}"
+            }
+        }
+        stage('Merge back to develop') {
+            steps {
+                sh "git checkout develop"
+                script {
+                    def packageFile = readJSON file: 'package.json'
+                    env.DEVELOP_VERSION = packageFile.version
+                }
+                sh "npm version ${RELEASE_VERSION} --git-tag-version=false"
+                sh 'git commit -am "Update develop to release version to avoid merge conflicts"'
+                sh "git merge master"
+                sh "npm version ${DEVELOP_VERSION} --git-tag-version=false"
+                sh 'git commit -am "Update develop version back to pre-merge state"'
+            }
+        }
+        stage('Push to Github') {
+            steps {
+                withCredentials([gitUsernamePassword(credentialsId: 'GITHUB_CRED', gitToolName: 'Default')]) {
+                    sh 'git push origin develop:refs/heads/develop'
+                    sh 'git push origin master:refs/heads/master'
+                }
+            }
+        }
+        stage('Cleanup release branch') {
+            steps {
+                withCredentials([gitUsernamePassword(credentialsId: 'GITHUB_CRED', gitToolName: 'Default')]) {
+                    sh 'git push origin :refs/heads/${RELEASE_BRANCH}'
+                }
+            }
+        }
+    }
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
