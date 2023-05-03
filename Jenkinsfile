@@ -60,8 +60,5 @@ pipeline {
         cleanup {
             cleanWs(deleteDirs: true, patterns: [[pattern: '.git', type: 'INCLUDE']])
         }
-        cleanup {
-            cleanWs(deleteDirs: true, patterns: [[pattern: '.git', type: 'INCLUDE']])
-        }
     }
 }
