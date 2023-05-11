@@ -19,7 +19,7 @@ import { defaultParams } from "../constants/ethers-params.js";
             }
 
             console.log('initializing ethers provider with', options);
-            Venly.createProviderEngine(options)
+            Venly.createProvider(options)
                 .then(function (provider) {
                     handleLoaded(provider);
                     handleAuthenticated();
@@ -87,7 +87,7 @@ import { defaultParams } from "../constants/ethers-params.js";
 
     function initLogout() {
         $('#auth-logout').click(() => {
-            window.Venly.connect().logout()
+            window.Venly.logout()
                 .then(() => {
                     document.body.classList.remove('logged-in');
                     document.body.classList.add('not-logged-in');
@@ -105,7 +105,7 @@ import { defaultParams } from "../constants/ethers-params.js";
 
     function initLinkWallets() {
         $('#link-wallets').click(() => {
-            window.Venly.connect()
+            window.Venly.connect
                 .linkWallets()
                 .then(function () {
                     getWallets();
@@ -115,7 +115,7 @@ import { defaultParams } from "../constants/ethers-params.js";
 
     function initManageWallets() {
         $('#manage-wallets').click(() => {
-            window.Venly.connect()
+            window.Venly.connect
                 .manageWallets(app.secretType)
                 .then(function () {
                     getWallets();
@@ -152,7 +152,7 @@ import { defaultParams } from "../constants/ethers-params.js";
           e.stopPropagation();
           e.preventDefault();
           //add this if a popup blocker is being triggered
-          //window.Venly.connect().createSigner();
+          //window.Venly.connect.createSigner();
           const submit = $('button[type="submit"]', signForm);
           const method = $('[name="method"]', signForm).val();
 

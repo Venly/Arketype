@@ -20,7 +20,7 @@ import { defaultParams } from "../constants/params.js";
             }
 
             console.log('initializing arkane web3 provider with', options);
-            Venly.createProviderEngine(options)
+            Venly.createProvider(options)
                 .then(function (provider) {
                     handleWeb3Loaded(provider);
                     handleAuthenticated();
@@ -61,8 +61,7 @@ import { defaultParams } from "../constants/params.js";
             console.log(val.toUpperCase(), 'switching');
             Venly.changeSecretType(val.toUpperCase()).then(provider => {
                 app.secretType = val.toUpperCase();
-                window.web3 = new Web3(provider);
-                handleWeb3Loaded();
+                handleWeb3Loaded(provider);
                 getWallets();
             });
 
@@ -92,7 +91,7 @@ import { defaultParams } from "../constants/params.js";
 
     function initLogout() {
         $('#auth-logout').click(() => {
-            window.Venly.connect().logout()
+            window.Venly.logout()
                 .then(() => {
                     document.body.classList.remove('logged-in');
                     document.body.classList.add('not-logged-in');
@@ -110,7 +109,7 @@ import { defaultParams } from "../constants/params.js";
 
     function initLinkWallets() {
         $('#link-wallets').click(() => {
-            window.Venly.connect()
+            window.Venly.connect
                 .linkWallets()
                 .then(function () {
                     getWallets();
@@ -120,7 +119,7 @@ import { defaultParams } from "../constants/params.js";
 
     function initManageWallets() {
         $('#manage-wallets').click(() => {
-            window.Venly.connect()
+            window.Venly.connect
                 .manageWallets(app.secretType)
                 .then(function () {
                     getWallets();
@@ -160,7 +159,7 @@ import { defaultParams } from "../constants/params.js";
           e.stopPropagation();
           e.preventDefault();
           //add this if a popup blocker is being triggered
-          //window.Venly.connect().createSigner();
+          //window.Venly.connect.createSigner();
           const submit = $('button[type="submit"]', signForm);
           const method = $('[name="method"]', signForm).val();
 
