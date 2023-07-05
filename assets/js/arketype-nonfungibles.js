@@ -101,12 +101,6 @@
                 const transactionRequest = {
                     secretType: wallet.secretType, walletId, to, chainSpecificFields, from, tokenAddress, tokenId
                 };
-                if (wallet.secretType === 'ETHEREUM' && !transactionRequest.network) {
-                    transactionRequest.network = {
-                        name: 'Rinkeby',
-                        nodeUrl: 'https://rinkeby.arkane.network',
-                    };
-                }
                 app.log(transactionRequest, 'Executing NFT Transfer');
                 executeNftTransfer(transactionRequest);
             });
