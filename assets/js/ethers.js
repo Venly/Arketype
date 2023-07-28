@@ -66,6 +66,12 @@ import { defaultParams } from "../constants/ethers-params.js";
     function handleLoaded(provider) {
         window.provider = new window.ethers.providers.Web3Provider(provider);
         window.signer = window.provider.getSigner();
+        provider.on('chainChanged', (res) => {
+            app.log(res, 'emit chainChanged');
+        })
+        .on('accountsChanged', (res) => {
+            app.log(res, 'emit accountsChanged');
+        });
         app.log(window.ethers.version, 'ethers version');
         window.provider.getNetwork().then(network => {
           app.log(network.chainId, 'ChainID');
@@ -168,9 +174,6 @@ import { defaultParams } from "../constants/ethers-params.js";
             const res = await fn.apply(window[split[0]], args);
             showModal('Result', JSON.stringify(res, null, 2));
             app.log(res, method);
-            if (args[0]?.method == 'wallet_switchEthereumChain') {
-              handleLoaded(Venly._provider);
-            }
             submit.removeAttr('disabled');
           }
           catch (err) {
