@@ -70,6 +70,12 @@ import { defaultParams } from "../constants/params.js";
 
     function handleWeb3Loaded(provider) {
         window.web3 = new Web3(provider);
+        provider.on('chainChanged', (res) => {
+            app.log(res, 'emit chainChanged');
+        })
+        .on('accountsChanged', (res) => {
+            app.log(res, 'emit accountsChanged');
+        });
         app.log(window.web3.version, 'web3 version');
         window.web3.eth.getChainId().then(network => {
             app.log(network, 'ChainID');
@@ -174,8 +180,6 @@ import { defaultParams } from "../constants/params.js";
             fn.apply(null, args).then(res => {
               showModal('Result', JSON.stringify(res, null, 2))
               app.log(res, method);
-              if (args[0]?.method == 'wallet_switchEthereumChain')
-                handleWeb3Loaded(Venly._provider);
             }).catch((err) => {
               showModal('Error', err.message || JSON.stringify(err, null, 2));
               app.error("error: " + err.message || JSON.stringify(err), method);
