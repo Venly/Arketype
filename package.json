@@ -11,7 +11,7 @@
     "ethers": "^5.7.2",
     "jquery": "^3.4.1",
     "popper.js": "^1.15.0",
-    "web3": "1.8.0"
+    "web3": "4.0.3"
   },
   "scripts": {
     "start": "http-server -p 4000 -a 127.0.0.1 -c-1",
