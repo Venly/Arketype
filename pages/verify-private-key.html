@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible"
+          content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+    <title>Verify EVM private key</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css"
+          integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu"
+          crossorigin="anonymous">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="container">
+    <div class="page-header">
+        <h1>Verify EVM private key</h1>
+    </div>
+    <div class="alert alert-info" role="alert">
+        <strong>Any information, including private keys, provided to this page will not leave your machine. Your security and privacy are our top priority!</strong>
+    </div>
+    <form class="form-horizontal">
+        <div class="form-group">
+            <label for="private-key" class="col-sm-2 control-label">Private key</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="private-key" placeholder="">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="button" id="btnVerify" class="btn btn-default">Verify</button>
+            </div>
+        </div>
+    </form>
+    <dl class="dl-horizontal">
+        <dt>Starts with 0x:</dt><dd id="zeroX">...</dd>
+        <dt>Pk length (without 0x):</dt><dd id="pkLength">...</dd>
+        <dt>Is valid hex string with correct length:</dt><dd id="hexCheck">...</dd>
+        <dt>Wallet address:</dt><dd id="walletAddress">...</dd>
+    </dl>
+</div>
+<div class="navbar navbar-default navbar-fixed-bottom">
+    <div class="container-fluid">
+        <div class="text-center">
+            <img class="rounded mx-auto d-block" src="/assets/img/logo-venly.svg" alt="" width="36" height="36">
+            <p>Powered by <a href="https://venly.io">Venly</a></p>
+        </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"
+        integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ"
+        crossorigin="anonymous"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"
+        integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>
+<script src="/assets/js/verify-private-key.js" type="application/javascript"></script>
+</body>
+</html>
