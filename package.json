@@ -4,7 +4,7 @@
   "description": "",
   "dependencies": {
     "@venly/connect": "^2.6.0-develop.1",
-    "@venly/web3-provider": "^3.5.0",
+    "@venly/web3-provider": "^3.5.3",
     "@venly/web3modal": "1.9.5-develop.1",
     "axios": "^0.21.1",
     "bootstrap": "^4.3.1",
