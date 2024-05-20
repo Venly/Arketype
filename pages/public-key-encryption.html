@@ -1,0 +1,172 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Next generation blockchain wallet provider - Venly</title>
+    <meta name="description" content="venly.io : Next generation blockchain wallet provider">
+    <meta name="keywords" content="venly, wallet, ico, kyc, blockchain, wallet provider">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/assets/css/auth.css"/>
+    <link rel="stylesheet" href="/assets/css/arketype.css"/>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <script src="/node_modules/@venly/connect/umd/index.js"></script>
+</head>
+
+<body class="bg-light-gray not-logged-in" id="arketype">
+<div class="loader-overlay"><img src="/assets/img/loader.gif" alt="loader"/></div>
+
+<header class="bg-light">
+    <div class="container">
+        <nav class="row navbar navbar-expand-md navbar-light">
+            <a class="navbar-brand" href="/index.html"><img src="/assets/img/Arketype-thumbnail.png" alt="" width="32" height="32"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/index.html">Wallets </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pages/simple-get-wallets">Simple Connect Example</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pages/web3-provider">Web3 Provider</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pages/web3-provider-skip-auth">Web3 Provider (skip auth)</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pages/ethers">Ethers.js</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pages/nonfungibles">Nonfungibles</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/pages/test-api">Test Api <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pages/web3modal">Web3Modal</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pages/verification">Verification</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pages/public-key-encryption">Public key Encryption</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12 py-5 text-center">
+            <img class="d-block mx-auto mb-4" src="/assets/img/logo-venly.svg" alt="" width="72" height="72">
+            <h2>Venly</h2>
+            <div class="lead">
+                <p class="mb-1"><span>Demo project</span><img class="d-inline mx-1" src="/assets/img/Arketype-thumbnail.png" alt="" width="32" height="32"><span>Arketype</span>
+                </p>
+                <p>Source code available on <a href="https://github.com/ArkaneNetwork/arketype" target="_blank">GitHub</a></p>
+            </div>
+        </div>
+    </div>
+    <div class="row auth-not-logged-in">
+        <div class="form-group col-12 text-center">
+            <label>You're not logged in</label>
+            <div>
+                <button class="btn btn-primary auth-loginlink">Login</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-light py-5 auth-logged-in">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h4 class="text-muted mb-3">Signing Method Encryption</h4>
+                <div class="card mb-3">
+                    <div class="card-body input-group d-flex justify-content-between align-items-center">
+                        <code>Select Public Key</code>
+                        <button class="btn btn-primary" id="encryption-request-btn">Encrypt</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div id="appLog-container">
+                    <h4 class="text-muted mb-3">Parameters</h4>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <label for="signing-methods-pk" class="col-sm-5 col-form-label">Signing Method Public Key</label>
+                                <div class="col-sm-7">
+                                    <select class="custom-select " id="signing-methods-pk"></select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="encryption-request-body" class="col-sm-5 col-form-label">Value to encrypt</label>
+                                <div class="col-sm-7">
+                                    <textarea class="form-control" id="encryption-request-body"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-muted mb-3">Logs</h4>
+                        <div id="appLog" class="form-control"></div>
+
+                        <div class="card p-2">
+                            <button class="btn btn-secondary" onclick="app.clearLog()">Clear logs</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-dark mt-auto">
+    <div class="container">
+        <nav class="row navbar navbar-dark bg-dark">
+            <ul class="navbar-nav ml-sm-auto">
+                <li class="nav-item">
+                    <a href="https://venly.io" class="nav-link">Powered by venly.io</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<style lang="text/css">
+#appLog-container {
+    position: sticky;
+    top: 12px
+}
+</style>
+
+<script src="/node_modules/jquery/dist/jquery.min.js"></script>
+<script src="/assets/js/vendor/modernizr-custom.js"></script>
+<script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+<script src="/assets/js/settings.js"></script>
+<script src="/assets/js/plugins.js"></script>
+<script src="/assets/js/form-and-events.js"></script>
+<script src="/assets/js/main.js"></script>
+<script src="/assets/js/auth.js"></script>
+<script src="/node_modules/jsencrypt/bin/jsencrypt.js"></script>
+<script src="/assets/js/public-key-encryption.js"></script>
+
+</body>
+
+</html>
+
+
