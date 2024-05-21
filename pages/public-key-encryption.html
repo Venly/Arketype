@@ -97,7 +97,19 @@
                 <h4 class="text-muted mb-3">Signing Method Encryption</h4>
                 <div class="card mb-3">
                     <div class="card-body input-group d-flex justify-content-between align-items-center">
-                        <code>Select Public Key</code>
+                        <code>Create sha256 signature</code>
+                        <button class="btn btn-primary" id="build-signature-btn">sha256</button>
+                    </div>
+                </div>
+                <div class="card mb-3">
+                    <div class="card-body input-group d-flex justify-content-between align-items-center">
+                        <code>Build signing Method</code>
+                        <button class="btn btn-primary" id="build-request-btn">Build</button>
+                    </div>
+                </div>
+                <div class="card mb-3">
+                    <div class="card-body input-group d-flex justify-content-between align-items-center">
+                        <code>Encrypt signing Method</code>
                         <button class="btn btn-primary" id="encryption-request-btn">Encrypt</button>
                     </div>
                 </div>
@@ -108,15 +120,33 @@
                     <div class="card mb-3">
                         <div class="card-body">
                             <div class="form-group row">
-                                <label for="signing-methods-pk" class="col-sm-5 col-form-label">Signing Method Public Key</label>
+                                <label for="signing-methods-id" class="col-sm-5 col-form-label">Signing Method Id</label>
+                                <div class="col-sm-7">
+                                    <input class="form-control" id="signing-methods-id"></input>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="signing-methods-value" class="col-sm-5 col-form-label">Signing Method Value</label>
+                                <div class="col-sm-7">
+                                    <input class="form-control" id="signing-methods-value"></input>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="signing-methods-id-key" class="col-sm-5 col-form-label">Idempotency Key</label>
+                                <div class="col-sm-7">
+                                    <input class="form-control" id="signing-methods-id-key"></input>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="signing-methods-pk" class="col-sm-5 col-form-label">Choose public key</label>
                                 <div class="col-sm-7">
                                     <select class="custom-select " id="signing-methods-pk"></select>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="encryption-request-body" class="col-sm-5 col-form-label">Value to encrypt</label>
+                                <label for="encryption-request-body" class="col-sm-5 col-form-label">Request Body</label>
                                 <div class="col-sm-7">
-                                    <textarea class="form-control" id="encryption-request-body"></textarea>
+                                    <textarea  class="form-control" id="encryption-request-body"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -163,6 +193,7 @@
 <script src="/assets/js/main.js"></script>
 <script src="/assets/js/auth.js"></script>
 <script src="/node_modules/jsencrypt/bin/jsencrypt.js"></script>
+<script src="/node_modules/js-sha256/build/sha256.min.js"></script>
 <script src="/assets/js/public-key-encryption.js"></script>
 
 </body>
