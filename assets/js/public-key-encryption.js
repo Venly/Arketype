@@ -46,19 +46,48 @@
         }
     }
 
-    function encryptUsingSelectedPkey() {
-        const publicKey = $('#signing-methods-pk').find(":selected").val();
-        const dataToEncrypt = `-----BEGIN PUBLIC KEY-----\n${$('#encryption-request-body').val()}\n-----END PUBLIC KEY-----`;
-        const encrypt = new JSEncrypt();
-        encrypt.setPublicKey(publicKey);
-        const encrypted = encrypt.encrypt(dataToEncrypt);
+    function createSignature(log) {
+        const requestBody = $('#encryption-request-body').val();
+        const signature = btoa(String.fromCharCode(...sha256.digest(requestBody)));
 
-        app.log(encrypted, 'encryptedData');
+        if (log) {
+            app.log(signature, 'sha56 signature');
+        }
+        return signature;
+    }
+
+    function createSigningMethod(log) {
+        const id = $('#signing-methods-id').val();
+        const value = $('#signing-methods-value').val();
+        const idempotencyKey = $('#signing-methods-id-key').val();
+        const signingMethod = {
+            id,
+            value,
+            idempotencyKey,
+            signature: {
+                type: 'sha256',
+                value: createSignature(false)
+            }
+        };
+
+        if (log) {
+            app.log(signingMethod, 'raw signing-method');
+        }
+        return signingMethod;
+    }
+
+    function encryptUsingSelectedPkey() {
+        const encrypt = new JSEncrypt();
+        const publicKey = $('#signing-methods-pk').find(":selected").val();
+        encrypt.setPublicKey(publicKey);
+        const encrypted = encrypt.encrypt(JSON.stringify(createSigningMethod(false)));
+        app.log(encrypted, 'encryptedSigningMethod');
     }
 
     function bindButtons() {
-        const btnEncrypt = $('#encryption-request-btn');
-        btnEncrypt.click(encryptUsingSelectedPkey)
+        $('#encryption-request-btn').click(encryptUsingSelectedPkey);
+        $('#build-signature-btn').click(() => createSignature(true));
+        $('#build-request-btn').click(() => createSigningMethod(true))
     }
 
 })();
