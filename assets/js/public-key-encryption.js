@@ -86,34 +86,10 @@
         }
 
         function encryptKeyWithRsa(key) {
-            return window.crypto.subtle.exportKey('raw', key)
-                         .then(exportedKey => {
-                             function str2ab(str) {
-                                 const buffer = new Uint8Array(str.length);
-                                 for (let i = 0; i < str.length; i++) {
-                                     buffer[i] = str.charCodeAt(i);
-                                 }
-                                 return buffer;
-                             }
-
-                             const pkeybuffer = str2ab(atob($('#signing-methods-pk').find(":selected").val()));
-                             window.crypto.subtle.importKey('spki', pkeybuffer, {
-                                                                name: "RSA-OAEP", // The algorithm the imported key will be used with
-                                                                hash: "SHA-256",  // The hash function to be used with the algorithm
-                                                            },
-                                                            true,
-                                                            ['encrypt'])
-                                   .then(publicKey => {
-                                       return window.crypto.subtle.encrypt(
-                                           {
-                                               name: "RSA-OAEP",
-                                           },
-                                           publicKey,
-                                           exportedKey
-                                       );
-                                   })
-                         });
-
+            const publicKey = $('#signing-methods-pk').find(":selected").val();
+            const encrypt = new JSEncrypt();
+            encrypt.setPublicKey(publicKey);
+            return encrypt.encrypt(key);
         }
 
 
@@ -146,18 +122,16 @@
                 .then(key => {
                     encryptSigningMethodWithAes(key, iv)
                         .then(encrypted => {
-                            encryptKeyWithRsa(key)
-                                .then(encryptedKey => {
-                                    const encryptedHeader = {
-                                        encryption: {
-                                            type: 'AES/GCM/NoPadding',
-                                            iv: arrayBufferToBase64(iv),
-                                            key: arrayBufferToBase64(encryptedKey)
-                                        },
-                                        data: arrayBufferToBase64(encrypted)
-                                    }
-                                    app.log(btoa(JSON.stringify(encryptedHeader)), 'encryptedSigningMethod');
-                                })
+                            const encryptedKey = encryptKeyWithRsa(key);
+                            const encryptedHeader = {
+                                encryption: {
+                                    type: 'AES/GCM/NoPadding',
+                                    iv: arrayBufferToBase64(iv),
+                                    key: encryptedKey
+                                },
+                                value: arrayBufferToBase64(encrypted)
+                            }
+                            app.log(btoa(JSON.stringify(encryptedHeader)), 'encryptedSigningMethod');
                         })
                 });
 
