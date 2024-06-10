@@ -91,7 +91,7 @@ runs:
 
     - name: Docker meta
       id: meta
-      uses: docker/metadata-action@v4
+      uses: docker/metadata-action@v5
       env:
         BRANCH_TAG: ${{ inputs.branch_tag }}
         CURRENT_DATE: ${{ env.CURRENT_DATE }}
@@ -112,7 +112,6 @@ runs:
           type=ref,event=pr
           type=semver,pattern={{version}},value=${{ inputs.version_tag }}
           type=semver,pattern={{major}}.{{minor}},value=${{ inputs.version }}
-          type=sha,format=long,prefix={{branch}}-
           type=sha,format=long,prefix=
         labels: |
           org.opencontainers.image.url=${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}
