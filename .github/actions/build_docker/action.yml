@@ -1,0 +1,167 @@
+name: "Build Docker"
+description: "Build Container"
+inputs:
+  aws_region:
+    default: eu-west-1
+    description: name of the aws region to deploy to
+    required: false
+  aws_role:
+    description: name of the role to use
+    required: true
+  branch_tag:
+    description: branch tag
+    required: true
+  build_args:
+    description: List of build-time variables
+    required: false
+  cache_folder:
+    description: Optional Cache folder
+    required: false
+  docker_context:
+    description: name of the build folder
+    required: true
+  docker_file:
+    description: Path to the Dockerfile
+    required: false
+  docker_target:
+    description: name of the docker file target to build
+    required: false
+  ecr_repo:
+    description: name of the ecr repository
+    required: true
+  push_image:
+    default: "true"
+    description: push the image to ecr
+    required: false
+  sha_tag:
+    description: sha tag
+    required: true
+  version_tag:
+    description: version tag
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: ❔ Determine Application Type ❔
+      id: app-type
+      shell: bash
+      run: |
+        if [ -f package.json ]; then
+            echo "app_type=node" >> $GITHUB_ENV
+            echo "App Type is Node"
+          elif [ -f pom.xml ]; then
+            echo "app_type=java" >> $GITHUB_ENV
+            echo "App Type is Java"
+          else
+            echo "app_type=unknown" >> $GITHUB_ENV
+        fi
+
+    # Configure AWS credentials
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: ${{ inputs.aws_region }}
+        role-to-assume: ${{ inputs.aws_role }}
+        role-session-name: OIDCSession
+        mask-aws-account-id: false
+    # Login to ECR
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+      with:
+        mask-password: "true"
+
+    - name: Extract ECR Region
+      shell: bash
+      id: extract-ecr-region
+      run: |
+        REGISTRY_URL="${{ steps.login-ecr.outputs.registry }}"
+        # Extract the region from the URL
+        ECR_REGION=$(echo "$REGISTRY_URL" | awk -F 'ecr.' '{print $2}' | cut -d '.' -f1)
+        echo "ECR region: $ECR_REGION"
+        echo "ECR_REGION=$ECR_REGION" >> $GITHUB_ENV
+
+    - name: Set Current Date
+      shell: bash
+      run: echo "CURRENT_DATE=$(date +'%Y-%m-%dT%H:%M:%SZ' --utc)" >> $GITHUB_ENV
+
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@master
+
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v4
+      env:
+        BRANCH_TAG: ${{ inputs.branch_tag }}
+        CURRENT_DATE: ${{ env.CURRENT_DATE }}
+        ECR_REGISTRY: 289334807197.dkr.ecr.eu-west-1.amazonaws.com
+        ECR_REPOSITORY: ${{ inputs.ecr_repo }}
+        SHA_TAG: ${{ inputs.sha_tag }}
+        VERSION_SHA_TAG: "${{ inputs.version_tag }}-${{ inputs.sha_tag }}"
+        VERSION_TAG: ${{ inputs.version_tag }}
+      with:
+        # list of Docker images to use as base name for tags
+        images: |
+          ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}
+        # generate Docker tags based on the following events/attributes
+        flavor: |
+          latest=false
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}},value=${{ inputs.version_tag }}
+          type=semver,pattern={{major}}.{{minor}},value=${{ inputs.version }}
+          type=sha,format=long,prefix={{branch}}-
+          type=sha,format=long,prefix=
+        labels: |
+          org.opencontainers.image.url=${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}
+          org.opencontainers.image.created=${{ env.CURRENT_DATE }}
+          org.opencontainers.image.version=${{ inputs.version_tag }}
+          com.datadoghq.tags.version=${{ inputs.version_tag }}
+
+    - name: Build and push
+      uses: docker/build-push-action@v5
+      env:
+        BRANCH_TAG: ${{ inputs.branch_tag }}
+        CURRENT_DATE: ${{ env.CURRENT_DATE }}
+        DOCKER_BUILDKIT: "1"
+        ECR_REGISTRY: 289334807197.dkr.ecr.eu-west-1.amazonaws.com
+        ECR_REPOSITORY: ${{ inputs.ecr_repo }}
+        SHA_TAG: ${{ inputs.sha_tag }}
+        VERSION_SHA_TAG: "${{ inputs.version_tag }}-${{ inputs.sha_tag }}"
+        VERSION_TAG: ${{ inputs.version_tag }}
+      with:
+        context: "${{ inputs.docker_context }}"
+        file: "${{ inputs.docker_file }}"
+        push: ${{ inputs.push_image }}
+        target: ${{ inputs.docker_target }}
+        provenance: false
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        build-args: ${{ inputs.build_args }}
+
+    - name: Display Build Info
+      shell: bash
+      run: |
+        echo "🚀 Docker Build Details 🚀"
+        echo "✨ Workflow Name: ${{ github.workflow }}"
+        echo "👤 Triggered by: ${{ github.actor }}"
+        echo "📦 Repository: ${{ github.repository }}"
+        echo "🔖 Reference: ${{ github.ref }}"
+        echo "🏷️ Branch/Tag: ${{ inputs.branch_tag }}"
+        echo "🔑 Commit SHA: ${{ github.sha }}"
+        echo "🔢 Run ID: ${{ github.run_id }}"
+        echo "🔢 Run Number: ${{ github.run_number }}"
+        echo "🆔 Job ID: ${{ github.job }}"
+        echo "📅 Workflow Trigger Event: ${{ github.event_name }}"
+        echo "🕒 Timestamp: $(date +'%Y-%m-%d %H:%M:%S')"
+        echo "🌍 AWS Region: ${{ inputs.aws_region }}"
+        echo "🛠️ Build Arguments: ${{ inputs.build_args }}"
+        echo "📂 Docker Context : ${{ inputs.docker_context }}"
+        echo "📄 Docker File: ${{ inputs.docker_file || 'Not Specified' }}"
+        echo "🎯 Docker Target: ${{ inputs.docker_target || 'Not Specified' }}"
+        echo "🐳 ECR Repository: ${{ inputs.ecr_repo }}"
+        echo "📌 SHA Tag: ${{ inputs.sha_tag }}"
+        echo "🏷️ Version Tag: ${{ inputs.version_tag }}"
+        echo "📤 Push Image: ${{ inputs.push_image }}"
