@@ -43,13 +43,15 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ steps.aws_creds.outputs.aws-access-key-id }}
           AWS_SECRET_ACCESS_KEY: ${{ steps.aws_creds.outputs.aws-secret-access-key }}
           AWS_SESSION_TOKEN: ${{ steps.aws_creds.outputs.aws-session-token }}
+          SHA: ${{ github.sha }}
         with:
           host: ${{ secrets.DEMO_ARKETYPE_HOST }}
           username: ${{ secrets.DEMO_ARKETYPE_USER }}
           key: ${{ secrets.ACTIONS_PRIVATE_SSH_KEY }}
           envs: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN
           script: |
-            export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-            export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-            export AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN
+            echo "sha: $SHA"
+            export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+            export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+            export AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
             aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${{ steps.aws_creds.outputs.aws-account-id }}.dkr.ecr.eu-west-1.amazonaws.com
