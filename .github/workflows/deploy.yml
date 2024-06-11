@@ -1,6 +1,12 @@
 name: 🚀 Deploy
 on:
   workflow_dispatch:
+    inputs:
+      branch_to_deploy:
+        type: string
+        description: "Branch name, Version number or Sha hash to deploy"
+        required: true
+
 permissions:
   actions: read
   checks: read
@@ -20,7 +26,7 @@ jobs:
   # =====================================================
   # Job: Deploy Non-Production Environments
   # =====================================================
-  deploy_non_prd:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: ✅ Checkout
@@ -35,7 +41,7 @@ jobs:
           aws-region: eu-west-1
           role-to-assume: ${{ secrets.RESOURCES_DEPLOY_ROLE }}
           role-session-name: OIDCSession
-          mask-aws-account-id: false
+          mask-aws-account-id: true
           output-credentials: true
 
       - name: Deploy to remote server via SSH
@@ -45,6 +51,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ steps.aws_creds.outputs.aws-secret-access-key }}
           AWS_SESSION_TOKEN: ${{ steps.aws_creds.outputs.aws-session-token }}
           SHA: ${{ github.sha }}
+          TAG: ${{ inputs.branch_to_deploy }}
         with:
           host: ${{ secrets.DEMO_ARKETYPE_HOST }}
           username: ${{ secrets.DEMO_ARKETYPE_USER }}
@@ -55,7 +62,20 @@ jobs:
             export AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}
             export AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
             export AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}
+            export AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}
             aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${{ steps.aws_creds.outputs.aws-account-id }}.dkr.ecr.eu-west-1.amazonaws.com
-            echo "Deploying ${{ github.ref_name}}"
-            bash -e -x /home/jenkins/restartqa.sh
+            if [[ "${{ inputs.branch_to_deploy }}" == "development" ]]; then
+              echo "Deploying ${{ github.ref_name}}"
+              bash /home/jenkins/restartqa.sh
+            elif [[ "${{ inputs.branch_to_deploy }}" == "release*" ]]; then
+              echo "Deploying ${{ github.ref_name}}"
+              docker tag venly-arketype-eu-west-1:${{ github.ref_name }} ${{ steps.aws_creds.outputs.aws-account-id }}.dkr.ecr.eu-west-1.amazonaws.com/venly-arketype-eu-west-1:staging
+              bash /home/jenkins/restartstaging.sh
+            elif [[ "${{ inputs.branch_to_deploy }}" == "master" ]]; then
+              echo "Deploying ${{ github.ref_name}}"
+              bash /home/jenkins/restartprd.sh
+            else
+              echo "Unknown branch: ${{ inputs.branch_to_deploy }}"
+              exit 1
+            fi
             docker logout ${{ steps.aws_creds.outputs.aws-account-id }}.dkr.ecr.eu-west-1.amazonaws.com

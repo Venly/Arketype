@@ -56,12 +56,6 @@ jobs:
           branch_tag: ${{ github.ref_name }}
           push_image: true
 
-      - name: 🔄 Merge Back
-        if: startsWith(github.ref, 'refs/heads/hotfix-') || startsWith(github.ref, 'refs/heads/release-')
-        uses: ./.github/actions/merge_back
-        with:
-          branch: ${{ github.ref_name }}
-          token: ${{ secrets.VENLY_GITHUB_ACTIONS_TOKEN }}
   # =====================================================
   # Job: Deploy QA
   # =====================================================
@@ -71,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name != 'workflow_dispatch' && github.ref_name == 'develop'
     steps:
-      - name: Configure AWS credentials
+      - name: 🔑 Configure AWS credentials
         id: aws_creds
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -81,7 +75,7 @@ jobs:
           mask-aws-account-id: false
           output-credentials: true
 
-      - name: Deploy to remote server via SSH
+      - name: 🚀 Deploy
         uses: appleboy/ssh-action@v1.0.3
         env:
           AWS_ACCESS_KEY_ID: ${{ steps.aws_creds.outputs.aws-access-key-id }}
@@ -100,6 +94,69 @@ jobs:
             export AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
             export AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}
             aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${{ steps.aws_creds.outputs.aws-account-id }}.dkr.ecr.eu-west-1.amazonaws.com
-            echo "Pulling latest image..."
-            docker pull 289334807197.dkr.ecr.eu-west-1.amazonaws.com/venly-arketype-eu-west-1:${{ env.TAG }}
+            echo "Deploying ${{ github.ref_name}}"
+            bash /home/jenkins/restartqa.sh
             docker logout ${{ steps.aws_creds.outputs.aws-account-id }}.dkr.ecr.eu-west-1.amazonaws.com
+  # =====================================================
+  # Job: Deploy Release to Staging
+  # =====================================================
+  deploy-release-to-staging:
+    needs:
+      - build
+    runs-on: docker-runner
+    if: github.event_name != 'workflow_dispatch' && startsWith(github.ref, 'refs/heads/release-')
+    steps:
+      - name: 🔑 Configure AWS credentials
+        id: aws_creds
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: eu-west-1
+          role-to-assume: ${{ secrets.RESOURCES_DEPLOY_ROLE }}
+          role-session-name: OIDCSession
+          mask-aws-account-id: true
+          output-credentials: true
+
+      - name: 🚀 Deploy
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ steps.aws_creds.outputs.aws-access-key-id }}
+          AWS_SECRET_ACCESS_KEY: ${{ steps.aws_creds.outputs.aws-secret-access-key }}
+          AWS_SESSION_TOKEN: ${{ steps.aws_creds.outputs.aws-session-token }}
+        with:
+          host: ${{ secrets.DEMO_ARKETYPE_HOST }}
+          username: ${{ secrets.DEMO_ARKETYPE_USER }}
+          key: ${{ secrets.ACTIONS_PRIVATE_SSH_KEY }}
+          envs: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN
+          script: |
+            echo "sha: ${{ github.sha }}"
+            echo "branch: ${{ github.ref_name }}"
+            export AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}
+            export AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
+            export AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}
+            aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${{ steps.aws_creds.outputs.aws-account-id }}.dkr.ecr.eu-west-1.amazonaws.com
+            docker tag venly-arketype-eu-west-1:${{ github.ref_name }} ${{ steps.aws_creds.outputs.aws-account-id }}.dkr.ecr.eu-west-1.amazonaws.com/venly-arketype-eu-west-1:staging
+            echo "Deploying ${{ github.ref_name}}"
+            bash /home/jenkins/restartstaging.sh
+            docker logout ${{ steps.aws_creds.outputs.aws-account-id }}.dkr.ecr.eu-west-1.amazonaws.com
+  # =====================================================
+  # Job: Merge Back
+  # =====================================================
+  merge-back:
+    if: startsWith(github.ref, 'refs/heads/hotfix-') || startsWith(github.ref, 'refs/heads/release-')
+    needs:
+      - build
+    runs-on: docker-runner
+    outputs:
+      runner_name: ${{ runner.name }}
+    steps:
+      - name: ✅ Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.VENLY_GITHUB_ACTIONS_TOKEN }}
+
+      - name: 🔄 Merge Back
+        if: startsWith(github.ref, 'refs/heads/hotfix-') || startsWith(github.ref, 'refs/heads/release-')
+        uses: ./.github/actions/merge_back
+        with:
+          branch: ${{ github.ref_name }}
+          token: ${{ secrets.VENLY_GITHUB_ACTIONS_TOKEN }}
