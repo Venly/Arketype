@@ -1,0 +1,66 @@
+name: "Merge Back to Development"
+description: "Build NodeJs container"
+inputs:
+  branch:
+    description: The branch to Merge
+    required: true
+  token:
+    description: The VENLY_GITHUB_ACTIONS_TOKEN
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Branch to Build
+      shell: bash
+      run: echo -e "🔧 Merging ${{ github.sha }} back to develop  🔧"
+
+    - uses: oleksiyrudenko/gha-git-credentials@v2.1.1
+      with:
+        global: false
+        name: ${{ github.actor	}}
+        email: ${{ github.actor }}@venly.io
+        actor: ${{ github.actor	}}
+        token: ${{ inputs.token }}
+
+    - name: Merge back to develop
+      env:
+        GIT_USERNAME: ${{ github.actor	}}
+        GITHUB_TOKEN: ${{ inputs.token }}
+      shell: bash
+      run: |
+        #!/bin/bash
+        set -x
+
+        git fetch -p --unshallow
+        git reset --hard
+        git checkout ${{ github.sha }}
+        if [ -f "package.json" ]; then
+          # Read branch version
+          BRANCH_VERSION=$(jq -r '.version' package.json)
+
+          # Fetch develop branch and checkout
+          git fetch --no-tags origin develop:develop
+          git checkout develop
+
+          # Read develop version
+          DEVELOP_VERSION=$(jq -r '.version' package.json)
+
+          # Update develop to branch version
+          npm version $BRANCH_VERSION --git-tag-version=false
+          git commit -am "Update develop to branch version to avoid merge conflicts"
+
+          # Merge current commit into develop
+          git merge ${{ github.sha }}
+
+          # Restore develop version
+          npm version $DEVELOP_VERSION --git-tag-version=false
+          git commit -am "Update develop version back to pre-merge state"
+        else
+          # If not a Node.js project, just merge
+          git fetch --no-tags origin develop:develop
+          git checkout develop
+          git merge ${{ github.sha }}
+        fi
+
+        # Push changes back to develop branch
+        git push origin develop:develop

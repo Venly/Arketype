@@ -1,0 +1,137 @@
+name: "Release Node Applicaton Start"
+description: "Release Node Applicaton Start"
+inputs:
+  token:
+    description: The VENLY_GITHUB_ACTIONS_TOKEN
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Set HOME environment variable
+      shell: bash
+      run: echo "HOME=${{ github.workspace }}" >> $GITHUB_ENV
+
+    # Determine the production branch name Master Or Main
+    - name: Determine Master Or Main
+      shell: bash
+      run: |
+        #!/bin/bash
+        set -x
+        git fetch -p
+        BRANCHES=$(git branch -r | grep -E 'origin/main|origin/master')
+        if [ -z "$BRANCHES" ]; then
+          echo "No 'main' or 'master' branch found."
+        else
+          for BRANCH in $BRANCHES; do
+            BRANCH_NAME=$(echo $BRANCH | cut -d '/' -f 2)
+            echo "production_branch=$BRANCH_NAME" >> $GITHUB_ENV
+            echo "Production Branch is $BRANCH_NAME"
+          done
+        fi
+
+    - uses: oleksiyrudenko/gha-git-credentials@v2.1.1
+      with:
+        global: false
+        name: ${{ github.actor }}
+        email: ${{ github.actor }}@venly.io
+        actor: ${{ github.actor }}
+        token: ${{ inputs.token }}
+
+    - name: Use Node.js ${{ inputs.node_version }}
+      uses: actions/setup-node@v3
+      id: node_setup
+      with:
+        node-version: ${{ inputs.node_version }}
+    # =====================================================
+    # Release
+    # =====================================================
+    # Switch to develop version
+    - name: Switch to develop branch and check for updates
+      shell: bash
+      run: |
+        #!/bin/bash
+        set -x
+        echo "🔍 Make sure we are on the develop Branch 🔍"
+        git switch develop
+        git fetch origin develop
+        CHANGED_FILES=$(git diff --name-only HEAD origin/develop)
+        if [[ -n "$CHANGED_FILES" ]]; then
+          echo "The following files differ from the remote 'develop' branch and might cause issues:"
+          echo "$CHANGED_FILES"
+          echo "Attempting to merge remote 'develop' into local 'develop' branch..."
+          git merge origin/develop --no-edit || (echo "Merge conflicts detected, manual resolution required." && exit 1)
+        else
+          echo "Local 'develop' branch is up-to-date with remote."
+        fi
+
+    # Read package.json for version
+    - name: ❔ get-npm-version ❔
+      id: package-version
+      shell: bash
+      run: |
+        #!/bin/bash
+        set -x
+        find . -name 'package.json' | while read -r PACKAGE_JSON_PATH; do
+          if [[ -n "$PACKAGE_JSON_PATH" ]]; then
+            VERSION=$(jq -r '.version' "$PACKAGE_JSON_PATH")
+            if [[ "$VERSION" == "null" || -z "$VERSION" ]]; then
+              echo "No version field found in $PACKAGE_JSON_PATH"
+              echo "release_version_raw="0.0.0"" >> $GITHUB_ENV
+            else
+              echo "Version in $PACKAGE_JSON_PATH is $VERSION"
+              echo "release_version_raw=$VERSION" >> $GITHUB_ENV
+            fi
+          fi
+        done
+
+    - name: Extract semantic version
+      shell: bash
+      id: semantic-version
+      run: |
+        #!/bin/bash
+        set -x
+        RAW_RELEASE_VERSION=${{ env.release_version_raw }}
+        RELEASE_VERSION=$(echo $RAW_RELEASE_VERSION | grep -oP "\d*\.\d*\.\d*")
+        if [ -n "$RELEASE_VERSION" ]; then
+          echo "release_version=$RELEASE_VERSION" >> $GITHUB_ENV
+          echo "release_version=$RELEASE_VERSION" >> $GITHUB_OUTPUT
+          echo $RELEASE_VERSION
+        else
+          echo "No version found"
+        fi
+
+    # Create Release Branch
+    - uses: peterjgrainger/action-create-branch@v2.4.0
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
+      with:
+        branch: release-${{ env.release_version }}
+
+    # Bump npm minor version
+    - name: "Automated Version Bump"
+      shell: bash
+      run: |
+        #!/bin/bash
+        set -x
+        git switch develop
+        NEW_PRE_VERSION=$(npm version preminor --preid=SNAPSHOT --git-tag-version=false)
+        git add --all
+        git commit --allow-empty -m "bump develop version $NEW_PRE_VERSION"
+        git push origin HEAD:refs/heads/develop
+        echo "npm_new_pre_version=$NEW_PRE_VERSION" >> $GITHUB_ENV
+
+    # =====================================================
+    # Release Flow Info
+    # =====================================================
+    - name: ℹ️ Display Release Process Info
+      shell: bash
+      run: |
+        echo "🚀 Release Process Details 🚀"
+        echo "✨ Workflow Name: ${{ github.workflow }}"
+        echo "👤 Triggered by: ${{ github.actor }}"
+        echo "📦 Repository: ${{ github.repository }}"
+        echo "🔖 Reference: ${{ github.ref }}"
+        echo "🏷️ Release Branch: release-${{ env.release_version }}"
+        echo "🔑 Commit SHA: ${{ github.sha }}"
+        echo "🔢 Run ID: ${{ github.run_id }}"
+        echo "🔢 Run Number: ${{ github.run_number }}"

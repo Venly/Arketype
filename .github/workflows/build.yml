@@ -1,0 +1,63 @@
+name: 🏗️ Build
+on:
+  push:
+    paths-ignore:
+      - .github/**
+  pull_request:
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  actions: read
+  checks: write
+  contents: write
+  deployments: read
+  id-token: write
+  issues: read
+  discussions: read
+  packages: read
+  pages: read
+  pull-requests: read
+  repository-projects: read
+  security-events: read
+  statuses: read
+run-name: 🏗️ Build ${{ github.ref_name	}}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - ecr: venly-arketype-eu-west-1
+            docker_context: "."
+    steps:
+      - name: ✅ Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.VENLY_GITHUB_ACTIONS_TOKEN }}
+
+      - name: 🔍 Get Version
+        id: get_version
+        uses: ./.github/actions/get_version
+
+      - name: 🐳 Build and Push Docker Image
+        id: build-deploy-docker
+        uses: ./.github/actions/build_docker
+        with:
+          aws_role: ${{ secrets.RESOURCES_DEPLOY_ROLE }}
+          docker_context: ${{ matrix.docker_context }}
+          ecr_repo: ${{ matrix.ecr }}
+          sha_tag: ${{ github.sha }}
+          version_tag: ${{ steps.get_version.outputs.version }}
+          branch_tag: ${{ github.ref_name }}
+          push_image: true
+
+      - name: 🔄 Merge Back
+        if: startsWith(github.ref, 'refs/heads/hotfix-') || startsWith(github.ref, 'refs/heads/release-')
+        uses: ./.github/actions/merge_back
+        with:
+          branch: ${{ github.ref_name }}
+          token: ${{ secrets.VENLY_GITHUB_ACTIONS_TOKEN }}

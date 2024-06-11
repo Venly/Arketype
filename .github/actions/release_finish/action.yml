@@ -1,0 +1,137 @@
+name: "Release Node Applicaton Finish"
+description: "Release Node Applicaton Finish"
+inputs:
+  token:
+    description: The VENLY_GITHUB_ACTIONS_TOKEN
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Set HOME environment variable
+      shell: bash
+      run: echo "HOME=${{ github.workspace }}" >> $GITHUB_ENV
+
+    # Determine the production branch name Master Or Main
+    - name: Determine Master Or Main
+      shell: bash
+      run: |
+        git fetch -p
+        BRANCHES=$(git branch -r | grep -E 'origin/main|origin/master')
+        if [ -z "$BRANCHES" ]; then
+          echo "No 'main' or 'master' branch found."
+        else
+          for BRANCH in $BRANCHES; do
+            BRANCH_NAME=$(echo $BRANCH | cut -d '/' -f 2)
+            echo "production_branch=$BRANCH_NAME" >> $GITHUB_ENV
+            echo "Production Branch is $BRANCH_NAME"
+          done
+        fi
+
+    - uses: oleksiyrudenko/gha-git-credentials@v2.1.1
+      with:
+        global: false
+        name: ${{ github.actor }}
+        email: ${{ github.actor }}@venly.io
+        actor: ${{ github.actor }}
+        token: ${{ inputs.token }}
+
+    - name: Use Node.js ${{ inputs.node_version }}
+      uses: actions/setup-node@v3
+      id: node_setup
+      with:
+        node-version: ${{ inputs.node_version }}
+
+    # =====================================================
+    # Release
+    # =====================================================
+    # Get the Name of the Release Branch
+    - name: Get Release Branch
+      shell: bash
+      run: |
+        #!/bin/bash
+        set -x
+        RELEASE_BRANCH=$(git branch -r | grep origin/release- | sort -t. -k1,1n -k2,2n -k3,3n | head -n1 | cut -d '/' -f 2)
+        if [ -z "$RELEASE_BRANCH" ]; then
+          echo "No release branch found. Continuing without it."
+        else
+          echo "Release branch found. Continuing..."
+          echo "release_branch=$RELEASE_BRANCH" >> $GITHUB_ENV
+          echo "Release branch found - $RELEASE_BRANCH. Continuing..."
+        fi
+
+    # Finalize Version
+    - name: Finalise version
+      shell: bash
+      run: |
+        #!/bin/bash
+        set -x
+        git stash push -u -m "Temporarily stashing changes before switching branches"
+        git checkout ${{ env.release_branch }}
+        git config user.email "${{ github.actor }}@venly.io"
+        git config user.name "${{ github.actor }}"
+        npm version minor
+        RELEASE_VERSION=$(jq -r '.version' package.json)
+        echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
+
+    - name: Merge to master
+      shell: bash
+      run: |
+        #!/bin/bash
+        set -x
+        git switch ${{ env.production_branch }}
+        git merge ${{ env.release_branch }}
+
+    # Merge Back to develop
+    - name: Merge back to develop
+      shell: bash
+      run: |
+        #!/bin/bash
+        set -x
+        git reset --hard
+        git switch develop
+        # Remove all local tags
+        git tag -l | xargs -n 1 git tag -d
+        DEVELOP_VERSION=$(jq -r '.version' package.json)
+
+        # Update npm version to release version to avoid merge conflicts
+        npm version ${{ env.RELEASE_VERSION }} --git-tag-version=false
+        git commit -am "Update develop to release version to avoid merge conflicts"
+
+        # Merge the production branch in develop
+        git merge ${{ env.production_branch }}
+
+        # Update npm version back to the develop version
+        npm version $DEVELOP_VERSION --git-tag-version=false
+        git commit -am "Update develop version back to pre-merge state"
+
+    # Push
+    - name: Push Changes
+      shell: bash
+      run: |
+        #!/bin/bash
+        set -x
+        git push --tags origin develop:refs/heads/develop  
+        git push origin ${{ env.production_branch }}:refs/heads/${{ env.production_branch }}
+
+    # Cleanup Release Branch
+    - name: Delete branch in specific repository with a specific owner
+      uses: dawidd6/action-delete-branch@v3
+      with:
+        github_token: ${{ inputs.token }}
+        branches: ${{ env.release_branch }}
+
+    # =====================================================
+    # Release Flow Info
+    # =====================================================
+    - name: ℹ️ Display Release Process Info
+      shell: bash
+      run: |
+        echo "🚀 Release Process Details 🚀"
+        echo "✨ Workflow Name: ${{ github.workflow }}"
+        echo "👤 Triggered by: ${{ github.actor }}"
+        echo "📦 Repository: ${{ github.repository }}"
+        echo "🔖 Reference: ${{ github.ref }}"
+        echo "🏷️ Release Version: ${{ env.RELEASE_VERSION }}"
+        echo "🔑 Commit SHA: ${{ github.sha }}"
+        echo "🔢 Run ID: ${{ github.run_id }}"
+        echo "🔢 Run Number: ${{ github.run_number }}"
