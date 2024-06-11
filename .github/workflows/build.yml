@@ -88,6 +88,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ steps.aws_creds.outputs.aws-secret-access-key }}
           AWS_SESSION_TOKEN: ${{ steps.aws_creds.outputs.aws-session-token }}
           SHA: ${{ github.sha }}
+          TAG: ${{ github.ref_name}}
         with:
           host: ${{ secrets.DEMO_ARKETYPE_HOST }}
           username: ${{ secrets.DEMO_ARKETYPE_USER }}
@@ -99,5 +100,6 @@ jobs:
             export AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
             export AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}
             aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${{ steps.aws_creds.outputs.aws-account-id }}.dkr.ecr.eu-west-1.amazonaws.com
-            docker pull 289334807197.dkr.ecr.eu-west-1.amazonaws.com/venly-arketype-eu-west-1:${{ github.ref_name}}
+            echo "Pulling latest image..."
+            docker pull 289334807197.dkr.ecr.eu-west-1.amazonaws.com/venly-arketype-eu-west-1:${{ env.TAG }}
             docker logout ${{ steps.aws_creds.outputs.aws-account-id }}.dkr.ecr.eu-west-1.amazonaws.com
