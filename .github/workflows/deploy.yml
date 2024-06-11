@@ -36,6 +36,7 @@ jobs:
           role-to-assume: ${{ secrets.RESOURCES_DEPLOY_ROLE }}
           role-session-name: OIDCSession
           mask-aws-account-id: false
+          output-credentials: true
 
       - name: Deploy to remote server via SSH
         uses: appleboy/ssh-action@v1.0.3
