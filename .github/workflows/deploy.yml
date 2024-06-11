@@ -28,12 +28,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: ℹ️ Deploy info
-        uses: ArkaneNetwork/venly-github-workflows/.github/actions/deploy_info@main
-        with:
-          environment: ${{ github.ref_name }}
-          deployed_tag: ${{ github.ref_name }}
-
       - name: Configure AWS credentials
         id: aws_creds
         uses: aws-actions/configure-aws-credentials@v4
