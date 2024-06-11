@@ -1,22 +1,6 @@
 name: 🚀 Deploy
 on:
   workflow_dispatch:
-    inputs:
-      tag_to_deploy:
-        type: string
-        description: "Branch name, Version number or Sha hash to deploy"
-        required: true
-      environment:
-        type: choice
-        description: "Environment to deploy to"
-        required: true
-        default: "qa"
-        options:
-          - prd
-          - qa
-          - sandbox
-          - staging
-          - dev
 permissions:
   actions: read
   checks: read
