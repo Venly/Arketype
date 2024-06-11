@@ -24,7 +24,7 @@ permissions:
 run-name: 🚀 Deploy ${{ inputs.tag_to_deploy || github.ref_name }}
 jobs:
   # =====================================================
-  # Job: Deploy Non-Production Environments
+  # Job: Manual Deployment
   # =====================================================
   deploy:
     runs-on: ubuntu-latest

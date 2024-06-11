@@ -90,6 +90,7 @@ jobs:
           envs: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN
           script: |
             echo "sha: ${{ env.SHA }}"
+            echo "branch: ${{ github.ref_name }}"
             export AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}
             export AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
             export AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}
