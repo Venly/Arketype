@@ -21,7 +21,7 @@ jobs:
   # Job: Deploy Non-Production Environments
   # =====================================================
   deploy_non_prd:
-    runs-on: docker-runner
+    runs-on: ubuntu-latest
     steps:
       - name: ✅ Checkout
         uses: actions/checkout@v4
