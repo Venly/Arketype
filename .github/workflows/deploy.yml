@@ -64,7 +64,7 @@ jobs:
             export AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}
             export AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}
             aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${{ steps.aws_creds.outputs.aws-account-id }}.dkr.ecr.eu-west-1.amazonaws.com
-            if [[ "${{ inputs.branch_to_deploy }}" == "development" ]]; then
+            if [[ "${{ inputs.branch_to_deploy }}" == "develop" ]]; then
               echo "Deploying ${{ github.ref_name}}"
               bash /home/jenkins/restartqa.sh
             elif [[ "${{ inputs.branch_to_deploy }}" == "release*" ]]; then
