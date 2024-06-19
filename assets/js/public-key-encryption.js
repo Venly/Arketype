@@ -39,7 +39,7 @@
                 option.text = `${publicKey.keyspec} - ${publicKey.id}`;
 
                 // Set the value of the option (optional)
-                option.value = `${publicKey.id}:${publicKey.key}`;
+                option.value = `${publicKey.id}:${publicKey.publicKey}`;
 
                 // Append the option to the select element
                 select.append(option);
