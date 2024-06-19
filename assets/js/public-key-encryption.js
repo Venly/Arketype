@@ -23,7 +23,7 @@
                 return r.json();
             })
               .then(r => {
-                  return r['result']['signingMethod']['publicKeys']
+                  return r['result']['encryptionKeys']
               })
         }
 
