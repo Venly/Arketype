@@ -1,0 +1,81 @@
+name: 🚀 Deploy
+on:
+  workflow_dispatch:
+    inputs:
+      branch_to_deploy:
+        type: string
+        description: "Branch name, Version number or Sha hash to deploy"
+        required: true
+
+permissions:
+  actions: read
+  checks: read
+  contents: write
+  deployments: read
+  id-token: write
+  issues: read
+  discussions: read
+  packages: read
+  pages: read
+  pull-requests: read
+  repository-projects: read
+  security-events: read
+  statuses: read
+run-name: 🚀 Deploy ${{ inputs.tag_to_deploy || github.ref_name }}
+jobs:
+  # =====================================================
+  # Job: Manual Deployment
+  # =====================================================
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ✅ Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure AWS credentials
+        id: aws_creds
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: eu-west-1
+          role-to-assume: ${{ secrets.RESOURCES_DEPLOY_ROLE }}
+          role-session-name: OIDCSession
+          mask-aws-account-id: true
+          output-credentials: true
+
+      - name: Deploy to remote server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ steps.aws_creds.outputs.aws-access-key-id }}
+          AWS_SECRET_ACCESS_KEY: ${{ steps.aws_creds.outputs.aws-secret-access-key }}
+          AWS_SESSION_TOKEN: ${{ steps.aws_creds.outputs.aws-session-token }}
+          SHA: ${{ github.sha }}
+          TAG: ${{ inputs.branch_to_deploy }}
+        with:
+          host: ${{ secrets.DEMO_ARKETYPE_HOST }}
+          username: ${{ secrets.DEMO_ARKETYPE_USER }}
+          key: ${{ secrets.ACTIONS_PRIVATE_SSH_KEY }}
+          envs: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN
+          script: |
+            echo "sha: ${{ env.SHA }}"
+            export AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}
+            export AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
+            export AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}
+            export AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}
+            aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${{ steps.aws_creds.outputs.aws-account-id }}.dkr.ecr.eu-west-1.amazonaws.com
+            if [[ "${{ inputs.branch_to_deploy }}" == "develop" ]]; then
+              echo "Deploying ${{ github.ref_name}}"
+              bash /home/jenkins/restartqa.sh
+            elif [[ "${{ inputs.branch_to_deploy }}" == "release*" ]]; then
+              echo "Deploying ${{ github.ref_name}}"
+              docker tag venly-arketype-eu-west-1:${{ github.ref_name }} ${{ steps.aws_creds.outputs.aws-account-id }}.dkr.ecr.eu-west-1.amazonaws.com/venly-arketype-eu-west-1:staging
+              bash /home/jenkins/restartstaging.sh
+            elif [[ "${{ inputs.branch_to_deploy }}" == "master" ]]; then
+              echo "Deploying ${{ github.ref_name}}"
+              bash /home/jenkins/restartprd.sh
+            else
+              echo "Unknown branch: ${{ inputs.branch_to_deploy }}"
+              exit 1
+            fi
+            docker logout ${{ steps.aws_creds.outputs.aws-account-id }}.dkr.ecr.eu-west-1.amazonaws.com

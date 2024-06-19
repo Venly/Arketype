@@ -1,0 +1,30 @@
+name: 🤕 Hotfix Start
+on:
+  workflow_dispatch:
+permissions:
+  actions: read
+  checks: write
+  contents: write
+  deployments: read
+  id-token: write
+  issues: write
+  discussions: read
+  packages: read
+  pages: read
+  pull-requests: write
+  repository-projects: read
+  security-events: read
+  statuses: read
+run-name: 🤕 hotfix-start
+jobs:
+  hotfix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ✅ Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.VENLY_GITHUB_ACTIONS_TOKEN }}
+          fetch-depth: 0
+      - uses: ./.github/actions/hotfix_start
+        with:
+          token: ${{ secrets.VENLY_GITHUB_ACTIONS_TOKEN }}

@@ -85,11 +85,44 @@
                                                     ["encrypt", "decrypt"]);
         }
 
-        function encryptKeyWithRsa(key,
+        async function encryptKeyWithRsa(key,
                                          publicKey) {
-            const encrypt = new JSEncrypt();
-            encrypt.setPublicKey(publicKey);
-            return encrypt.encrypt(key);
+            const rsaKey = await importPublicKey(publicKey);
+            const exportedRsaKey = await window.crypto.subtle.exportKey("raw", key);
+            const encryptedKey = await window.crypto.subtle.encrypt(
+                {
+                    name: "RSA-OAEP",
+                    hash: {name: "SHA-256"},
+                },
+                rsaKey,
+                exportedRsaKey
+            );
+            return arrayBufferToBase64(encryptedKey);
+        }
+
+        async function importPublicKey(base64PublicKey) {
+            // Decode the base64 string to binary data
+            const publicKeyBinary = atob(base64PublicKey);
+
+            // Convert the binary data to ArrayBuffer
+            const publicKeyBuffer = new Uint8Array(publicKeyBinary.length);
+            for (let i = 0; i < publicKeyBinary.length; i++) {
+                publicKeyBuffer[i] = publicKeyBinary.charCodeAt(i);
+            }
+
+            // Import the public key from ArrayBuffer
+            const publicKey = await window.crypto.subtle.importKey(
+                "spki",
+                publicKeyBuffer,
+                {
+                    name: "RSA-OAEP",
+                    hash: {name: "SHA-256"},
+                },
+                true,
+                ["encrypt"]
+            );
+
+            return publicKey;
         }
 
 
@@ -136,7 +169,9 @@
         }
 
         function bindButtons() {
-            $('#encryption-request-btn').click(encryptUsingSelectedPkey);
+            $('#encryption-request-btn').click(() => {
+                encryptUsingSelectedPkey().then()
+            });
             $('#build-signature-btn').click(() => createSignature(true));
             $('#build-request-btn').click(() => createSigningMethod(true))
         }
