@@ -39,7 +39,7 @@
                 option.text = `${publicKey.keyspec} - ${publicKey.id}`;
 
                 // Set the value of the option (optional)
-                option.value = publicKey.key;
+                option.value = `${publicKey.id}:${publicKey.key}`;
 
                 // Append the option to the select element
                 select.append(option);
@@ -85,8 +85,8 @@
                                                     ["encrypt", "decrypt"]);
         }
 
-        function encryptKeyWithRsa(key) {
-            const publicKey = $('#signing-methods-pk').find(":selected").val();
+        function encryptKeyWithRsa(key,
+                                         publicKey) {
             const encrypt = new JSEncrypt();
             encrypt.setPublicKey(publicKey);
             return encrypt.encrypt(key);
@@ -115,26 +115,24 @@
             return window.btoa(binary);
         }
 
-        function encryptUsingSelectedPkey() {
+        async function encryptUsingSelectedPkey() {
+            const {id, key} = getSelectedPublicKey();
             const iv = window.crypto.getRandomValues(new Uint8Array(12));
-
-            generateRandomAesKey()
-                .then(key => {
-                    encryptSigningMethodWithAes(key, iv)
-                        .then(encrypted => {
-                            const encryptedKey = encryptKeyWithRsa(key);
-                            const encryptedHeader = {
-                                encryption: {
-                                    type: 'AES/GCM/NoPadding',
-                                    iv: arrayBufferToBase64(iv),
-                                    key: encryptedKey
-                                },
-                                value: arrayBufferToBase64(encrypted)
-                            }
-                            app.log(btoa(JSON.stringify(encryptedHeader)), 'encryptedSigningMethod');
-                        })
-                });
-
+            const randomAesKey = await generateRandomAesKey();
+            const encryptedData = await encryptSigningMethodWithAes(randomAesKey, iv);
+            const encryptedKey = await encryptKeyWithRsa(randomAesKey, key);
+            const encryptedHeader = {
+                encryption: {
+                    type: 'AES/GCM/NoPadding',
+                    iv: arrayBufferToBase64(iv),
+                    key: {
+                        encryptedValue: encryptedKey,
+                        encryptionKeyId: id
+                    }
+                },
+                value: arrayBufferToBase64(encryptedData)
+            };
+            app.log(btoa(JSON.stringify(encryptedHeader)), 'encryptedSigningMethod');
         }
 
         function bindButtons() {
@@ -143,6 +141,16 @@
             $('#build-request-btn').click(() => createSigningMethod(true))
         }
 
+        function getSelectedPublicKey() {
+            const publicKey = $('#signing-methods-pk').find(":selected").val();
+
+            const [id, key] = publicKey.split(':');
+
+            return {
+                id,
+                key
+            };
+        }
     }
 
 )
