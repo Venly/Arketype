@@ -18,7 +18,7 @@
     }
 
     const useLocalApi = false;
-    app.clientId = 'Arketype';
+    app.clientId = new URLSearchParams(window.location.search).get('clientId') ?? 'Arketype';
     app.useLocalConnect = false;
     app.useLocalKeycloak = false;
 
