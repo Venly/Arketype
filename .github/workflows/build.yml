@@ -104,7 +104,7 @@ jobs:
   deploy-release-to-staging:
     needs:
       - build
-    runs-on: docker-runner
+    runs-on: ubuntu-latest
     if: github.event_name != 'workflow_dispatch' && startsWith(github.ref, 'refs/heads/release-')
     steps:
       - name: 🔑 Configure AWS credentials
@@ -146,7 +146,7 @@ jobs:
     if: startsWith(github.ref, 'refs/heads/hotfix-') || startsWith(github.ref, 'refs/heads/release-')
     needs:
       - build
-    runs-on: docker-runner
+    runs-on: ubuntu-latest
     outputs:
       runner_name: ${{ runner.name }}
     steps:
