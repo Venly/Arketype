@@ -375,7 +375,7 @@
         createExecuteForm(secretType, {
             walletId: fields.walletId,
             to: fields.to,
-            value: {type: 'input', label: 'Amount (in MATIC)', defaultValue: '0.0314'},
+            value: {type: 'input', label: 'Amount (in POL)', defaultValue: '0.0314'},
             tokenAddress: {
                 type: 'input',
                 label: 'Token address',
