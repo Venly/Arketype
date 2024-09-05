@@ -108,7 +108,7 @@ jobs:
             {
                 echo "DOCKER_IMAGE_URL=${IMAGE_URL}"
                 echo "DOCKER_TAG=${DOCKER_TAG}"
-                echo "DOCKER_PORT=${DOCKER_PORT}"
+                echo "PORT_MAPPING=127.0.0.1:${DOCKER_PORT}:4000"
             } > $ENV_FILE
 
             echo "sha: ${{ env.SHA }}"
@@ -183,7 +183,7 @@ jobs:
             {
                 echo "DOCKER_IMAGE_URL=${IMAGE_URL}"
                 echo "DOCKER_TAG=${DOCKER_TAG}"
-                echo "DOCKER_PORT=${DOCKER_PORT}"
+                echo "PORT_MAPPING=127.0.0.1:${DOCKER_PORT}:4000"
             } > $ENV_FILE
 
             echo "sha: ${{ env.SHA }}"
