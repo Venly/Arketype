@@ -109,7 +109,7 @@ jobs:
             } > $ENV_FILE
 
             # Docker login
-            aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 289334807197.dkr.ecr.eu-west-1.amazonaws.com
+            aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com
 
             # Prune Docker system
             docker system prune -f
@@ -124,6 +124,6 @@ jobs:
             sudo systemctl start $SERVICE_NAME
 
             # Docker logout
-            docker logout 289334807197.dkr.ecr.eu-west-1.amazonaws.com
+            docker logout ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com
 
             echo "Deployment to $ENVIRONMENT completed successfully"
