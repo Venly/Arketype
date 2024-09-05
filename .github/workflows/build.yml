@@ -72,7 +72,7 @@ jobs:
           aws-region: eu-west-1
           role-to-assume: ${{ secrets.RESOURCES_DEPLOY_ROLE }}
           role-session-name: OIDCSession
-          mask-aws-account-id: false
+          mask-aws-account-id: true
           output-credentials: true
 
       - name: 🚀 Deploy
@@ -81,6 +81,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ steps.aws_creds.outputs.aws-access-key-id }}
           AWS_SECRET_ACCESS_KEY: ${{ steps.aws_creds.outputs.aws-secret-access-key }}
           AWS_SESSION_TOKEN: ${{ steps.aws_creds.outputs.aws-session-token }}
+          AWS_ACCOUNT_ID: ${{ steps.aws_creds.outputs.aws-account-id }}
           SHA: ${{ github.sha }}
           TAG: ${{ github.ref_name}}
         with:
@@ -97,7 +98,7 @@ jobs:
             DOCKER_TAG="${{ github.ref_name }}"
 
             # Docker image URL
-            IMAGE_URL="289334807197.dkr.ecr.eu-west-1.amazonaws.com/venly-arketype-eu-west-1"
+            IMAGE_URL="${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com/venly-arketype-eu-west-1"
 
             # Define port based on environment
             DOCKER_PORT=4001
@@ -155,6 +156,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ steps.aws_creds.outputs.aws-access-key-id }}
           AWS_SECRET_ACCESS_KEY: ${{ steps.aws_creds.outputs.aws-secret-access-key }}
           AWS_SESSION_TOKEN: ${{ steps.aws_creds.outputs.aws-session-token }}
+          AWS_ACCOUNT_ID: ${{ steps.aws_creds.outputs.aws-account-id }}
           SHA: ${{ github.sha }}
           TAG: ${{ github.ref_name}}
         with:
@@ -171,7 +173,7 @@ jobs:
             DOCKER_TAG="${{ github.ref_name }}"
 
             # Docker image URL
-            IMAGE_URL="289334807197.dkr.ecr.eu-west-1.amazonaws.com/venly-arketype-eu-west-1"
+            IMAGE_URL="${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com/venly-arketype-eu-west-1"
 
             # Define port based on environment
             DOCKER_PORT=4000
