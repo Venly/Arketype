@@ -117,7 +117,7 @@ jobs:
             docker pull $IMAGE_URL:$DOCKER_TAG
 
             # Stop and start the appropriate service
-            SERVICE_NAME="venly-arketype@${ENVIRONMENT}.service"
+            SERVICE_NAME="docker.venly-arketype@${ENVIRONMENT}.service"
             sudo systemctl stop $SERVICE_NAME
             sudo systemctl start $SERVICE_NAME
 
