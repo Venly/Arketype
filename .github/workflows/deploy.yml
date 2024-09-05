@@ -21,7 +21,7 @@ permissions:
   repository-projects: read
   security-events: read
   statuses: read
-run-name: 🚀 Deploy ${{ inputs.tag_to_deploy || github.ref_name }}
+run-name: 🚀 Deploy ${{ inputs.branch_to_deploy || github.ref_name }}
 jobs:
   # =====================================================
   # Job: Manual Deployment
