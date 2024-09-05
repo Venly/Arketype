@@ -89,15 +89,47 @@ jobs:
           key: ${{ secrets.ACTIONS_PRIVATE_SSH_KEY }}
           envs: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN
           script: |
+            #!/bin/bash
+            set -x
+
+            # Parameters (replace these with actual values or script parameters)
+            ENVIRONMENT="qa"
+            DOCKER_TAG="${{ github.ref_name }}"
+
+            # Docker image URL
+            IMAGE_URL="289334807197.dkr.ecr.eu-west-1.amazonaws.com/venly-arketype-eu-west-1"
+
+            # Define port based on environment
+            DOCKER_PORT=4001
+
+            # Create or update the environment file for systemd
+            ENV_FILE="/etc/default/venly-arketype-${ENVIRONMENT}"
+            {
+                echo "DOCKER_IMAGE_URL=${IMAGE_URL}"
+                echo "DOCKER_TAG=${DOCKER_TAG}"
+                echo "DOCKER_PORT=${DOCKER_PORT}"
+            } > $ENV_FILE
+
+            # Echo for debugging
             echo "sha: ${{ env.SHA }}"
             echo "branch: ${{ github.ref_name }}"
+
+            # AWS credentials and Docker login
             export AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}
             export AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
             export AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}
+
             aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${{ steps.aws_creds.outputs.aws-account-id }}.dkr.ecr.eu-west-1.amazonaws.com
-            echo "Deploying ${{ github.ref_name}}"
-            bash /home/jenkins/restartqa.sh
+
+            # Deployment
+            echo "Deploying $DOCKER_TAG"
+            sudo systemctl stop venly-arketype@${ENVIRONMENT}.service
+            sudo systemctl start venly-arketype@${ENVIRONMENT}.service
+
+            # Docker logout
             docker logout ${{ steps.aws_creds.outputs.aws-account-id }}.dkr.ecr.eu-west-1.amazonaws.com
+
+            echo "Deployment to $ENVIRONMENT completed successfully"
   # =====================================================
   # Job: Deploy Release to Staging
   # =====================================================
@@ -123,23 +155,54 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ steps.aws_creds.outputs.aws-access-key-id }}
           AWS_SECRET_ACCESS_KEY: ${{ steps.aws_creds.outputs.aws-secret-access-key }}
           AWS_SESSION_TOKEN: ${{ steps.aws_creds.outputs.aws-session-token }}
+          SHA: ${{ github.sha }}
+          TAG: ${{ github.ref_name}}
         with:
           host: ${{ secrets.DEMO_ARKETYPE_HOST }}
           username: ${{ secrets.DEMO_ARKETYPE_USER }}
           key: ${{ secrets.ACTIONS_PRIVATE_SSH_KEY }}
           envs: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN
           script: |
-            echo "sha: ${{ github.sha }}"
-            echo "branch: ${{ github.ref_name }}"
+            #!/bin/bash
+            set -x
+
+            # Parameters (replace these with actual values or script parameters)
+            ENVIRONMENT="staging"
+            DOCKER_TAG="${{ github.ref_name }}"
+
+            # Docker image URL
+            IMAGE_URL="289334807197.dkr.ecr.eu-west-1.amazonaws.com/venly-arketype-eu-west-1"
+
+            # Define port based on environment
+            DOCKER_PORT=4000
+
+            # Create or update the environment file for systemd
+            ENV_FILE="/etc/default/venly-arketype-${ENVIRONMENT}"
+            {
+                echo "DOCKER_IMAGE_URL=${IMAGE_URL}"
+                echo "DOCKER_TAG=${DOCKER_TAG}"
+                echo "DOCKER_PORT=${DOCKER_PORT}"
+            } > $ENV_FILE
+
+            echo "sha: ${{ env.SHA }}"
+            echo "Following Release will be deployed on staging: ${{ github.ref_name }}"
+
+            # AWS credentials and Docker login
             export AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}
             export AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
             export AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}
+
             aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${{ steps.aws_creds.outputs.aws-account-id }}.dkr.ecr.eu-west-1.amazonaws.com
-            docker tag venly-arketype-eu-west-1:${{ github.ref_name }} ${{ steps.aws_creds.outputs.aws-account-id }}.dkr.ecr.eu-west-1.amazonaws.com/venly-arketype-eu-west-1:staging
-            docker push ${{ steps.aws_creds.outputs.aws-account-id }}.dkr.ecr.eu-west-1.amazonaws.com/venly-arketype-eu-west-1:staging
-            echo "Deploying ${{ github.ref_name}}"
-            bash /home/jenkins/restartstaging.sh
+
+            # Deployment
+            echo "Deploying $DOCKER_TAG"
+            sudo systemctl stop venly-arketype@${ENVIRONMENT}.service
+            sudo systemctl start venly-arketype@${ENVIRONMENT}.service
+
+            # Docker logout
             docker logout ${{ steps.aws_creds.outputs.aws-account-id }}.dkr.ecr.eu-west-1.amazonaws.com
+
+            echo "Deployment to $ENVIRONMENT completed successfully"
   # =====================================================
   # Job: Merge Back
   # =====================================================

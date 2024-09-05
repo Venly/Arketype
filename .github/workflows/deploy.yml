@@ -6,7 +6,15 @@ on:
         type: string
         description: "Branch name, Version number or Sha hash to deploy"
         required: true
-
+      environment:
+        type: choice
+        description: "Environment to deploy to"
+        required: true
+        default: "qa"
+        options:
+          - prd
+          - qa
+          - staging
 permissions:
   actions: read
   checks: read
@@ -51,7 +59,8 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ steps.aws_creds.outputs.aws-secret-access-key }}
           AWS_SESSION_TOKEN: ${{ steps.aws_creds.outputs.aws-session-token }}
           SHA: ${{ github.sha }}
-          TAG: ${{ inputs.branch_to_deploy }}
+          DOCKER_TAG: ${{ inputs.branch_to_deploy }}
+          ENVIRONMENT: ${{ inputs.environment }}
         with:
           host: ${{ secrets.DEMO_ARKETYPE_HOST }}
           username: ${{ secrets.DEMO_ARKETYPE_USER }}
@@ -66,25 +75,53 @@ jobs:
             export AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}
             export AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}
 
-            aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${{ steps.aws_creds.outputs.aws-account-id }}.dkr.ecr.eu-west-1.amazonaws.com
+            # Parameters
+            ENVIRONMENT=$1
+            DOCKER_TAG=$2
 
-            branch_to_deploy="${{ inputs.branch_to_deploy }}"
+            # Define port based on environment
+            case "$ENVIRONMENT" in
+                staging)
+                    DOCKER_PORT=4000
+                    ;;
+                qa)
+                    DOCKER_PORT=4001
+                    ;;
+                prd)
+                    DOCKER_PORT=4002
+                    ;;
+                *)
+                    echo "Unknown environment: $ENVIRONMENT"
+                    exit 1
+                    ;;
+            esac
 
-            if [[ "$branch_to_deploy" == "develop" ]]; then
-              echo "Deploying develop"
-              bash /home/jenkins/restartqa.sh
-            elif [[ "$branch_to_deploy" =~ ^release ]]; then
-              echo "Deploying release branch"
-              docker pull 289334807197.dkr.ecr.eu-west-1.amazonaws.com/venly-arketype-eu-west-1:$branch_to_deploy
-              docker tag 289334807197.dkr.ecr.eu-west-1.amazonaws.com/venly-arketype-eu-west-1:$branch_to_deploy 289334807197.dkr.ecr.eu-west-1.amazonaws.com/venly-arketype-eu-west-1:staging
-              docker push 289334807197.dkr.ecr.eu-west-1.amazonaws.com/venly-arketype-eu-west-1:staging
-              bash /home/jenkins/restartstaging.sh
-            elif [[ "$branch_to_deploy" == "master" ]]; then
-              echo "Deploying master"
-              bash /home/jenkins/restartprd.sh
-            else
-              echo "Unknown branch: $branch_to_deploy"
-              exit 1
-            fi
+            # Docker image URL
+            IMAGE_URL="289334807197.dkr.ecr.eu-west-1.amazonaws.com/venly-arketype-eu-west-1"
 
-            docker logout ${{ steps.aws_creds.outputs.aws-account-id }}.dkr.ecr.eu-west-1.amazonaws.com
+            # Create the environment file for systemd
+            ENV_FILE="/etc/default/venly-arketype-${ENVIRONMENT}"
+            {
+                echo "DOCKER_IMAGE_URL=${IMAGE_URL}"
+                echo "DOCKER_TAG=${DOCKER_TAG}"
+                echo "DOCKER_PORT=${DOCKER_PORT}"
+            } > $ENV_FILE
+
+            # Docker login
+            aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 289334807197.dkr.ecr.eu-west-1.amazonaws.com
+
+            # Prune Docker system
+            docker system prune -f
+
+            # Pull Docker image
+            docker pull $IMAGE_URL:$DOCKER_TAG
+
+            # Stop and start the appropriate service
+            SERVICE_NAME="venly-arketype@${ENVIRONMENT}.service"
+            sudo systemctl stop $SERVICE_NAME
+            sudo systemctl start $SERVICE_NAME
+
+            # Docker logout
+            docker logout 289334807197.dkr.ecr.eu-west-1.amazonaws.com
+
+            echo "Deployment to $ENVIRONMENT completed successfully"
