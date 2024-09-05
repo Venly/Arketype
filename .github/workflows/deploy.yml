@@ -76,8 +76,8 @@ jobs:
             export AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}
 
             # Parameters
-            ENVIRONMENT=$1
-            DOCKER_TAG=$2
+            ENVIRONMENT=${{ inputs.environment }}
+            DOCKER_TAG=${{ inputs.branch_to_deploy }}
 
             # Define port based on environment
             case "$ENVIRONMENT" in
