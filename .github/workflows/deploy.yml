@@ -75,7 +75,7 @@ jobs:
               bash /home/jenkins/restartqa.sh
             elif [[ "$branch_to_deploy" =~ ^release ]]; then
               echo "Deploying release branch"
-              docker tag venly-arketype-eu-west-1:develop ***.dkr.ecr.eu-west-1.amazonaws.com/venly-arketype-eu-west-1:staging
+              docker tag venly-arketype-eu-west-1:$branch_to_deploy 289334807197.dkr.ecr.eu-west-1.amazonaws.com/venly-arketype-eu-west-1:staging
               bash /home/jenkins/restartstaging.sh
             elif [[ "$branch_to_deploy" == "master" ]]; then
               echo "Deploying master"
