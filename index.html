@@ -222,6 +222,8 @@
                            aria-selected="true">XPLA</a>
                         <a class="nav-item nav-link" id="nav-BASE-tab" data-toggle="tab" href=".tab-pane#tab-BASE" role="tab" aria-controls="tab-BASE"
                            aria-selected="true">Base</a>
+                        <a class="nav-item nav-link" id="nav-OPTIMISM-tab" data-toggle="tab" href=".tab-pane#tab-OPTIMISM" role="tab" aria-controls="tab-OPTIMISM"
+                           aria-selected="true">Optimism</a>
                     </div>
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
@@ -397,6 +399,41 @@
                             </div>
                             <div class="mb-3 col-lg-6">
                                 <form data-form="import-wallet" data-chain="BASE" class="card bg-light"></form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade p-4 bg-white border" id="tab-OPTIMISM" data-chain="OPTIMISM" role="tabpanel" aria-labelledby="nav-OPTIMISM-tab">
+                        <button type="button" data-chain="OPTIMISM" class="btn btn-outline-primary get-wallets mb-3">
+                            Refresh Wallets
+                        </button>
+                        <button type="button" data-chain="OPTIMISM" class="btn btn-outline-primary manage-wallets mb-3">
+                            Manage Wallets
+                        </button>
+
+                        <div class="row">
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign" data-chain="OPTIMISM" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="execute" data-chain="OPTIMISM" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign-raw" data-chain="OPTIMISM" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign-message" data-chain="OPTIMISM" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign-eip712" data-chain="OPTIMISM" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="execute-contract" data-chain="OPTIMISM" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="read-contract" data-chain="OPTIMISM" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="import-wallet" data-chain="OPTIMISM" class="card bg-light"></form>
                             </div>
                         </div>
                     </div>
