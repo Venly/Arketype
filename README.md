@@ -1,4 +1,4 @@
-# Arketype <img align="right" src="https://github.com/ArkaneNetwork.png?size=30" />
+# Arketype <img align="right" src="https://github.com/Venly.png?size=30" />
 
 ## Default Branch
 
