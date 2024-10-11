@@ -1,0 +1,125 @@
+name: "Application Info"
+description: "Application Info"
+inputs:
+  branch:
+    description: name of the branch
+    required: true
+runs:
+  using: "composite"
+  steps:
+    # Check Application Type
+    - name: ❔ Determine Application Type ❔
+      id: app-type
+      shell: bash
+      run: |
+        if [ -f package.json ]; then
+            echo "app_type=node" >> $GITHUB_ENV
+            echo "App Type is Node"
+          elif [ -f pom.xml ]; then
+            echo "app_type=java" >> $GITHUB_ENV
+            echo "App Type is Java"
+          else
+            echo "app_type=unknown" >> $GITHUB_ENV
+        fi
+
+    - name: ❔ get-npm-version ❔
+      if: ${{ env.app_type == 'node' }}
+      id: package-version
+      shell: bash
+      run: |
+        PACKAGE_JSON_PATH="./package.json"
+        if [[ -f "$PACKAGE_JSON_PATH" ]]; then
+            VERSION=$(jq -r '.version' "$PACKAGE_JSON_PATH")
+            if [[ "$VERSION" == "null" || -z "$VERSION" ]]; then
+              echo "No version field found in $PACKAGE_JSON_PATH"
+              echo "current-version=0.0.0" >> $GITHUB_ENV
+            else
+              echo "Version in $PACKAGE_JSON_PATH is $VERSION"
+              echo "current-version=$VERSION" >> $GITHUB_ENV
+            fi
+        else
+            echo "$PACKAGE_JSON_PATH not found"
+            echo "current-version=0.0.0" >> $GITHUB_ENV
+        fi
+
+    # Get version for Java Application
+    - name: ❔ Extract version from pom.xml ❔
+      if: ${{ env.app_type == 'java' }}
+      shell: bash
+      id: extract_version
+      run: |
+        #!/bin/bash
+        # Location of the pom.xml file
+        POM_PATH="pom.xml"
+        VERSION_NOT_FOUND="Version not found within specified range or format."
+        # Use awk to process the pom.xml within the first 20 lines
+        VERSION=$(awk '
+        BEGIN{IGNORECASE=1; version_found=0;}
+        /<groupId>.*(io\.venly|network\.arkane|fundrequest\.arkane).*<\/groupId>/ {groupIdLine=NR}
+        NR==groupIdLine+1, NR==groupIdLine+5 {
+            if (/<version>(.*)<\/version>/) {
+                print $0;
+                exit;
+            }
+        }
+        END {
+            if (!version_found) print "'"$VERSION_NOT_FOUND"'";
+        }
+        ' "$POM_PATH" | grep -oPm1 "(?<=<version>)[^<]+")
+
+        echo "current-version=$VERSION" >> $GITHUB_ENV
+    # Set Application Version
+    - name: 🏁 Set Application Version 🏁
+      id: app-version
+      shell: bash
+      run: |
+        if [[ ${{ env.app_type }} == 'java' ]]; then
+            echo "app_version=${{ env.current-version }}" >> $GITHUB_ENV
+            echo "app_version=${{ env.current-version }}" >> $GITHUB_OUTPUT
+            echo "Java Application Version: ${{ env.current-version }}"
+          elif [ ${{ env.app_type }} == 'node' ]; then
+            echo "app_version=${{ env.current-version}}" >> $GITHUB_ENV
+            echo "app_version=${{ env.current-version}}" >> $GITHUB_OUTPUT
+            echo "Node Application Version: ${{ env.current-version }}"
+          else
+            echo "app_version=unknown" >> $GITHUB_ENV
+        fi
+    # Get info from git
+    - name: 🏁 Set Git Info 🏁
+      id: git_info
+      shell: bash
+      env:
+        SHA_TAG: ${{ github.sha }}
+        BRANCH_TAG: ${{ github.ref_name }}
+      run: |
+        echo ${{ env.ECR_REPO }}
+        echo "ecr_repo=${{ env.ECR_REPO }}" >> $GITHUB_OUTPUT
+        echo "sha_tag=${{ env.SHA_TAG }}" >> $GITHUB_OUTPUT
+        echo "branch_tag=${{ env.BRANCH_TAG }}" >> $GITHUB_OUTPUT
+
+    - name: Display Application Info
+      shell: bash
+      run: |
+        echo "🚀 Application Information 🚀"
+        echo "🌿 Application Type: ${{ env.app_type }}"
+        echo "📦 Branch: ${{ inputs.branch }}"
+        echo "🔖 Application Version: ${{ env.app_version }}"
+        echo "🔑 Commit SHA: ${{ github.sha }}"
+        echo "🔢 Run ID: ${{ github.run_id }}"
+        echo "🔢 Run Number: ${{ github.run_number }}"
+        echo "🆔 Job ID: ${{ github.job }}"
+        echo "📅 Workflow Trigger Event: ${{ github.event_name }}"
+        echo "🕒 Timestamp: $(date +'%Y-%m-%d %H:%M:%S')"
+        echo "🌐 Branch Tag: ${{ steps.git_info.outputs.branch_tag }}"
+        echo "🔑 SHA Tag: ${{ steps.git_info.outputs.sha_tag }}"
+
+outputs:
+  app_version:
+    description: "Application Version"
+    value: ${{ steps.app-version.outputs.app_version }}
+  sha_tag:
+    description: "The SHA tag"
+    value: ${{ steps.git_info.outputs.sha_tag }}
+  branch_tag:
+    description: "The branch tag"
+    value: ${{ steps.git_info.outputs.branch_tag }}
