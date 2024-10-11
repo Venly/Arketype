@@ -5,11 +5,13 @@ FROM --platform=linux/arm64 node:alpine AS build
 WORKDIR /usr/src/app
 
 # Install build dependencies
-RUN apk add --no-cache \
-    curl \
-    python3 \
-    g++ \
-    make
+RUN apk add --no-cache curl python3 g++ make
+
+# Check if Yarn is installed and install http-server
+RUN if ! command -v yarn &> /dev/null; then \
+    npm install -g yarn; \
+    fi \
+    && npm install -g http-server  # Install http-server globally
 
 # Copy package.json and yarn.lock (if available) to install dependencies first
 COPY package.json ./
@@ -40,12 +42,12 @@ ENV DD_GIT_REPOSITORY_URL=${DD_GIT_REPOSITORY_URL}
 ENV DD_GIT_COMMIT_SHA=${DD_GIT_COMMIT_SHA}
 
 # Expose the port
-EXPOSE 8080
+EXPOSE 4000
 
 # Clean up any unnecessary files to keep the image small
 RUN rm -rf /usr/src/app/node_modules/.cache \
     && yarn cache clean \
     && rm -rf /var/cache/apk/*
 
-# Start the application
-CMD ["yarn", "run", "start-ext"]
+# Start the application using npx to avoid global installation
+CMD ["npx", "http-server", "-p", "4000", "-c-1"]
