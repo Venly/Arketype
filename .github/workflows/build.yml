@@ -9,7 +9,10 @@ on:
   create:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
+env:
+  AWS_REGION: "eu-west-1"
+  CLUSTER_NAME_PREFIX: demo-projects
 permissions:
   actions: read
   checks: write
@@ -25,14 +28,48 @@ permissions:
   security-events: read
   statuses: read
 run-name: 🏗️ Build ${{ github.ref_name	}}
-
 jobs:
+  # =====================================================
+  # Job: Build
+  # =====================================================
   build:
     runs-on: ubuntu-latest
+    outputs:
+      sha_tag: ${{ steps.app_info.outputs.sha_tag }}
+      version_tag: ${{ steps.get_version.outputs.version }}
+      branch_tag: ${{ steps.app_info.outputs.branch_tag }}
+    steps:
+      - name: ✅ Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.VENLY_GITHUB_ACTIONS_TOKEN }}
+
+      - name: ℹ️ App Info
+        id: app_info
+        uses: ./.github/actions/app_info
+        with:
+          branch: ${{ github.ref }}
+
+      - name: 🔍 Get Version
+        id: get_version
+        uses: ./.github/actions/get_version
+
+      - name: 📄 Show Build Information
+        run: |
+          echo "Sha Tag: ${{ steps.app_info.outputs.sha_tag }}"
+          echo "Version Tag: ${{ steps.get_version.outputs.version }}"
+          echo "Branch Tag: ${{ steps.app_info.outputs.branch_tag }}"
+  # =====================================================
+  # Job: Build Docker
+  # =====================================================
+  docker:
+    if: ${{ success() && github.event_name != 'pull_request' && contains(fromJSON('["main", "master", "develop"]'), github.ref_name) || startsWith(github.ref_name, 'release-') || startsWith(github.ref_name, 'hotfix-') || startsWith(github.ref_name, 'VENLY-7920') }}
+    runs-on: ubuntu-latest
+    needs: build
     strategy:
       matrix:
         include:
-          - ecr: venly-arketype-eu-west-1
+          - ecr: venly-arketype-arm-eu-west-1
             docker_context: "."
     steps:
       - name: ✅ Checkout
@@ -40,178 +77,103 @@ jobs:
         with:
           token: ${{ secrets.VENLY_GITHUB_ACTIONS_TOKEN }}
 
-      - name: 🔍 Get Version
-        id: get_version
-        uses: ./.github/actions/get_version
-
       - name: 🐳 Build and Push Docker Image
         id: build-deploy-docker
         uses: ./.github/actions/build_docker
         with:
           aws_role: ${{ secrets.RESOURCES_DEPLOY_ROLE }}
+          branch_tag: ${{ needs.build.outputs.branch_tag }}
+          build_args: |
+            VERSION=${{ needs.build.outputs.version_tag }} 
+            DD_GIT_REPOSITORY_URL=git@github.com:${{ github.repository }}.git 
+            DD_GIT_COMMIT_SHA=${{ github.sha }}
           docker_context: ${{ matrix.docker_context }}
           ecr_repo: ${{ matrix.ecr }}
-          sha_tag: ${{ github.sha }}
-          version_tag: ${{ steps.get_version.outputs.version }}
-          branch_tag: ${{ github.ref_name }}
           push_image: true
-
+          sha_tag: ${{ needs.build.outputs.sha_tag }}
+          version_tag: ${{ startsWith(github.ref_name, 'release-') && 'staging' || (github.ref_name == 'main' && 'prd' || 'qa') }}
   # =====================================================
   # Job: Deploy QA
   # =====================================================
   deploy-qa:
     needs:
       - build
-    runs-on: ubuntu-latest
-    if: github.event_name != 'workflow_dispatch' && github.ref_name == 'develop'
+      - docker
+    runs-on:
+      group: Deploy
+    if: github.ref_name == 'develop'
+    strategy:
+      matrix:
+        include:
+          - service_name: arketype-qa-service
+            ecr: venly-arketype-arm-eu-west-1
+            environment: "qa"
     steps:
-      - name: 🔑 Configure AWS credentials
-        id: aws_creds
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: ✅ Checkout
+        uses: actions/checkout@v4
         with:
-          aws-region: eu-west-1
-          role-to-assume: ${{ secrets.RESOURCES_DEPLOY_ROLE }}
-          role-session-name: OIDCSession
-          mask-aws-account-id: true
-          output-credentials: true
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 🚀 Deploy
-        uses: appleboy/ssh-action@v1.0.3
-        env:
-          AWS_ACCESS_KEY_ID: ${{ steps.aws_creds.outputs.aws-access-key-id }}
-          AWS_SECRET_ACCESS_KEY: ${{ steps.aws_creds.outputs.aws-secret-access-key }}
-          AWS_SESSION_TOKEN: ${{ steps.aws_creds.outputs.aws-session-token }}
-          AWS_ACCOUNT_ID: ${{ steps.aws_creds.outputs.aws-account-id }}
-          SHA: ${{ github.sha }}
-          TAG: ${{ github.ref_name}}
+      - name: ℹ️ Deploy info
+        uses: ArkaneNetwork/venly-github-workflows/.github/actions/deploy_info@main
         with:
-          host: ${{ secrets.DEMO_ARKETYPE_HOST }}
-          username: ${{ secrets.DEMO_ARKETYPE_USER }}
-          key: ${{ secrets.ACTIONS_PRIVATE_SSH_KEY }}
-          envs: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN
-          script: |
-            #!/bin/bash
-            set -x
+          environment: ${{ matrix.environment }}
+          deployed_tag: ${{ github.sha }}
 
-            # Parameters (replace these with actual values or script parameters)
-            ENVIRONMENT="qa"
-            DOCKER_TAG="${{ github.ref_name }}"
-
-            # Docker image URL
-            IMAGE_URL="${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com/venly-arketype-eu-west-1"
-
-            # Define port based on environment
-            DOCKER_PORT=4001
-
-            # Create or update the environment file for systemd
-            ENV_FILE="/etc/default/venly-arketype-${ENVIRONMENT}"
-            {
-                echo "DOCKER_IMAGE_URL=${IMAGE_URL}"
-                echo "DOCKER_TAG=${DOCKER_TAG}"
-                echo "PORT_MAPPING=127.0.0.1:${DOCKER_PORT}:4000"
-            } > $ENV_FILE
-
-            echo "sha: ${{ env.SHA }}"
-            echo "branch: ${{ github.ref_name }}"
-
-            # AWS credentials and Docker login
-            export AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}
-            export AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
-            export AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}
-
-            aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com
-
-            # Pull Docker image
-            docker pull $IMAGE_URL:$DOCKER_TAG
-
-            # Deployment
-            echo "Deploying $DOCKER_TAG"
-            SERVICE_NAME="venly-arketype@${ENVIRONMENT}.service"
-            sudo systemctl stop $SERVICE_NAME
-            sudo systemctl start $SERVICE_NAME
-
-            # Docker logout
-            docker logout ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com
-
-            echo "Deployment to $ENVIRONMENT completed successfully"
+      - name: 🚀 Deploy Application
+        uses: ArkaneNetwork/venly-github-workflows/.github/actions/ecs_deploy@main
+        with:
+          aws_region: ${{ env.AWS_REGION }}
+          aws_role: ${{ secrets.NONPRD_DEPLOY_ROLE }}
+          aws_ecr_role: ${{ secrets.RESOURCES_DEPLOY_ROLE }}
+          cluster_name: "${{ env.CLUSTER_NAME_PREFIX }}-cluster"
+          ecr_repo: ${{ matrix.ecr }}
+          environment: ${{ matrix.environment }}
+          service_name: ${{ matrix.service_name }}
+          slack_notification_webhook: ${{ secrets.SLACK_APPROVALS_WEBHOOK }}
+          tag_to_deploy: ${{ github.sha }}
+          token: ${{ secrets.GITHUB_TOKEN }}
   # =====================================================
   # Job: Deploy Release to Staging
   # =====================================================
   deploy-release-to-staging:
     needs:
       - build
-    runs-on: ubuntu-latest
+      - docker
+    runs-on:
+      group: Deploy
     if: github.event_name != 'workflow_dispatch' && startsWith(github.ref, 'refs/heads/release-')
+    strategy:
+      matrix:
+        include:
+          - service_name: arketype-staging-service
+            ecr: venly-arketype-arm-eu-west-1
+            environment: "staging"
     steps:
-      - name: 🔑 Configure AWS credentials
-        id: aws_creds
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: ✅ Checkout
+        uses: actions/checkout@v4
         with:
-          aws-region: eu-west-1
-          role-to-assume: ${{ secrets.RESOURCES_DEPLOY_ROLE }}
-          role-session-name: OIDCSession
-          mask-aws-account-id: true
-          output-credentials: true
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 🚀 Deploy
-        uses: appleboy/ssh-action@v1.0.3
-        env:
-          AWS_ACCESS_KEY_ID: ${{ steps.aws_creds.outputs.aws-access-key-id }}
-          AWS_SECRET_ACCESS_KEY: ${{ steps.aws_creds.outputs.aws-secret-access-key }}
-          AWS_SESSION_TOKEN: ${{ steps.aws_creds.outputs.aws-session-token }}
-          AWS_ACCOUNT_ID: ${{ steps.aws_creds.outputs.aws-account-id }}
-          SHA: ${{ github.sha }}
-          TAG: ${{ github.ref_name}}
+      - name: ℹ️ Deploy info
+        uses: ArkaneNetwork/venly-github-workflows/.github/actions/deploy_info@main
         with:
-          host: ${{ secrets.DEMO_ARKETYPE_HOST }}
-          username: ${{ secrets.DEMO_ARKETYPE_USER }}
-          key: ${{ secrets.ACTIONS_PRIVATE_SSH_KEY }}
-          envs: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN
-          script: |
-            #!/bin/bash
-            set -x
+          environment: ${{ matrix.environment }}
+          deployed_tag: ${{ github.ref_name }}
 
-            # Parameters (replace these with actual values or script parameters)
-            ENVIRONMENT="staging"
-            DOCKER_TAG="${{ github.ref_name }}"
-
-            # Docker image URL
-            IMAGE_URL="${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com/venly-arketype-eu-west-1"
-
-            # Define port based on environment
-            DOCKER_PORT=4000
-
-            # Create or update the environment file for systemd
-            ENV_FILE="/etc/default/venly-arketype-${ENVIRONMENT}"
-            {
-                echo "DOCKER_IMAGE_URL=${IMAGE_URL}"
-                echo "DOCKER_TAG=${DOCKER_TAG}"
-                echo "PORT_MAPPING=127.0.0.1:${DOCKER_PORT}:4000"
-            } > $ENV_FILE
-
-            echo "sha: ${{ env.SHA }}"
-            echo "Following Release will be deployed on staging: ${{ github.ref_name }}"
-
-            # AWS credentials and Docker login
-            export AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}
-            export AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
-            export AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}
-
-            aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com
-
-            # Pull Docker image
-            docker pull $IMAGE_URL:$DOCKER_TAG
-
-            # Deployment
-            echo "Deploying $DOCKER_TAG"
-            SERVICE_NAME="venly-arketype@${ENVIRONMENT}.service"
-            sudo systemctl stop $SERVICE_NAME
-            sudo systemctl start $SERVICE_NAME
-
-            # Docker logout
-            docker logout ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com
-
-            echo "Deployment to $ENVIRONMENT completed successfully"
+      - name: 🚀 Deploy Application
+        uses: ArkaneNetwork/venly-github-workflows/.github/actions/ecs_deploy@main
+        with:
+          aws_region: ${{ env.AWS_REGION }}
+          aws_role: ${{ secrets.NONPRD_DEPLOY_ROLE }}
+          aws_ecr_role: ${{ secrets.RESOURCES_DEPLOY_ROLE }}
+          cluster_name: ${{ env.CLUSTER_NAME_PREFIX }}-cluster
+          ecr_repo: ${{ matrix.ecr }}
+          environment: ${{ matrix.environment }}
+          service_name: ${{ matrix.service_name }}
+          slack_notification_webhook: ${{ secrets.SLACK_APPROVALS_WEBHOOK }}
+          tag_to_deploy: ${{ github.ref_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
   # =====================================================
   # Job: Merge Back
   # =====================================================
@@ -219,7 +181,9 @@ jobs:
     if: startsWith(github.ref, 'refs/heads/hotfix-') || startsWith(github.ref, 'refs/heads/release-')
     needs:
       - build
-    runs-on: ubuntu-latest
+      - docker
+    runs-on:
+      group: Deploy
     outputs:
       runner_name: ${{ runner.name }}
     steps:
@@ -228,9 +192,9 @@ jobs:
         with:
           token: ${{ secrets.VENLY_GITHUB_ACTIONS_TOKEN }}
 
-      - name: 🔄 Merge Back
-        if: startsWith(github.ref, 'refs/heads/hotfix-') || startsWith(github.ref, 'refs/heads/release-')
-        uses: ./.github/actions/merge_back
+      - name: 🔄 Merge Back To Develop
+        id: merge_back
+        uses: ArkaneNetwork/venly-github-workflows/.github/actions/merge_back@main
         with:
-          branch: ${{ github.ref_name }}
+          branch: ${{ github.ref }}
           token: ${{ secrets.VENLY_GITHUB_ACTIONS_TOKEN }}

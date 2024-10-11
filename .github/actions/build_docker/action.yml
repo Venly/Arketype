@@ -1,5 +1,5 @@
-name: "Build Docker"
-description: "Build Container"
+name: "Build Docker Multistage"
+description: "Build Multistage Docker Container"
 inputs:
   aws_region:
     default: eu-west-1
@@ -13,7 +13,7 @@ inputs:
     required: true
   build_args:
     description: List of build-time variables
-    required: false
+    required: true
   cache_folder:
     description: Optional Cache folder
     required: false
@@ -42,20 +42,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: ❔ Determine Application Type ❔
-      id: app-type
-      shell: bash
-      run: |
-        if [ -f package.json ]; then
-            echo "app_type=node" >> $GITHUB_ENV
-            echo "App Type is Node"
-          elif [ -f pom.xml ]; then
-            echo "app_type=java" >> $GITHUB_ENV
-            echo "App Type is Java"
-          else
-            echo "app_type=unknown" >> $GITHUB_ENV
-        fi
-
     # Configure AWS credentials
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
@@ -85,6 +71,11 @@ runs:
       shell: bash
       run: echo "CURRENT_DATE=$(date +'%Y-%m-%dT%H:%M:%SZ' --utc)" >> $GITHUB_ENV
 
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: "arm64"
+
     - name: Set up Docker Buildx
       id: buildx
       uses: docker/setup-buildx-action@master
@@ -112,15 +103,38 @@ runs:
           type=ref,event=pr
           type=semver,pattern={{version}},value=${{ inputs.version_tag }}
           type=semver,pattern={{major}}.{{minor}},value=${{ inputs.version }}
+          type=sha,format=long,prefix={{branch}}-
           type=sha,format=long,prefix=
         labels: |
           org.opencontainers.image.url=${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}
           org.opencontainers.image.created=${{ env.CURRENT_DATE }}
-          org.opencontainers.image.version=${{ inputs.version_tag }}
-          com.datadoghq.tags.version=${{ inputs.version_tag }}
+
+    - name: Create Docker Meta files
+      shell: bash
+      run: |
+        echo "Building Docker Image with following MetaData"
+        echo "**** Tags ****"
+        echo "${{ steps.meta.outputs.tags }}"
+        echo "${{ steps.meta.outputs.tags }}" > docker_tags.txt
+        echo "**** Labels ****"
+        echo "${{ steps.meta.outputs.labels }}"
+        echo "${{ steps.meta.outputs.labels }}" > docker_labels.txt
+        # Remove https from opencontainers.image.source for Datadog integration
+        sed -i 's|org.opencontainers.image.source=https://|org.opencontainers.image.source=|' docker_labels.txt
+
+    - name: 📦 Upload Docker Meta as Artifact docker-meta-${{ github.ref_name }} 📦
+      uses: actions/upload-artifact@v4
+      with:
+        name: docker-meta-${{ github.ref_name }}
+        path: |
+          docker_tags.txt
+          docker_labels.txt
+        retention-days: 7
+        overwrite: true
+        compression-level: 9
 
     - name: Build and push
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       env:
         BRANCH_TAG: ${{ inputs.branch_tag }}
         CURRENT_DATE: ${{ env.CURRENT_DATE }}
@@ -128,9 +142,10 @@ runs:
         ECR_REGISTRY: 289334807197.dkr.ecr.eu-west-1.amazonaws.com
         ECR_REPOSITORY: ${{ inputs.ecr_repo }}
         SHA_TAG: ${{ inputs.sha_tag }}
-        VERSION_SHA_TAG: "${{ inputs.version_tag }}-${{ inputs.sha_tag }}"
-        VERSION_TAG: ${{ inputs.version_tag }}
+        VERSION_SHA_TAG: "${{ env.org_opencontainers_image_version }}-${{ inputs.sha_tag }}"
+        VERSION_TAG: ${{ env.org_opencontainers_image_version }}
       with:
+        platforms: linux/amd64
         context: "${{ inputs.docker_context }}"
         file: "${{ inputs.docker_file }}"
         push: ${{ inputs.push_image }}
@@ -143,6 +158,8 @@ runs:
     - name: Display Build Info
       shell: bash
       run: |
+        echo "📦 Artifact Id: ${{ steps.artifact-upload-step.outputs.artifact-id }}"
+        echo "📦 Artifact Url: ${{ steps.artifact-upload-step.outputs.artifact-url }}"
         echo "🚀 Docker Build Details 🚀"
         echo "✨ Workflow Name: ${{ github.workflow }}"
         echo "👤 Triggered by: ${{ github.actor }}"
@@ -164,3 +181,5 @@ runs:
         echo "📌 SHA Tag: ${{ inputs.sha_tag }}"
         echo "🏷️ Version Tag: ${{ inputs.version_tag }}"
         echo "📤 Push Image: ${{ inputs.push_image }}"
+        echo "🏷️ Docker Labels: "
+        cat docker_labels.txt
