@@ -2,7 +2,7 @@ name: 🚀 Deploy
 on:
   workflow_dispatch:
     inputs:
-      branch_to_deploy:
+      tag_to_deploy:
         type: string
         description: "Branch name, Version number or Sha hash to deploy"
         required: true
@@ -14,7 +14,12 @@ on:
         options:
           - prd
           - qa
+          - sandbox
           - staging
+          - dev
+env:
+  AWS_REGION: "eu-west-1"
+  CLUSTER_NAME_PREFIX: demo-projects
 permissions:
   actions: read
   checks: read
@@ -29,101 +34,73 @@ permissions:
   repository-projects: read
   security-events: read
   statuses: read
-run-name: 🚀 Deploy ${{ inputs.branch_to_deploy || github.ref_name }}
+run-name: 🚀 Deploy ${{ inputs.tag_to_deploy	}} to ${{ inputs.environment }}
 jobs:
   # =====================================================
-  # Job: Manual Deployment
+  # Job: Deploy Non-Production Environments
   # =====================================================
-  deploy:
+  deploy_non_prd:
     runs-on: ubuntu-latest
+    if: (github.event_name == 'workflow_dispatch' && (inputs.environment == 'qa' || inputs.environment == 'staging'))
+    strategy:
+      matrix:
+        include:
+          - service_name: react-demo-${{ inputs.environment }}-service
+            ecr: venly-react-demo-arm-eu-west-1
+            environment: "${{ inputs.environment }}"
     steps:
       - name: ✅ Checkout
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Configure AWS credentials
-        id: aws_creds
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: 🚀 Deploy Application
+        uses: ./.github/actions/ecs_deploy
         with:
-          aws-region: eu-west-1
-          role-to-assume: ${{ secrets.RESOURCES_DEPLOY_ROLE }}
-          role-session-name: OIDCSession
-          mask-aws-account-id: true
-          output-credentials: true
-
-      - name: Deploy to remote server via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        env:
-          AWS_ACCESS_KEY_ID: ${{ steps.aws_creds.outputs.aws-access-key-id }}
-          AWS_SECRET_ACCESS_KEY: ${{ steps.aws_creds.outputs.aws-secret-access-key }}
-          AWS_SESSION_TOKEN: ${{ steps.aws_creds.outputs.aws-session-token }}
-          AWS_ACCOUNT_ID: ${{ steps.aws_creds.outputs.aws-account-id }}
-          SHA: ${{ github.sha }}
-          DOCKER_TAG: ${{ inputs.branch_to_deploy }}
-          ENVIRONMENT: ${{ inputs.environment }}
+          aws_region: ${{ env.AWS_REGION }}
+          aws_role: ${{ secrets.NONPRD_DEPLOY_ROLE }}
+          aws_ecr_role: ${{ secrets.RESOURCES_DEPLOY_ROLE }}
+          cluster_name: ${{ env.CLUSTER_NAME_PREFIX }}-cluster
+          ecr_repo: ${{ matrix.ecr }}
+          environment: ${{ matrix.environment }}
+          service_name: ${{ matrix.service_name }}
+          slack_notification_webhook: ${{ secrets.SLACK_APPROVALS_WEBHOOK }}
+          tag_to_deploy: ${{ inputs.tag_to_deploy }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+  # =====================================================
+  # Job: Deploy Production Environments
+  # =====================================================
+  deploy_prd:
+    runs-on: ubuntu-latest
+    if: (github.event_name == 'workflow_dispatch' && (inputs.environment == 'prd' || inputs.environment == 'sandbox'))
+    strategy:
+      matrix:
+        include:
+          - service_name: react-demo-${{ inputs.environment }}-service
+            ecr: venly-react-demo-arm-eu-west-1
+            environment: "${{ inputs.environment }}"
+    steps:
+      - name: ✅ Checkout
+        uses: actions/checkout@v4
         with:
-          host: ${{ secrets.DEMO_ARKETYPE_HOST }}
-          username: ${{ secrets.DEMO_ARKETYPE_USER }}
-          key: ${{ secrets.ACTIONS_PRIVATE_SSH_KEY }}
-          envs: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN
-          script: |
-            #!/bin/bash
-            set -x
-            echo "sha: ${{ env.SHA }}"
-            export AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}
-            export AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
-            export AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}
-            export AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-            # Parameters
-            ENVIRONMENT=${{ inputs.environment }}
-            DOCKER_TAG=${{ inputs.branch_to_deploy }}
+      - name: ℹ️ Deploy info
+        uses: ArkaneNetwork/venly-github-workflows/.github/actions/deploy_info@main
+        with:
+          environment: ${{ matrix.environment }}
+          deployed_tag: ${{ inputs.tag_to_deploy }}
 
-            # Define port based on environment
-            case "$ENVIRONMENT" in
-                staging)
-                    DOCKER_PORT=4000
-                    ;;
-                qa)
-                    DOCKER_PORT=4001
-                    ;;
-                prd)
-                    DOCKER_PORT=4002
-                    ;;
-                *)
-                    echo "Unknown environment: $ENVIRONMENT"
-                    exit 1
-                    ;;
-            esac
-
-            # Docker image URL
-            IMAGE_URL="${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com/venly-arketype-eu-west-1"
-
-            # Create the environment file for systemd
-            ENV_FILE="/etc/default/venly-arketype-${ENVIRONMENT}"
-            {
-                echo "DOCKER_IMAGE_URL=${IMAGE_URL}"
-                echo "DOCKER_TAG=${DOCKER_TAG}"
-                echo "PORT_MAPPING=127.0.0.1:${DOCKER_PORT}:4000"
-            } > $ENV_FILE
-
-            # Docker login
-            aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com
-
-            # Prune Docker system
-            docker system prune -f
-
-            # Pull Docker image
-            docker pull $IMAGE_URL:$DOCKER_TAG
-
-            # Deployment
-            echo "Deploying $DOCKER_TAG"
-            SERVICE_NAME="venly-arketype@${ENVIRONMENT}.service"
-            sudo systemctl stop $SERVICE_NAME
-            sudo systemctl start $SERVICE_NAME
-
-            # Docker logout
-            docker logout ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com
-
-            echo "Deployment to $ENVIRONMENT completed successfully"
+      - name: 🚀 Deploy Application
+        uses: ArkaneNetwork/venly-github-workflows/.github/actions/ecs_deploy@main
+        with:
+          aws_region: ${{ env.AWS_REGION }}
+          aws_role: ${{ secrets.PRD_DEPLOY_ROLE }}
+          aws_ecr_role: ${{ secrets.RESOURCES_DEPLOY_ROLE }}
+          cluster_name: ${{ env.CLUSTER_NAME_PREFIX }}-cluster
+          ecr_repo: ${{ matrix.ecr }}
+          environment: ${{ matrix.environment }}
+          service_name: ${{ matrix.service_name }}
+          slack_notification_webhook: ${{ secrets.SLACK_APPROVALS_WEBHOOK }}
+          tag_to_deploy: ${{ inputs.tag_to_deploy }}
+          token: ${{ secrets.GITHUB_TOKEN }}

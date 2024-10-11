@@ -1,0 +1,567 @@
+name: "Deploy ecs Application"
+description: "Deploy ecs Application"
+inputs:
+  aws_region:
+    default: eu-west-1
+    description: name of the aws region to deploy to
+    required: false
+  aws_role:
+    description: name of the role to use
+    required: true
+  aws_ecr_role:
+    description: name of the role to use
+    required: true
+  cluster_name:
+    description: name of the ecs cluster
+    required: true
+  ecr_repo:
+    description: name of the ecr repository
+    required: true
+  environment:
+    default: qa
+    description: The environment to deploy to
+    required: true
+  service_name:
+    description: Name of the service
+    required: true
+  slack_notification_webhook:
+    description: Slack Webhook secret
+    required: true
+  tag_to_deploy:
+    description: name of the tag you want to deploy
+    required: true
+  token:
+    description: The VENLY_GITHUB_ACTIONS_TOKEN
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: 🔑 ConfigureAwsCredentials
+      uses: aws-actions/configure-aws-credentials@v4
+      id: ecr-credentials
+      with:
+        aws-region: ${{ inputs.aws_region }}
+        role-to-assume: ${{ inputs.aws_ecr_role }}
+        role-session-name: OIDCSession
+        mask-aws-account-id: false
+
+    - name: 🔑 Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+      with:
+        mask-password: "true"
+
+    - name: 🔖 Get Docker Labels For ${{ inputs.ecr_repo }} - ${{ inputs.tag_to_deploy }}
+      continue-on-error: true
+      shell: bash
+      run: |
+        #!/bin/bash
+        set -x
+        export REPOSITORY_NAME=${{ inputs.ecr_repo }}
+        IMAGE_TAG=${{ inputs.tag_to_deploy }}
+        # Remove "Build " or "build " from the IMAGE_TAG if present
+        IMAGE_TAG=${IMAGE_TAG/Build /}
+        IMAGE_TAG=${IMAGE_TAG/build /}
+        export IMAGE_TAG
+
+        LABELS=$(aws ecr batch-get-image --repository-name=$REPOSITORY_NAME --image-id imageTag=$IMAGE_TAG --region=eu-west-1 --output json |
+          jq -r '.images[].imageManifest' |
+          jq '.config.digest' |
+          xargs -I{} aws ecr get-download-url-for-layer --repository-name=$REPOSITORY_NAME --layer-digest={} |
+          jq '.downloadUrl' |
+          xargs curl -s |
+          jq '.config.Labels')
+
+        # Extract each label value and write them to GITHUB_ENV
+        echo "created=$(echo $LABELS | jq -r '.["org.opencontainers.image.created"]')" >> $GITHUB_ENV
+        echo "description=$(echo $LABELS | jq -r '.["org.opencontainers.image.description"]')" >> $GITHUB_ENV
+        echo "licenses=$(echo $LABELS | jq -r '.["org.opencontainers.image.licenses"]')" >> $GITHUB_ENV
+        echo "revision=$(echo $LABELS | jq -r '.["org.opencontainers.image.revision"]')" >> $GITHUB_ENV
+        echo "source=$(echo $LABELS | jq -r '.["org.opencontainers.image.source"]')" >> $GITHUB_ENV
+        echo "title=$(echo $LABELS | jq -r '.["org.opencontainers.image.title"]')" >> $GITHUB_ENV
+        echo "url=$(echo $LABELS | jq -r '.["org.opencontainers.image.url"]')" >> $GITHUB_ENV
+        echo "version=$(echo $LABELS | jq -r '.["org.opencontainers.image.version"]')" >> $GITHUB_ENV
+
+    - name: 🌿 Branch to Deploy
+      shell: bash
+      run: |
+        echo -e "# ====================================================="
+        echo -e "🔧 \e[1;33mFollowing Tag will be deployed: \e[1;34m${{ inputs.tag_to_deploy }} \e[0m🔧"
+        echo -e "# ====================================================="
+
+    - name: 🐳 Add Environment tag to image if it doesn't exists for ${{ github.sha }} 🐳
+      id: cluster-tag
+      continue-on-error: true
+      shell: bash
+      run: |
+        #!/bin/bash
+        set -x
+        repository_name="${{ inputs.ecr_repo }}"
+        image_tag="${{ inputs.tag_to_deploy }}"
+        environment_tag="${{ inputs.environment }}"
+
+        # Get the image manifest for the image with the SHA tag
+        manifest=$(aws ecr batch-get-image --repository-name $repository_name --image-ids imageTag=$image_tag | jq -r '.images[0].imageManifest')
+
+        if [ -z "$manifest" ]; then
+          echo "No image found with tag $image_tag. Exiting."
+          exit 1
+        fi
+
+        # Delete the existing image with the cluster tag if it exists
+        aws ecr batch-delete-image --repository-name $repository_name --image-ids imageTag=$environment_tag || true
+
+        # Create a new image tag for the image
+        new_tag=$environment_tag
+
+        # Put the image manifest to Amazon ECR with the new tag
+        aws ecr put-image --repository-name $repository_name --image-tag $new_tag --image-manifest "$manifest"
+
+    - name: 🔑 ConfigureAwsCredentials
+      uses: aws-actions/configure-aws-credentials@v2
+      id: credentials
+      with:
+        aws-region: ${{ inputs.aws_region }}
+        role-to-assume: ${{ inputs.aws_role }}
+        role-session-name: OIDCSession
+        mask-aws-account-id: false
+
+    - name: 🔍 Check if task definition file exists
+      id: check_task_definition
+      shell: bash
+      run: |
+        #!/bin/bash
+        set -x
+        microservice=${{ inputs.service_name }}
+        if [ -f "task-definition/${{ inputs.environment }}/$microservice.json" ]; then
+          echo "Task definition file found."
+          echo "self_managed_task=true" >> $GITHUB_ENV
+        else
+          echo "Task definition file not found."
+          echo "If this wasn't indended, please make sure your task-definition file lives under task-definition/${{ inputs.environment }}/$microservice.json"
+          echo "self_managed_task=false" >> $GITHUB_ENV
+        fi
+
+    - name: 🔧 Adapt task definition
+      shell: bash
+      run: |
+        #!/bin/bash
+        set -x
+        echo -n "🔧 Adapting Task Definition File"
+        microservice=${{ inputs.service_name }}
+
+        if [[ "${{ env.self_managed_task }}" == "true" ]]; then
+          echo "Adapting task definition..."
+          echo $(cat task-definition/${{ inputs.environment }}/$microservice.json | jq 'del(
+            .taskDefinitionArn,
+            .requiresAttributes,
+            .compatibilities,
+            .revision,
+            .status,
+            .registeredAt,
+            .registeredBy
+          )') > task-definition-${{ inputs.service_name }}-${{ inputs.environment }}.json
+          task=$(<task-definition-${{ inputs.service_name }}-${{ inputs.environment }}.json)
+          echo $task > ${{ inputs.service_name }}-${{ inputs.environment }}.json
+        else
+          echo "Downloading task definition..."
+          # Fetch the task definition ARN from the ECS service
+          task_definition_arn=$(aws ecs describe-services --cluster ${{ inputs.cluster_name }} --services ${{ inputs.service_name }} --query 'services[0].taskDefinition' --output text)
+          # Describe the task definition using the ARN
+          TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition $task_definition_arn)
+          # Generate the AWS CLI input format
+          echo "$TASK_DEFINITION" | jq '.taskDefinition' > ${{ inputs.service_name }}-${{ inputs.environment }}.json
+          if [[ $? -ne 0 ]]; then
+            echo "Task definition does not exist"
+            exit 1
+          fi
+          echo $(cat ${{ inputs.service_name }}-${{ inputs.environment }}.json | jq 'del(
+            .taskDefinitionArn,
+            .requiresAttributes,
+            .compatibilities,
+            .revision,
+            .status,
+            .registeredAt,
+            .registeredBy
+          )') > task-definition-${{ inputs.service_name }}-${{ inputs.environment }}.json
+          task=$(<task-definition-${{ inputs.service_name }}-${{ inputs.environment }}.json)
+          echo $task > ${{ inputs.service_name }}-${{ inputs.environment }}.json
+          echo "THIS IS THE TASK DEFINITION AFTER ADAPTING TASK DEFINITION"
+          cat ${{ inputs.service_name }}-${{ inputs.environment }}.json
+          fi
+
+    - name: 🛠 Extract the container name
+      shell: bash
+      run: |
+        #!/bin/bash
+        set -x
+
+        # Get the task definition JSON file.
+        task_definition_file="${{ inputs.service_name }}-${{ inputs.environment }}.json"
+        cat $task_definition_file
+
+        # Check if the containerDefinitions array is empty.
+        if [ -z "$(jq -r '.containerDefinitions' $task_definition_file)" ]; then
+          echo "No container definitions found."
+        else
+          # Get the container names not named datadog-agent or log_router.
+          container_names=$(jq -r '.containerDefinitions[] | select(.name != "datadog-agent" and .name != "log_router") | .name' $task_definition_file)
+          echo $container_names
+          # If no container names are found, use the empty string.
+          if [ -z "$container_names" ]; then
+            container_names=""
+          fi
+
+          # Print the container names.
+          echo container_name=$container_names >> $GITHUB_ENV
+        fi
+
+    - name: 📋 Get service Name from cluster and APM name
+      shell: bash
+      run: |
+        # Fetch the ECS service ARN and name
+        ARN=$(aws ecs list-services --cluster ${{ inputs.cluster_name }} --region eu-west-1 | jq -r ".serviceArns[]" | grep -i ${{ inputs.service_name }})
+        SERVICE_NAME=$(echo "$ARN" | cut -d '/' -f 3)
+        echo "ecs_service_name=$SERVICE_NAME" >> $GITHUB_ENV
+        echo "ecs_service_arn=$ARN" >> $GITHUB_ENV
+
+        # Fetch the DD_SERVICE tag to derive the APM name
+        TAG_KEY="DD_SERVICE"
+        CLUSTER_NAME=${{ inputs.cluster_name }}
+
+        # Get the tags for the ECS service
+        SERVICE_TAGS=$(aws ecs list-tags-for-resource --resource-arn $ARN)
+
+        # Extract the DD_SERVICE tag value
+        DD_SERVICE=$(echo "$SERVICE_TAGS" | jq -r --arg TAG_KEY "$TAG_KEY" '.tags[]? | select(.key == $TAG_KEY) | .value // empty')
+
+        # Check if DD_SERVICE tag is found
+        if [ -z "$DD_SERVICE" ]; then
+          echo "DD_SERVICE tag not found."
+          echo "No APM Mapping Can be enabled."
+        else
+          # Set the APM name from the DD_SERVICE tag
+          echo "apm_name=$DD_SERVICE" >> $GITHUB_ENV
+          echo "The APM name (from DD_SERVICE tag) is $DD_SERVICE"
+        fi
+
+    - name: 🐳 Add opencontainer labels to all containers
+      id: labels
+      shell: bash
+      run: |
+        #!/bin/bash
+        set -x
+
+        echo -n "🐳 Adding Opencontainer labels"
+        # Labels
+        revision_label="org.opencontainers.image.revision"
+        source_label="org.opencontainers.image.source"
+        version_label="org.opencontainers.image.version"
+        dd_version_label="com.datadoghq.tags.version"
+        dd_env_label="com.datadoghq.tags.env"
+        dd_service_label="com.datadoghq.tags.service"
+        created_label="org.opencontainers.image.created"
+        url_label="org.opencontainers.image.url"
+        revision_value="${{ env.revision }}"
+        source_value="${{ env.source }}"
+        version_value="${{ env.version }}"
+        created_value="${{ env.created }}"
+        url_value="${{ env.url }}"
+        dd_version_value="${{ env.version }}"
+        dd_env_value="${{ inputs.environment }}"
+        dd_service_value="${{ env.apm_name }}"
+
+        # Environment variables
+        dd_version_env="DD_VERSION"
+        dd_version_value="${{ env.version }}"
+
+        # Read the task definition file.
+        task_definition_file="${{ inputs.service_name }}-${{ inputs.environment }}.json"
+        task_definition=$(cat "$task_definition_file")
+
+        # Add the labels and environment variables to each container definition in the task definition
+        updated_task_definition=$(echo "$task_definition" | jq \
+            --arg revision_label "$revision_label" \
+            --arg revision_value "$revision_value" \
+            --arg dd_version_label "$dd_version_label" \
+            --arg dd_version_value "$dd_version_value" \
+            --arg dd_env_label "$dd_env_label" \
+            --arg dd_env_value "$dd_env_value" \
+            --arg dd_service_label "$dd_service_label" \
+            --arg dd_service_value "$dd_service_value" \
+            --arg revision_value "$revision_value" \
+            --arg source_label "$source_label" \
+            --arg source_value "$source_value" \
+            --arg version_label "$version_label" \
+            --arg version_value "$version_value" \
+            --arg created_label "$created_label" \
+            --arg created_value "$created_value" \
+            --arg url_label "$url_label" \
+            --arg url_value "$url_value" \
+            --arg dd_version_env "$dd_version_env" \
+            --arg dd_version_value "$dd_version_value" \
+            '.containerDefinitions[] |= (
+                .dockerLabels += {
+                    ($revision_label): $revision_value,
+                    ($source_label): $source_value,
+                    ($version_label): $version_value,
+                    ($created_label): $created_value,
+                    ($url_label): $url_value,
+                    ($dd_version_label): $dd_version_value,
+                    ($dd_env_label): $dd_env_value,
+                    ($dd_service_label): $dd_service_value
+                } |
+                .environment += [
+                    {"name": $dd_version_env, "value": $dd_version_value}
+                ]
+            )')
+
+        # Save the updated task definition
+        echo "$updated_task_definition" > task-definition-${{ inputs.service_name }}-${{ inputs.environment }}.json
+
+    - name: 🎨 Render task definition file
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: task-definition-${{ inputs.service_name }}-${{ inputs.environment }}.json
+        container-name: ${{ env.container_name }}
+        image: 289334807197.dkr.ecr.eu-west-1.amazonaws.com/${{ inputs.ecr_repo }}:${{ inputs.tag_to_deploy }}
+
+    - name: 💾 Save rendered task definition
+      id: save-task-def
+      shell: bash
+      run: |
+        cat "${{ steps.task-def.outputs.task-definition }}" > ${{ inputs.service_name }}-${{ inputs.environment }}.json
+        cat ${{ inputs.service_name }}-${{ inputs.environment }}.json
+
+    - name: 🚀 Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      id: ecs_deployment
+      with:
+        task-definition: ${{ inputs.service_name }}-${{ inputs.environment }}.json
+        service: ${{ env.ecs_service_name }}
+        cluster: ${{ inputs.cluster_name }}
+        wait-for-service-stability: true
+        force-new-deployment: true
+
+    - name: ❌ Deployment Failure
+      shell: bash
+      if: steps.ecs_deployment.outcome == 'failure'
+      run: |
+        echo "🚨 Deployment failed! Please check Datadog logs for the application."
+
+    - name: 🏁 Deploy Finished
+      id: finished
+      shell: bash
+      run: |
+        echo -e "\033[1;32m🏁Deployment Completed Successfully!🏁\033[0m"
+        echo -e "\033[1;34mStarting Uptime Check...\033[0m"
+
+    - name: 🕒 Wait for services to be stable
+      continue-on-error: true
+      shell: bash
+      run: |
+        #!/bin/bash
+        # ===========================================================
+        # Set Variables
+        # ===========================================================
+        CLUSTER_NAME="${{ inputs.cluster_name }}"
+        REGION="eu-west-1"
+
+        # ===========================================================
+        # Enable logging
+        # ===========================================================
+        log() {
+            echo "$(date '+%Y-%m-%d %H:%M:%S') - $1"
+        }
+
+        log "Starting uptime check process for cluster: $CLUSTER_NAME in region: $REGION"
+
+        # ===========================================================
+        # Fetch Services
+        # ===========================================================
+        sleep 10
+        services=$(aws ecs list-services --cluster "$CLUSTER_NAME" --region "$REGION" --output json | jq -r '.serviceArns[]')
+
+        if [ -z "$services" ]; then
+            log "No services found in the cluster: $CLUSTER_NAME"
+            exit 1
+        fi
+
+        # ===========================================================
+        # Initialize Output Array
+        # ===========================================================
+        output=()
+
+        # ===========================================================
+        # Fetch Tasks and Calculate Uptime
+        # ===========================================================
+        for service_arn in $services; do
+            service_name=$(echo "$service_arn" | awk -F/ '{print $NF}')
+            tasks=$(aws ecs list-tasks --cluster "$CLUSTER_NAME" --service-name "$service_name" --region "$REGION" --output json | jq -r '.taskArns[]')
+
+            if [ -z "$tasks" ]; then
+                continue
+            fi
+
+            for task_arn in $tasks; do
+                task_info=$(aws ecs describe-tasks --cluster "$CLUSTER_NAME" --tasks "$task_arn" --region "$REGION" --output json | jq -r '.tasks[0]')
+                started_at=$(echo "$task_info" | jq -r '.startedAt')
+
+                if [ "$started_at" != "null" ] && [ -n "$started_at" ]; then
+                    start_time=$(date -d "$started_at" +%s)
+                    current_time=$(date +%s)
+                    uptime_seconds=$((current_time - start_time))
+                    uptime=$(date -u -d @$uptime_seconds +'%H:%M:%S')
+                    output+=("$service_name\t$uptime")
+                else
+                    output+=("$service_name\tNo start time")
+                fi
+            done
+        done
+
+        # ===========================================================
+        # Print the Table
+        # ===========================================================
+        echo -e "# ====================================================="
+        echo -e "⏳ \e[1;33mUptime Check \e[0m⏳"
+        echo -e "# ====================================================="
+        (
+          echo -e "Service \tUptime"
+          for line in "${output[@]}"; do
+            echo -e "$line"
+          done
+        ) | column -t
+
+        log "Uptime check process completed."
+
+    - name: 🔖 Update Tags for Service
+      continue-on-error: true
+      shell: bash
+      run: |
+        #!/bin/bash
+        set -x
+        echo -n "🔖 Updating Tags for Service"
+        ACCOUNTID=$(aws sts get-caller-identity --query "Account" --output text)
+        project_name=$(echo "${{ github.repository }}" | cut -d'/' -f2)
+
+        declare -A unique_tags
+
+        function add_tag {
+            local key=$1
+            local value=$2
+            unique_tags[$key]=$value
+        }
+
+        add_tag "opencontainers_revision" "${{ env.org_opencontainers_image_revision }}"
+        add_tag "DD_VERSION" "${{ env.version }}"
+        add_tag "opencontainers_version" "${{ env.version }}"
+        add_tag "opencontainers_created" "${{ env.created }}"
+        add_tag "opencontainers_source" "${{ env.source }}"
+        add_tag "opencontainers_image_url" "${{ env.url }}"
+        add_tag "opencontainers_revision" "${{ env.revision }}"
+        add_tag "git.commit.sha" "${{ env.revision }}"
+        add_tag "git.repository_url" "${{ env.source }}"
+        add_tag "GITHUB_REPO" "${{ github.repository }}"
+        add_tag "DEPLOY_EVENT" "${{ github.event }}"
+        add_tag "DEPLOYED_TAG" "${{ inputs.tag_to_deploy }}"
+        add_tag "DEPLOY_USER" "${{ github.triggering_actor }}"
+        add_tag "ApplicationName" "${{ env.apm_name }}"
+        add_tag "ProjectName" "$project_name"
+
+        tags_param=""
+        for key in "${!unique_tags[@]}"; do
+            tags_param+="key=$key,value=${unique_tags[$key]} "
+        done
+
+        aws ecs tag-resource --resource-arn ${{ env.ecs_service_arn }} \
+          --tags $tags_param \
+          --region ${{ inputs.aws_region }}
+
+    - name: 🔖 Update Tags for Tasks
+      continue-on-error: true
+      shell: bash
+      run: |
+        #!/bin/bash
+        set -x
+        echo -n "🔖 Updating Tags for the Task"
+        ACCOUNTID=$(aws sts get-caller-identity --query "Account" --output text)
+        project_name=$(echo "${{ github.repository }}" | cut -d'/' -f2)
+
+        declare -A unique_tags
+
+        function add_tag {
+            local key=$1
+            local value=$2
+            unique_tags[$key]=$value
+        }
+
+        add_tag "opencontainers_revision" "${{ env.org_opencontainers_image_revision }}"
+        add_tag "DD_VERSION" "${{ env.version }}"
+        add_tag "opencontainers_version" "${{ env.version }}"
+        add_tag "opencontainers_created" "${{ env.created }}"
+        add_tag "opencontainers_source" "${{ env.source }}"
+        add_tag "opencontainers_image_url" "${{ env.url }}"
+        add_tag "opencontainers_revision" "${{ env.revision }}"
+        add_tag "git.commit.sha" "${{ env.revision }}"
+        add_tag "git.repository_url" "${{ env.source }}"
+        add_tag "GITHUB_REPO" "${{ github.repository }}"
+        add_tag "DEPLOY_EVENT" "${{ github.event }}"
+        add_tag "DEPLOYED_TAG" "${{ inputs.tag_to_deploy }}"
+        add_tag "DEPLOY_USER" "${{ github.triggering_actor }}"
+        add_tag "ApplicationName" "${{ env.apm_name }}"
+        add_tag "ProjectName" "$project_name"
+
+        tags_param=""
+        for key in "${!unique_tags[@]}"; do
+            tags_param+="key=$key,value=${unique_tags[$key]} "
+        done
+
+        for i in $(aws ecs list-tasks --cluster ${{ inputs.cluster_name }} --service-name ${{ env.ecs_service_name }} --query 'taskArns' --output json --region ${{ inputs.aws_region }} | jq -r .[]); do 
+          aws ecs tag-resource --resource-arn $i \
+            --tags $tags_param \
+            --region ${{ inputs.aws_region }}
+        done
+
+    - name: 🔖 Update Tags for Cluster
+      continue-on-error: true
+      shell: bash
+      run: |
+        #!/bin/bash
+        set -x
+        project_name=$(echo "${{ github.repository }}" | cut -d'/' -f2)
+        echo -n "👷 Updating Tags for the Cluster 👷"
+        ACCOUNTID=$(aws sts get-caller-identity --query "Account" --output text)
+
+        declare -A unique_tags
+
+        function add_tag {
+            local key=$1
+            local value=$2
+            unique_tags[$key]=$value
+        }
+
+        add_tag "opencontainers_revision" "${{ env.org_opencontainers_image_revision }}"
+        add_tag "DD_VERSION" "${{ env.version }}"
+        add_tag "opencontainers_version" "${{ env.version }}"
+        add_tag "opencontainers_created" "${{ env.created }}"
+        add_tag "opencontainers_source" "${{ env.source }}"
+        add_tag "opencontainers_image_url" "${{ env.url }}"
+        add_tag "opencontainers_revision" "${{ env.revision }}"
+        add_tag "git.commit.sha" "${{ env.revision }}"
+        add_tag "git.repository_url" "${{ env.source }}"
+        add_tag "GITHUB_REPO" "${{ github.repository }}"
+        add_tag "DEPLOY_EVENT" "${{ github.event }}"
+        add_tag "DEPLOYED_TAG" "${{ inputs.tag_to_deploy }}"
+        add_tag "DEPLOY_USER" "${{ github.triggering_actor }}"
+        add_tag "ApplicationName" "${{ env.apm_name }}"
+        add_tag "ProjectName" "$project_name"
+
+        tags_param=""
+        for key in "${!unique_tags[@]}"; do
+            tags_param+="key=$key,value=${unique_tags[$key]} "
+        done
+
+        aws ecs tag-resource --resource-arn arn:aws:ecs:${{ inputs.aws_region }}:$ACCOUNTID:cluster/${{ inputs.cluster_name }} \
+          --tags $tags_param \
+          --region ${{ inputs.aws_region }}
