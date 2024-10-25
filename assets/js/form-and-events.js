@@ -30,6 +30,7 @@
         app.page.initXPLA();
         app.page.initBase();
         app.page.initOptimism();
+        app.page.initSolana();
         app.page.initialised = true;
     };
 
@@ -729,6 +730,85 @@
             walletId: fields.walletId,
             to: fields.to,
             value: {type: 'input', label: 'Amount (in ETH)', defaultValue: '0.0314'},
+            tokenAddress: {
+                type: 'input',
+                label: 'Token address',
+                placeholder: 'e.g. 0x6ff6c0ff1d68b964901f986d4c9fa3ac68346570'
+            },
+            data: fields.data,
+            name: fields.name,
+            nodeUrl: fields.nodeUrl,
+        });
+
+        createImportWalletForm(secretType, {
+            walletId: fields.walletId,
+            to: {type: 'select', label: 'To chain', defaultValue: 'ETHEREUM', values: ['ETHEREUM']},
+        })
+    };
+
+    app.page.initSolana = function() {
+        var secretType = 'SOLANA';
+        var fields = {
+            walletId: {type: 'wallet-select', label: 'From'},
+            to: {type: 'input', label: 'To', defaultValue: '0x680800Dd4913021821A9C08D569eF4338dB8E9f6'},
+            value: {type: 'input', label: 'Amount (in SOL)', defaultValue: '31400000000000000'},
+            data: {type: 'textarea', label: 'Data (optional)', placeholder: 'Some test data'},
+            name: {type: 'input', label: 'Network name', placeholder: 'e.g. TestNet', network: true},
+            nodeUrl: {type: 'input', label: 'Network node URL', placeholder: '', network: true},
+        };
+        createSignForm(secretType, 'SOLANA_TRANSACTION', fields);
+
+        createSignRawForm(secretType, 'SOLANA_RAW', {
+            walletId: fields.walletId,
+            data: Object.assign({}, fields.data, {defaultValue: 'Some test data'}),
+            prefix: {type: 'checkbox', checked: true, label: 'Prefix'},
+            hash: {type: 'checkbox', checked: true, label: 'Hash', info: 'When prefix is checked, hash will always be set to \'true\''}
+        });
+
+        createSignMessage(secretType, {
+            walletId: fields.walletId,
+            data: Object.assign({}, fields.data, {defaultValue: 'Some message', label: 'Message'}),
+        });
+
+        createExecuteContractForm(secretType, {
+            walletId: {type: 'wallet-select', label: 'From'},
+            to: {type: 'input', label: 'Contract Address', defaultValue: '0xc4375b7de8af5a38a93548eb8453a498222c4ff2'},
+            value: {type: 'input', label: 'Amount (in SOL)', defaultValue: '0'},
+            functionName: {type: 'input', label: 'Function Name', defaultValue: 'approve'},
+            inputs: {
+                type: 'textarea',
+                label: 'Inputs',
+                defaultValue: '[{"type": "address", "value": "0xd82049204D8514c637f150C7231BFefC5C4937Ec"},{"type": "uint256", "value": "0"}]'
+            },
+            chainSpecificFields: {type: 'textarea', label: 'Chain specific fields', defaultValue: '{"gasLimit": 200000, "gasPrice": 0}', dataName: 'chainSpecific'},
+            name: {type: 'input', label: 'Network name', placeholder: 'e.g. TestNet', network: true},
+            nodeUrl: {type: 'input', label: 'Network node URL', placeholder: '', network: true}
+        });
+
+        createReadContractForm(secretType, {
+            walletId: {type: 'wallet-select', label: 'From'},
+            contractAddress: {type: 'input', label: 'Contract Address', defaultValue: '0x78cB9c3977382d699EF458C071A3353A4553EF49'},
+            functionName: {type: 'input', label: 'Function Name', defaultValue: 'isApprovedForAll'},
+            inputs: {
+                type: 'textarea',
+                label: 'Inputs',
+                defaultValue: '[{"type": "address", "value": "0xA00Fe54522ab6100cdE81635A1DB78d7067D75FA"},{"type": "address", "value": "0x1ac1ca3665b5cd5fdd8bc76f924b76c2a2889d39"}]'
+            },
+            outputs: {
+                type: 'textarea',
+                label: 'Outputs',
+                defaultValue: '[{"type": "bool"}]'
+            }
+        });
+
+        fields.tokenAddress = {
+            type: "input",
+            label: "Token Address (optional)",
+        };
+        createExecuteForm(secretType, {
+            walletId: fields.walletId,
+            to: fields.to,
+            value: {type: 'input', label: 'Amount (in SOL)', defaultValue: '0.0314'},
             tokenAddress: {
                 type: 'input',
                 label: 'Token address',
