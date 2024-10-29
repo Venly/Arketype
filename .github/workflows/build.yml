@@ -56,6 +56,13 @@ jobs:
           branch_tag: ${{ github.ref_name }}
           push_image: true
 
+      - name: 📝 Report Build Status to Jira
+        uses: Venly/venly-github-workflows/.github/actions/jira-build-status@v1
+        with:
+          jira_token: ${{ secrets.JIRA_TOKEN }}
+          build_state: ${{ job.status }} # Use "success", "failure", or "in_progress" as needed
+          token: ${{ secrets.VENLY_GITHUB_ACTIONS_TOKEN }}
+
   # =====================================================
   # Job: Deploy QA
   # =====================================================
