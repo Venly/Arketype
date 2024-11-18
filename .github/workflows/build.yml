@@ -113,14 +113,8 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: ℹ️ Deploy info
-        uses: ArkaneNetwork/venly-github-workflows/.github/actions/deploy_info@main
-        with:
-          environment: ${{ matrix.environment }}
-          deployed_tag: ${{ github.sha }}
-
       - name: 🚀 Deploy Application
-        uses: ArkaneNetwork/venly-github-workflows/.github/actions/ecs_deploy@main
+        uses: ./.github/actions/ecs_deploy
         with:
           aws_region: ${{ env.AWS_REGION }}
           aws_role: ${{ secrets.NONPRD_DEPLOY_ROLE }}
@@ -153,14 +147,8 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: ℹ️ Deploy info
-        uses: ArkaneNetwork/venly-github-workflows/.github/actions/deploy_info@main
-        with:
-          environment: ${{ matrix.environment }}
-          deployed_tag: ${{ github.ref_name }}
-
       - name: 🚀 Deploy Application
-        uses: ArkaneNetwork/venly-github-workflows/.github/actions/ecs_deploy@main
+        uses: ./.github/actions/ecs_deploy
         with:
           aws_region: ${{ env.AWS_REGION }}
           aws_role: ${{ secrets.NONPRD_DEPLOY_ROLE }}
@@ -181,8 +169,6 @@ jobs:
       - build
       - docker
     runs-on: ubuntu-latest
-    outputs:
-      runner_name: ${{ runner.name }}
     steps:
       - name: ✅ Checkout
         uses: actions/checkout@v4
@@ -191,7 +177,7 @@ jobs:
 
       - name: 🔄 Merge Back To Develop
         id: merge_back
-        uses: ArkaneNetwork/venly-github-workflows/.github/actions/merge_back@main
+        uses: ./.github/actions/merge_back
         with:
           branch: ${{ github.ref }}
           token: ${{ secrets.VENLY_GITHUB_ACTIONS_TOKEN }}
