@@ -86,7 +86,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: ℹ️ Deploy info
-        uses: ArkaneNetwork/venly-github-workflows/.github/actions/deploy_info@main
+        uses: ./.github/actions/ecs_deploy
         with:
           environment: ${{ matrix.environment }}
           deployed_tag: ${{ inputs.tag_to_deploy }}
