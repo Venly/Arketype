@@ -99,8 +99,7 @@ jobs:
     needs:
       - build
       - docker
-    runs-on:
-      group: Deploy
+    runs-on: ubuntu-latest
     if: github.ref_name == 'develop'
     strategy:
       matrix:
@@ -140,8 +139,7 @@ jobs:
     needs:
       - build
       - docker
-    runs-on:
-      group: Deploy
+    runs-on: ubuntu-latest
     if: github.event_name != 'workflow_dispatch' && startsWith(github.ref, 'refs/heads/release-')
     strategy:
       matrix:
@@ -182,8 +180,7 @@ jobs:
     needs:
       - build
       - docker
-    runs-on:
-      group: Deploy
+    runs-on: ubuntu-latest
     outputs:
       runner_name: ${{ runner.name }}
     steps:
