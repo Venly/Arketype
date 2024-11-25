@@ -29,6 +29,10 @@ inputs:
   ecr_repo:
     description: name of the ecr repository
     required: true
+  platform:
+    description: platform to build for ()
+    required: false
+    default: linux/amd64
   push_image:
     default: "true"
     description: push the image to ecr
@@ -145,7 +149,7 @@ runs:
         VERSION_SHA_TAG: "${{ env.org_opencontainers_image_version }}-${{ inputs.sha_tag }}"
         VERSION_TAG: ${{ env.org_opencontainers_image_version }}
       with:
-        platforms: linux/amd64
+        platforms: ${{ inputs.platform }}
         context: "${{ inputs.docker_context }}"
         file: "${{ inputs.docker_file }}"
         push: ${{ inputs.push_image }}
