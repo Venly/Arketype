@@ -5,7 +5,7 @@ FROM --platform=linux/arm64 node:lts-bullseye-slim AS build
 WORKDIR /usr/src/app
 
 # Install build dependencies, update system packages, and install Python for node-gyp
-RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     python3 \
     g++ \
