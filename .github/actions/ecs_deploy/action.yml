@@ -24,8 +24,8 @@ inputs:
   service_name:
     description: Name of the service
     required: true
-  slack_notification_webhook:
-    description: Slack Webhook secret
+  slack_webhook:
+    description: Set Slack webhook for notifications
     required: true
   tag_to_deploy:
     description: name of the tag you want to deploy
@@ -344,96 +344,228 @@ runs:
         wait-for-service-stability: true
         force-new-deployment: true
 
-    - name: ❌ Deployment Failure
+    - name: 🔍 Verify Deployment Status
+      id: verify_deployment
       shell: bash
-      if: steps.ecs_deployment.outcome == 'failure'
       run: |
-        echo "🚨 Deployment failed! Please check Datadog logs for the application."
+        # Set variables
+        CLUSTER_NAME="${{ inputs.cluster_name }}"
+        SERVICE_NAME="${{ env.ecs_service_name }}"
+        REGION="eu-west-1"
+        MAX_ATTEMPTS=30
+        SLEEP_TIME=20
+
+        echo "Starting deployment verification..."
+
+        # Function to check for deployment errors
+        check_deployment_errors() {
+          local DEPLOYMENT_ID="$1"
+          echo "Checking errors for deployment: $DEPLOYMENT_ID"
+          
+          # Get all tasks for the service
+          TASKS=$(aws ecs list-tasks \
+            --cluster "$CLUSTER_NAME" \
+            --service-name "$SERVICE_NAME" \
+            --desired-status STOPPED \
+            --region "$REGION" \
+            --output json)
+          
+          if [ -n "$TASKS" ]; then
+            TASK_ARNS=$(echo "$TASKS" | jq -r '.taskArns[]')
+            if [ -n "$TASK_ARNS" ]; then
+              # Describe all tasks at once
+              TASKS_INFO=$(aws ecs describe-tasks \
+                --cluster "$CLUSTER_NAME" \
+                --tasks $TASK_ARNS \
+                --region "$REGION" \
+                --output json)
+              
+              # Check each task for errors, but only for the current deployment
+              echo "$TASKS_INFO" | jq -c '.tasks[]' | while read -r task; do
+                TASK_DEPLOYMENT_ID=$(echo "$task" | jq -r '.startedBy')
+                
+                # Only check tasks from the current deployment
+                if [[ "$TASK_DEPLOYMENT_ID" == *"$DEPLOYMENT_ID"* ]]; then
+                  STOPPED_REASON=$(echo "$task" | jq -r '.stoppedReason')
+                  LAST_STATUS=$(echo "$task" | jq -r '.lastStatus')
+                  TASK_ARN=$(echo "$task" | jq -r '.taskArn')
+                  
+                  echo "Checking task $TASK_ARN from current deployment"
+                  
+                  if [ -n "$STOPPED_REASON" ] && [ "$STOPPED_REASON" != "null" ]; then
+                    echo "Found stopped task from current deployment with reason: $STOPPED_REASON"
+                    
+                    # Check container status for detailed errors
+                    echo "$task" | jq -c '.containers[]' | while read -r container; do
+                      CONTAINER_STATUS=$(echo "$container" | jq -r '.lastStatus')
+                      if [ "$CONTAINER_STATUS" = "STOPPED" ]; then
+                        EXIT_CODE=$(echo "$container" | jq -r '.exitCode')
+                        ERROR_MSG=$(echo "$container" | jq -r '.reason')
+                        if [ "$EXIT_CODE" != "0" ] && [ -n "$ERROR_MSG" ] && [ "$ERROR_MSG" != "null" ]; then
+                          echo "Container error in current deployment: $ERROR_MSG (Exit code: $EXIT_CODE)"
+                          return 1
+                        fi
+                      fi
+                    done
+                  fi
+                else
+                  echo "Skipping task from different deployment: $TASK_DEPLOYMENT_ID"
+                fi
+              done
+            fi
+          fi
+          return 0
+        }
+
+        # Wait and verify deployment
+        ATTEMPT=1
+        while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+          echo "Verification attempt $ATTEMPT of $MAX_ATTEMPTS..."
+          
+          # Get service status
+          SERVICE_STATUS=$(aws ecs describe-services \
+            --cluster "$CLUSTER_NAME" \
+            --services "$SERVICE_NAME" \
+            --region "$REGION" \
+            --output json)
+          
+          # Get the current deployment ID
+          CURRENT_DEPLOYMENT_ID=$(echo "$SERVICE_STATUS" | jq -r '.services[0].deployments[] | select(.status=="PRIMARY") | .id')
+          echo "Current deployment ID: $CURRENT_DEPLOYMENT_ID"
+          
+          # Check deployment status
+          DEPLOYMENT_STATUS=$(echo "$SERVICE_STATUS" | jq -r '.services[0].deployments[] | select(.status=="PRIMARY") | .status')
+          RUNNING_COUNT=$(echo "$SERVICE_STATUS" | jq -r '.services[0].deployments[] | select(.status=="PRIMARY") | .runningCount')
+          DESIRED_COUNT=$(echo "$SERVICE_STATUS" | jq -r '.services[0].deployments[] | select(.status=="PRIMARY") | .desiredCount')
+          PENDING_COUNT=$(echo "$SERVICE_STATUS" | jq -r '.services[0].deployments[] | select(.status=="PRIMARY") | .pendingCount')
+          FAILED_TASKS=$(echo "$SERVICE_STATUS" | jq -r '.services[0].deployments[] | select(.status=="PRIMARY") | .failedTasks')
+          
+          echo -e "\n📊 \033[1;36mDeployment Metrics:\033[0m"
+          echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo -e "🔄 \033[1;33mDeployment Status:\033[0m $DEPLOYMENT_STATUS"
+          echo -e "👥 \033[1;32mRunning Count:\033[0m   $RUNNING_COUNT / $DESIRED_COUNT"
+          echo -e "⏳ \033[1;34mPending Count:\033[0m   $PENDING_COUNT"
+          echo -e "❌ \033[1;31mFailed Tasks:\033[0m    $FAILED_TASKS"
+          echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+          
+          if [ "$DEPLOYMENT_STATUS" = "PRIMARY" ] && [ "$RUNNING_COUNT" -eq "$DESIRED_COUNT" ] && [ "$PENDING_COUNT" -eq "0" ]; then
+            # Check for any deployment errors
+            if check_deployment_errors "$CURRENT_DEPLOYMENT_ID"; then
+              echo "✅ Deployment verified successfully!"
+              echo "deployment_success=true" >> $GITHUB_OUTPUT
+              echo "deployment_status=SUCCESS" >> $GITHUB_OUTPUT
+              exit 0
+            else
+              echo "❌ Deployment failed due to container errors"
+              echo "deployment_success=false" >> $GITHUB_OUTPUT
+              echo "deployment_status=FAILED" >> $GITHUB_OUTPUT
+              echo "error_message=Container failed to start. Check logs for details." >> $GITHUB_OUTPUT
+              exit 1
+            fi
+          fi
+          
+          ATTEMPT=$((ATTEMPT + 1))
+          sleep $SLEEP_TIME
+        done
+
+        echo "❌ Deployment verification timed out"
+        echo "deployment_success=false" >> $GITHUB_OUTPUT
+        echo "deployment_status=TIMEOUT" >> $GITHUB_OUTPUT
+        echo "error_message=Deployment verification timed out after $MAX_ATTEMPTS attempts" >> $GITHUB_OUTPUT
+        exit 1
+
+    - name: ❌ Deployment Failure
+      if: steps.verify_deployment.outputs.deployment_success != 'true'
+      shell: bash
+      run: |
+        echo "🚨 Deployment failed! Please check the logs above for detailed error information."
+        exit 1
 
     - name: 🏁 Deploy Finished
+      if: steps.verify_deployment.outputs.deployment_success == 'true'
       id: finished
       shell: bash
       run: |
-        echo -e "\033[1;32m🏁Deployment Completed Successfully!🏁\033[0m"
-        echo -e "\033[1;34mStarting Uptime Check...\033[0m"
+        echo -e "\033[1;32m🏁 Deployment Completed Successfully!🏁\033[0m"
+        echo -e "\033[1;34m Starting Uptime Check...\033[0m"
 
-    - name: 🕒 Wait for services to be stable
-      continue-on-error: true
+    - name: Set Slack Color and Status Based on Job Status
+      if: always()
       shell: bash
+      id: set_job_status
       run: |
-        #!/bin/bash
-        # ===========================================================
-        # Set Variables
-        # ===========================================================
-        CLUSTER_NAME="${{ inputs.cluster_name }}"
-        REGION="eu-west-1"
-
-        # ===========================================================
-        # Enable logging
-        # ===========================================================
-        log() {
-            echo "$(date '+%Y-%m-%d %H:%M:%S') - $1"
-        }
-
-        log "Starting uptime check process for cluster: $CLUSTER_NAME in region: $REGION"
-
-        # ===========================================================
-        # Fetch Services
-        # ===========================================================
-        sleep 10
-        services=$(aws ecs list-services --cluster "$CLUSTER_NAME" --region "$REGION" --output json | jq -r '.serviceArns[]')
-
-        if [ -z "$services" ]; then
-            log "No services found in the cluster: $CLUSTER_NAME"
-            exit 1
+        echo "JOB_STATUS=unknown" >> $GITHUB_ENV  # Default to unknown status
+        if [ "${{ steps.verify_deployment.outputs.deployment_success }}" == "true" ]; then
+          echo "SLACK_COLOR=#36a64f" >> $GITHUB_ENV  # Green for success
+          echo 'JOB_STATUS=🟢 Success' >> $GITHUB_ENV
+        elif [ "${{ steps.verify_deployment.outputs.deployment_success }}" == "false" ]; then
+          echo "SLACK_COLOR=#ff0000" >> $GITHUB_ENV  # Red for failure
+          echo 'JOB_STATUS=🔴 Failure' >> $GITHUB_ENV
+        else
+          echo "SLACK_COLOR=#ffc107" >> $GITHUB_ENV  # Yellow for other statuses
+          echo 'JOB_STATUS=⏸️ Aborted' >> $GITHUB_ENV
         fi
 
-        # ===========================================================
-        # Initialize Output Array
-        # ===========================================================
-        output=()
+    - name: Notify Slack
+      if: always()
+      continue-on-error: true
+      shell: bash
+      env:
+        SLACK_WEBHOOK_URL: ${{ inputs.slack_webhook }}
+      run: |
+        # Set status details in environment
+        if [ "${{ steps.verify_deployment.outputs.deployment_success }}" == "false" ]; then
+          echo "STATUS_DETAILS=❌ Failed: ${{ steps.verify_deployment.outputs.error_message || 'Unknown error' }}" >> $GITHUB_ENV
+        else
+          echo "STATUS_DETAILS=${{ env.JOB_STATUS }}" >> $GITHUB_ENV
+        fi
 
-        # ===========================================================
-        # Fetch Tasks and Calculate Uptime
-        # ===========================================================
-        for service_arn in $services; do
-            service_name=$(echo "$service_arn" | awk -F/ '{print $NF}')
-            tasks=$(aws ecs list-tasks --cluster "$CLUSTER_NAME" --service-name "$service_name" --region "$REGION" --output json | jq -r '.taskArns[]')
-
-            if [ -z "$tasks" ]; then
-                continue
-            fi
-
-            for task_arn in $tasks; do
-                task_info=$(aws ecs describe-tasks --cluster "$CLUSTER_NAME" --tasks "$task_arn" --region "$REGION" --output json | jq -r '.tasks[0]')
-                started_at=$(echo "$task_info" | jq -r '.startedAt')
-
-                if [ "$started_at" != "null" ] && [ -n "$started_at" ]; then
-                    start_time=$(date -d "$started_at" +%s)
-                    current_time=$(date +%s)
-                    uptime_seconds=$((current_time - start_time))
-                    uptime=$(date -u -d @$uptime_seconds +'%H:%M:%S')
-                    output+=("$service_name\t$uptime")
-                else
-                    output+=("$service_name\tNo start time")
-                fi
-            done
-        done
-
-        # ===========================================================
-        # Print the Table
-        # ===========================================================
-        echo -e "# ====================================================="
-        echo -e "⏳ \e[1;33mUptime Check \e[0m⏳"
-        echo -e "# ====================================================="
-        (
-          echo -e "Service \tUptime"
-          for line in "${output[@]}"; do
-            echo -e "$line"
-          done
-        ) | column -t
-
-        log "Uptime check process completed."
+        curl -X POST -H 'Content-type: application/json' --data \
+        '{
+          "attachments": [
+            {
+              "color": "${{ env.SLACK_COLOR }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*🚀Deploy Info*"
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Revision:* ${{ env.revision }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Source:* ${{ env.source }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Image Url:* ${{ env.url }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Workflow Link:* <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}| ${{ github.run_id }}>"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Deployed Tag:* ${{ inputs.tag_to_deploy }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Status:* ${{ env.STATUS_DETAILS }}"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }' $SLACK_WEBHOOK_URL
 
     - name: 🔖 Update Tags for Service
       continue-on-error: true
@@ -565,3 +697,29 @@ runs:
         aws ecs tag-resource --resource-arn arn:aws:ecs:${{ inputs.aws_region }}:$ACCOUNTID:cluster/${{ inputs.cluster_name }} \
           --tags $tags_param \
           --region ${{ inputs.aws_region }}
+
+    - name: 📊 Final Deployment Status
+      if: always()
+      shell: bash
+      run: |
+        # Get final service status
+        SERVICE_STATUS=$(aws ecs describe-services \
+          --cluster "${{ inputs.cluster_name }}" \
+          --services "${{ env.ecs_service_name }}" \
+          --region "eu-west-1" \
+          --output json)
+
+        # Extract metrics
+        DEPLOYMENT_STATUS=$(echo "$SERVICE_STATUS" | jq -r '.services[0].deployments[] | select(.status=="PRIMARY") | .status')
+        RUNNING_COUNT=$(echo "$SERVICE_STATUS" | jq -r '.services[0].deployments[] | select(.status=="PRIMARY") | .runningCount')
+        DESIRED_COUNT=$(echo "$SERVICE_STATUS" | jq -r '.services[0].deployments[] | select(.status=="PRIMARY") | .desiredCount')
+        PENDING_COUNT=$(echo "$SERVICE_STATUS" | jq -r '.services[0].deployments[] | select(.status=="PRIMARY") | .pendingCount')
+        FAILED_TASKS=$(echo "$SERVICE_STATUS" | jq -r '.services[0].deployments[] | select(.status=="PRIMARY") | .failedTasks')
+
+        echo -e "\n📊 \033[1;36mFinal Deployment Metrics:\033[0m"
+        echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo -e "🔄 \033[1;33mDeployment Status:\033[0m $DEPLOYMENT_STATUS"
+        echo -e "👥 \033[1;32mRunning Count:\033[0m   $RUNNING_COUNT / $DESIRED_COUNT"
+        echo -e "⏳ \033[1;34mPending Count:\033[0m   $PENDING_COUNT"
+        echo -e "❌ \033[1;31mFailed Tasks:\033[0m    $FAILED_TASKS"
+        echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"

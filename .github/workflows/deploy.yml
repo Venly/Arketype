@@ -64,7 +64,7 @@ jobs:
           ecr_repo: ${{ matrix.ecr }}
           environment: ${{ matrix.environment }}
           service_name: ${{ matrix.service_name }}
-          slack_notification_webhook: ${{ secrets.SLACK_APPROVALS_WEBHOOK }}
+          slack_webhook: ${{ secrets.SLACK_CI_DEPLOYS }}
           tag_to_deploy: ${{ inputs.tag_to_deploy }}
           token: ${{ secrets.GITHUB_TOKEN }}
   # =====================================================
@@ -95,12 +95,12 @@ jobs:
         uses: ArkaneNetwork/venly-github-workflows/.github/actions/ecs_deploy@main
         with:
           aws_region: ${{ env.AWS_REGION }}
-          aws_role: ${{ secrets.PRD_DEPLOY_ROLE }}
+          aws_role: ${{ secrets.NONPRD_DEPLOY_ROLE }}
           aws_ecr_role: ${{ secrets.RESOURCES_DEPLOY_ROLE }}
           cluster_name: ${{ env.CLUSTER_NAME_PREFIX }}-cluster
           ecr_repo: ${{ matrix.ecr }}
           environment: ${{ matrix.environment }}
           service_name: ${{ matrix.service_name }}
-          slack_notification_webhook: ${{ secrets.SLACK_APPROVALS_WEBHOOK }}
+          slack_webhook: ${{ secrets.SLACK_CI_DEPLOYS }}
           tag_to_deploy: ${{ inputs.tag_to_deploy }}
           token: ${{ secrets.GITHUB_TOKEN }}
