@@ -779,12 +779,16 @@
                 label: 'Inputs',
                 defaultValue: '[{"type": "address", "value": "0xd82049204D8514c637f150C7231BFefC5C4937Ec"},{"type": "uint256", "value": "0"}]'
             },
-            accounts: {
-                type: 'textarea',
-                label: 'Accounts',
-                defaultValue: '[{"type": "PDA", "isWritable": true, "seeds": [{ "type": "string", "value": "0" }]}]'
-            },
-            chainSpecificFields: {type: 'textarea', label: 'Chain specific fields', defaultValue: '{"baseFee": 5000, "computeUnits": 496}', dataName: 'chainSpecific'}
+            chainSpecificFields: {
+                type: 'textarea', 
+                label: 'Chain specific fields', 
+                defaultValue: `{
+                    "baseFee": 5000, 
+                    "computeUnits": 496, 
+                    "accounts": [{"type": "PDA", "isWritable": true, "seeds": [{ "type": "string", "value": "0" }]}]
+                }`, 
+                dataName: 'chainSpecific'
+            }
         }, 'Execute Program Execution');
 
         createReadContractForm(secretType, {
