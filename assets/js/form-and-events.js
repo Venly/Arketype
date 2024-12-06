@@ -774,32 +774,31 @@
             walletId: {type: 'wallet-select', label: 'From'},
             to: {type: 'input', label: 'Contract Address', defaultValue: '0xc4375b7de8af5a38a93548eb8453a498222c4ff2'},
             value: {type: 'input', label: 'Amount (in SOL)', defaultValue: '0'},
-            functionName: {type: 'input', label: 'Function Name', defaultValue: 'approve'},
             inputs: {
                 type: 'textarea',
                 label: 'Inputs',
                 defaultValue: '[{"type": "address", "value": "0xd82049204D8514c637f150C7231BFefC5C4937Ec"},{"type": "uint256", "value": "0"}]'
             },
-            chainSpecificFields: {type: 'textarea', label: 'Chain specific fields', defaultValue: '{"gasLimit": 200000, "gasPrice": 0}', dataName: 'chainSpecific'},
-            name: {type: 'input', label: 'Network name', placeholder: 'e.g. TestNet', network: true},
-            nodeUrl: {type: 'input', label: 'Network node URL', placeholder: '', network: true}
-        });
+            chainSpecificFields: {
+                type: 'textarea', 
+                label: 'Chain specific fields', 
+                defaultValue: `{
+                    "baseFee": 5000, 
+                    "computeUnits": 496, 
+                    "accounts": [{"type": "PDA", "isWritable": true, "seeds": [{ "type": "string", "value": "0" }]}]
+                }`, 
+                dataName: 'chainSpecific'
+            }
+        }, 'Execute Program Execution');
 
         createReadContractForm(secretType, {
             walletId: {type: 'wallet-select', label: 'From'},
-            contractAddress: {type: 'input', label: 'Contract Address', defaultValue: '0x78cB9c3977382d699EF458C071A3353A4553EF49'},
-            functionName: {type: 'input', label: 'Function Name', defaultValue: 'isApprovedForAll'},
-            inputs: {
-                type: 'textarea',
-                label: 'Inputs',
-                defaultValue: '[{"type": "address", "value": "0xA00Fe54522ab6100cdE81635A1DB78d7067D75FA"},{"type": "address", "value": "0x1ac1ca3665b5cd5fdd8bc76f924b76c2a2889d39"}]'
-            },
             outputs: {
                 type: 'textarea',
                 label: 'Outputs',
                 defaultValue: '[{"type": "bool"}]'
             }
-        });
+        }, 'Read Program');
 
         fields.tokenAddress = {
             type: "input",
@@ -818,11 +817,6 @@
             name: fields.name,
             nodeUrl: fields.nodeUrl,
         });
-
-        createImportWalletForm(secretType, {
-            walletId: fields.walletId,
-            to: {type: 'select', label: 'To chain', defaultValue: 'ETHEREUM', values: ['ETHEREUM']},
-        })
     };
 
     app.page.initBsc = function() {
@@ -1549,16 +1543,16 @@
     }
 
     function createExecuteContractForm(secretType,
-                                       fields) {
-        createForm('Execute contract transaction', secretType, 'execute-contract', fields, executeContract, {
+                                       fields, title = 'Execute contract transaction') {
+        createForm(title, secretType, 'execute-contract', fields, executeContract, {
             secretType,
             type: 'CONTRACT_EXECUTION',
         });
     }
 
     function createReadContractForm(secretType,
-                                    fields) {
-        createForm('Read contract', secretType, 'read-contract', fields, readContract, {
+                                    fields, title = 'Read contract') {
+        createForm(title, secretType, 'read-contract', fields, readContract, {
             secretType,
             type: 'READ_CONTRACT',
         });
