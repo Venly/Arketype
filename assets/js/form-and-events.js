@@ -772,31 +772,70 @@
 
         createExecuteContractForm(secretType, {
             walletId: {type: 'wallet-select', label: 'From'},
-            to: {type: 'input', label: 'Contract Address', defaultValue: '0xc4375b7de8af5a38a93548eb8453a498222c4ff2'},
-            value: {type: 'input', label: 'Amount (in SOL)', defaultValue: '0'},
+            to: {type: 'input', label: 'Contract Address', defaultValue: '6bxKGAQQ66PD3bAQuFR7yP5SWox5JYKDACeyH4nvARr5'},
             inputs: {
                 type: 'textarea',
                 label: 'Inputs',
-                defaultValue: '[{"type": "address", "value": "0xd82049204D8514c637f150C7231BFefC5C4937Ec"},{"type": "uint256", "value": "0"}]'
+                defaultValue: `[
+                    {
+                        "type": "u8",
+                        "value": 2
+                    },
+                    {
+                        "type": "str",
+                        "value": "Alex"
+                    },
+                    {
+                        "type": "str",
+                        "value": "SDEV"
+                    },
+                    {
+                        "type": "struct",
+                        "value": [
+                            {
+                                "type": "u8",
+                                "value": 1
+                            },
+                            {
+                                "type": "str",
+                                "value": "Tirana"
+                            }
+                        ]
+                    }
+                ]`
             },
             chainSpecificFields: {
                 type: 'textarea', 
                 label: 'Chain specific fields', 
                 defaultValue: `{
-                    "baseFee": 5000, 
-                    "computeUnits": 496, 
-                    "accounts": [{"type": "PDA", "isWritable": true, "seeds": [{ "type": "string", "value": "0" }]}]
+                    "accounts": [
+                        {
+                            "type": "PDA",
+                            "isWritable": true,
+                            "seeds": [
+                                {
+                                    "type": "string",
+                                    "value": "2"
+                                }
+                            ]
+                        }
+                    ]
                 }`, 
                 dataName: 'chainSpecific'
             }
         }, 'Execute Program Execution');
 
         createReadContractForm(secretType, {
-            walletId: {type: 'wallet-select', label: 'From'},
+            from: {type: 'input', label: 'From', defaultValue: 'EiEUDdGu9PmRw2RAGrVf7LT6f1MDbhHxkkoFd236RLUc'},
+            // to: {type: 'input', label: 'Contract Address', defaultValue: 'EiEUDdGu9PmRw2RAGrVf7LT6f1MDbhHxkkoFd236RLUc'},
             outputs: {
                 type: 'textarea',
                 label: 'Outputs',
-                defaultValue: '[{"type": "bool"}]'
+                defaultValue: `[
+                    {"type": "u8"},
+                    {"type": "str"},
+                    {"type": "str"}
+                ]`
             }
         }, 'Read Program');
 
