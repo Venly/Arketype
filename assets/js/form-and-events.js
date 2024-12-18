@@ -827,7 +827,6 @@
 
         createReadContractForm(secretType, {
             from: {type: 'input', label: 'From', defaultValue: 'EiEUDdGu9PmRw2RAGrVf7LT6f1MDbhHxkkoFd236RLUc'},
-            // to: {type: 'input', label: 'Contract Address', defaultValue: 'EiEUDdGu9PmRw2RAGrVf7LT6f1MDbhHxkkoFd236RLUc'},
             outputs: {
                 type: 'textarea',
                 label: 'Outputs',
