@@ -23,6 +23,8 @@ FROM  node:lts-alpine AS runtime
 
 WORKDIR /usr/src/app
 
+RUN apk add --no-cache \
+    curl
 # Copy only the necessary files
 COPY --from=build /usr/src/app /usr/src/app
 
