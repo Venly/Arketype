@@ -95,7 +95,7 @@ jobs:
         uses: ./.github/actions/ecs_deploy
         with:
           aws_region: ${{ env.AWS_REGION }}
-          aws_role: ${{ secrets.NONPRD_DEPLOY_ROLE }}
+          aws_role: ${{ secrets.PRD_DEPLOY_ROLE }}
           aws_ecr_role: ${{ secrets.RESOURCES_DEPLOY_ROLE }}
           cluster_name: ${{ env.CLUSTER_NAME_PREFIX }}-cluster
           ecr_repo: ${{ matrix.ecr }}
