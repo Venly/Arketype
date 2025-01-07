@@ -41,7 +41,7 @@ jobs:
   # =====================================================
   deploy:
     runs-on: ubuntu-latest
-    if: (github.event_name == 'workflow_dispatch' && (inputs.environment == 'qa' || inputs.environment == 'staging'))
+    if: github.event_name == 'workflow_dispatch'
     strategy:
       matrix:
         include:
