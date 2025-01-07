@@ -92,7 +92,7 @@ jobs:
           deployed_tag: ${{ inputs.tag_to_deploy }}
 
       - name: 🚀 Deploy Application
-        uses: ArkaneNetwork/venly-github-workflows/.github/actions/ecs_deploy@main
+        uses: ./.github/actions/ecs_deploy
         with:
           aws_region: ${{ env.AWS_REGION }}
           aws_role: ${{ secrets.NONPRD_DEPLOY_ROLE }}
