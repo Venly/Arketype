@@ -17,7 +17,7 @@
         app.env = 'qa';
     }
 
-    const useLocalApi = false;
+    const useLocalApi = true;
     app.clientId = new URLSearchParams(window.location.search).get('clientId') ?? 'Arketype';
     app.useLocalConnect = false;
     app.useLocalKeycloak = false;
