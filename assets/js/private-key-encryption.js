@@ -81,12 +81,14 @@
             ["encrypt"]
         );
 
+        const encoder = new TextEncoder();
+
         const encryptedKey = await window.crypto.subtle.encrypt(
             {
                 name: "RSA-OAEP"
             },
             importedPublicKey,
-            aesKeyB64
+            encoder.encode(aesKeyB64)
         );
 
         app.log(base64(encryptedKey), 'Encrypted AES Key');
