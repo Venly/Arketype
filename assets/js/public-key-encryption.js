@@ -150,7 +150,7 @@
                     iv // The initialization vector.
                 },
                 randomAesKey, // The CryptoKey. You can get one with window.crypto.subtle.importKey().
-                encoder.encode(JSON.stringify($('#signing-method-creation-body').val())));
+                encoder.encode(JSON.stringify(JSON.parse($('#signing-method-creation-body').val()))));
         }
 
         function arrayBufferToBase64(buffer) {
