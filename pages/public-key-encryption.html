@@ -59,9 +59,6 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/pages/verification">Verification</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/pages/public-key-encryption">Public key Encryption</a>
-                    </li>
                 </ul>
             </div>
         </nav>
@@ -94,7 +91,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-6">
-                <h4 class="text-muted mb-3">Signing Method Encryption</h4>
+                <h4 class="text-muted mb-3">Encrypted Signing Method Request</h4>
                 <div class="card mb-3">
                     <div class="card-body input-group d-flex justify-content-between align-items-center">
                         <code>Create sha256 signature</code>
@@ -146,19 +143,56 @@
                             <div class="form-group row">
                                 <label for="encryption-request-body" class="col-sm-5 col-form-label">Request Body</label>
                                 <div class="col-sm-7">
-                                    <textarea  class="form-control" id="encryption-request-body"></textarea>
+                                    <textarea class="form-control" id="encryption-request-body"></textarea>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div>
-                        <h4 class="text-muted mb-3">Logs</h4>
-                        <div id="appLog" class="form-control"></div>
-
-                        <div class="card p-2">
-                            <button class="btn btn-secondary" onclick="app.clearLog()">Clear logs</button>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+            <div class="col-md-6">
+                <h4 class="text-muted mb-3">Encrypted Signing Method Creation</h4>
+                <div class="card mb-3">
+                    <div class="card-body input-group d-flex justify-content-between align-items-center">
+                        <code>Encrypt request</code>
+                        <button class="btn btn-primary" id="encrypt-creation-request-btn">Encrypt</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div>
+                    <h4 class="text-muted mb-3">Parameters</h4>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <label for="signing-methods-pk" class="col-sm-5 col-form-label">Choose public key</label>
+                                <div class="col-sm-7">
+                                    <select class="custom-select" id="signing-methods-creation-pk"></select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="encryption-request-body" class="col-sm-5 col-form-label">Signing method request</label>
+                                <div class="col-sm-7">
+                                    <textarea class="form-control" id="signing-method-creation-body"></textarea>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row appLog-container">
+            <div class="col-md-6"></div>
+            <div class="col-md-6 align-content-end">
+                <h4 class="text-muted mb-3">Logs</h4>
+                <div id="appLog" class="form-control"></div>
+
+                <div class="card p-2">
+                    <button class="btn btn-secondary" onclick="app.clearLog()">Clear logs</button>
                 </div>
             </div>
         </div>
