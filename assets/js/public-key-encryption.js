@@ -6,7 +6,9 @@
                 getSigningMethodPublicKeys()
                     .then(function(pKeys) {
                         app.page.signingMethodPublicKeys = pKeys;
-                        populateSelect(pKeys);
+                        populateSelect($('#signing-methods-pk'), pKeys);
+                        populateSelect($('#signing-methods-creation-pk'), pKeys);
+
                         bindButtons();
                         if (!app.page.initialised) {
                             app.page.initialised = true;
@@ -28,8 +30,9 @@
         }
 
 
-        function populateSelect(pKeys) {
-            const select = $('#signing-methods-pk');
+        function populateSelect(select,
+                                pKeys) {
+
             for (let i = 0; i < pKeys.length; i++) {
                 // Create an option element
                 const option = document.createElement("option");
@@ -138,6 +141,18 @@
                 encoder.encode(JSON.stringify(createSigningMethod(false))));
         }
 
+        async function encryptBodyWithAes(randomAesKey,
+                                          iv) {
+            const encoder = new TextEncoder();
+            return window.crypto.subtle.encrypt(
+                {
+                    name: "AES-GCM", // CTR and CBC modes are also available.
+                    iv // The initialization vector.
+                },
+                randomAesKey, // The CryptoKey. You can get one with window.crypto.subtle.importKey().
+                encoder.encode(JSON.stringify($('#signing-method-creation-body').val())));
+        }
+
         function arrayBufferToBase64(buffer) {
             let binary = '';
             let bytes = new Uint8Array(buffer);
@@ -173,7 +188,31 @@
                 encryptUsingSelectedPkey().then()
             });
             $('#build-signature-btn').click(() => createSignature(true));
-            $('#build-request-btn').click(() => createSigningMethod(true))
+            $('#build-request-btn').click(() => createSigningMethod(true));
+            $('#encrypt-creation-request-btn').click(() => {
+                encryptSigningMethodCreation().then()
+            });
+        }
+
+        async function encryptSigningMethodCreation() {
+            const {id, key} = getSelectedPublicKey();
+            const iv = window.crypto.getRandomValues(new Uint8Array(12));
+            const randomAesKey = await generateRandomAesKey();
+
+            const encryptedData = await encryptBodyWithAes(randomAesKey, iv);
+            const encryptedKey = await encryptKeyWithRsa(randomAesKey, key);
+            const encryptedHeader = {
+                encryption: {
+                    type: 'AES/GCM/NoPadding',
+                    iv: arrayBufferToBase64(iv),
+                    key: {
+                        encryptedValue: encryptedKey,
+                        encryptionKeyId: id
+                    }
+                },
+                value: arrayBufferToBase64(encryptedData)
+            };
+            app.log(JSON.stringify(encryptedHeader), 'encryptedSigningMethod');
         }
 
         function getSelectedPublicKey() {
