@@ -88,7 +88,7 @@ import {defaultParams} from "../constants/params.js";
             Venly.changeSecretType(val.toUpperCase()).then(provider => {
                 app.secretType = val.toUpperCase();
                 window.web3 = new Web3(provider);
-                handleWeb3Loaded();
+                handleWeb3Loaded(provider);
                 getWallets();
                 subscribeToBlockHeaders();
             });
