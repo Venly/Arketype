@@ -1,4 +1,4 @@
-import { defaultParams } from "../constants/params.js";
+import {defaultParams} from "../constants/params.js";
 
 (function () {
   'use strict';
@@ -57,7 +57,7 @@ import { defaultParams } from "../constants/params.js";
             }
         });
         $('#btn-secret-type').on('click', function (event) {
-            let val = $('#network-mgmt-secret-type').find(":selected").text();
+            let val = $('#network-mgmt-secret-type').find(":selected").val();
             console.log(val.toUpperCase(), 'switching');
             Venly.changeSecretType(val.toUpperCase()).then(provider => {
                 app.secretType = val.toUpperCase();
