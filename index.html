@@ -226,6 +226,8 @@
                            aria-selected="true">Optimism</a>
                         <a class="nav-item nav-link" id="nav-SOLANA-tab" data-toggle="tab" href=".tab-pane#tab-SOLANA" role="tab" aria-controls="tab-SOLANA"
                            aria-selected="true">Solana</a>
+                        <a class="nav-item nav-link" id="nav-SUI-tab" data-toggle="tab" href=".tab-pane#tab-SUI" role="tab" aria-controls="tab-SUI"
+                           aria-selected="true">Sui</a>
                     </div>
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
@@ -468,6 +470,36 @@
                             </div>
                         </div>
                     </div>
+                    <div class="tab-pane fade p-4 bg-white border" id="tab-SUI" data-chain="SUI" role="tabpanel" aria-labelledby="nav-SUI-tab">
+                        <button type="button" data-chain="SUI" class="btn btn-outline-primary get-wallets mb-3">
+                            Refresh Wallets
+                        </button>
+                        <button type="button" data-chain="SUI" class="btn btn-outline-primary manage-wallets mb-3">
+                            Manage Wallets
+                        </button>
+
+                        <div class="row">
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign" data-chain="SUI" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="execute" data-chain="SUI" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign-raw" data-chain="SUI" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="sign-message" data-chain="SUI" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="execute-contract" data-chain="SUI" class="card bg-light"></form>
+                            </div>
+                            <div class="mb-3 col-lg-6">
+                                <form data-form="read-contract" data-chain="SUI" class="card bg-light"></form>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="tab-pane fade p-4 bg-white border" id="tab-GOCHAIN" data-chain="GOCHAIN" role="tabpanel" aria-labelledby="nav-GOCHAIN-tab">
                         <button type="button" data-chain="GOCHAIN" class="btn btn-outline-primary get-wallets mb-3">
                             Refresh Wallets
