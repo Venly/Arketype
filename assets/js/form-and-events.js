@@ -31,6 +31,7 @@
         app.page.initBase();
         app.page.initOptimism();
         app.page.initSolana();
+        app.page.initSui();
         app.page.initialised = true;
     };
 
@@ -570,7 +571,7 @@
         })
     };
 
-	app.page.initBase = function() {
+    app.page.initBase = function() {
         var secretType = 'BASE';
         var fields = {
             walletId: {type: 'wallet-select', label: 'From'},
@@ -805,8 +806,8 @@
                 ]`
             },
             chainSpecificFields: {
-                type: 'textarea', 
-                label: 'Chain specific fields', 
+                type: 'textarea',
+                label: 'Chain specific fields',
                 defaultValue: `{
                     "accounts": [
                         {
@@ -820,7 +821,7 @@
                             ]
                         }
                     ]
-                }`, 
+                }`,
                 dataName: 'chainSpecific'
             }
         }, 'Execute Program Execution');
@@ -846,6 +847,92 @@
             walletId: fields.walletId,
             to: fields.to,
             value: {type: 'input', label: 'Amount (in SOL)', defaultValue: '0.0314'},
+            tokenAddress: {
+                type: 'input',
+                label: 'Token address',
+                placeholder: 'e.g. 0x6ff6c0ff1d68b964901f986d4c9fa3ac68346570'
+            },
+            data: fields.data,
+            name: fields.name,
+            nodeUrl: fields.nodeUrl,
+        });
+    };
+    app.page.initSui = function() {
+        var secretType = 'SUI';
+        var fields = {
+            walletId: {type: 'wallet-select', label: 'From'},
+            to: {type: 'input', label: 'To', defaultValue: '0xce0f8e889f4f8cf47132c103fead7c33343e5f52b6b9d4e60b591b0fbc243194'},
+            value: {type: 'input', label: 'Amount (in MIST)', defaultValue: '31400000000000000'},
+            data: {type: 'textarea', label: 'Data (optional)', placeholder: 'Some test data'},
+            name: {type: 'input', label: 'Network name', placeholder: 'e.g. TestNet', network: true},
+            nodeUrl: {type: 'input', label: 'Network node URL', placeholder: '', network: true},
+        };
+        createSignForm(secretType, 'SUI_TRANSACTION', fields);
+
+        createSignRawForm(secretType, 'SUI_RAW', {
+            walletId: fields.walletId,
+            data: Object.assign({}, fields.data, {defaultValue: 'Some test data'}),
+            prefix: {type: 'checkbox', checked: true, label: 'Prefix'},
+            hash: {type: 'checkbox', checked: true, label: 'Hash', info: 'When prefix is checked, hash will always be set to \'true\''}
+        });
+
+        createSignMessage(secretType, {
+            walletId: fields.walletId,
+            data: Object.assign({}, fields.data, {defaultValue: 'Some message', label: 'Message'}),
+        });
+
+        createExecuteContractForm(secretType, {
+            walletId: {type: 'wallet-select', label: 'From'},
+            to: {type: 'input', label: 'Contract Address', defaultValue: '0x38f9b2c652182e1d2a4cd1a4e773f63bd25ca88dc5f0875fb77c27613a521501::nft_contract'},
+            inputs: {
+                type: 'textarea',
+                label: 'Inputs',
+                defaultValue: `[
+                    {
+                        "type": "u8",
+                        "value": 2
+                    },
+                    {
+                        "type": "string",
+                        "value": "Alex"
+                    },
+                    {
+                        "type": "string",
+                        "value": "SDEV"
+                    }
+                ]`
+            },
+            chainSpecificFields: {
+                type: 'textarea',
+                label: 'Chain specific fields',
+                defaultValue: `{
+                    "commands": [
+                    ]
+                }`,
+                dataName: 'chainSpecific'
+            }
+        }, 'Execute Package Execution');
+
+        createReadContractForm(secretType, {
+            from: {type: 'input', label: 'From', defaultValue: '0xce0f8e889f4f8cf47132c103fead7c33343e5f52b6b9d4e60b591b0fbc243194'},
+            outputs: {
+                type: 'textarea',
+                label: 'Outputs',
+                defaultValue: `[
+                      {
+                        "type": "string"
+                      }
+                  ]`
+            }
+        }, 'Read Package Contract');
+        fields.tokenAddress = {
+            type: "input",
+            label: "Token Address (optional)",
+        };
+        createExecuteForm(secretType, {
+            walletId: fields.walletId,
+            to: fields.to,
+            value: {type: 'input', label: 'Amount (in SUI)', defaultValue: '0.0314'},
             tokenAddress: {
                 type: 'input',
                 label: 'Token address',
@@ -1581,7 +1668,8 @@
     }
 
     function createExecuteContractForm(secretType,
-                                       fields, title = 'Execute contract transaction') {
+                                       fields,
+                                       title = 'Execute contract transaction') {
         createForm(title, secretType, 'execute-contract', fields, executeContract, {
             secretType,
             type: 'CONTRACT_EXECUTION',
@@ -1589,7 +1677,8 @@
     }
 
     function createReadContractForm(secretType,
-                                    fields, title = 'Read contract') {
+                                    fields,
+                                    title = 'Read contract') {
         createForm(title, secretType, 'read-contract', fields, readContract, {
             secretType,
             type: 'READ_CONTRACT',
