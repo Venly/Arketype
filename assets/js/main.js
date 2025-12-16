@@ -92,6 +92,16 @@
         $temp.remove();
     }
 
+    function escapeHtml(text) {
+        if (text == null) return '';
+        return String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
     function logger(txt,
                     title,
                     type) {
@@ -102,10 +112,10 @@
             txt = JSON.stringify(txt, null, 2);
         }
         var date = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
-        var result = '<span class="text-' + type + '">';
-        result = result + '[' + date + ']';
-        result = result + (title ? ': <strong >' + title + '</strong>' : '');
-        result = result + '</span>\n' + txt + '\n\n';
+        var result = '<span class="text-' + escapeHtml(type) + '">';
+        result = result + '[' + escapeHtml(date) + ']';
+        result = result + (title ? ': <strong>' + escapeHtml(title) + '</strong>' : '');
+        result = result + '</span>\n<pre>' + escapeHtml(txt) + '</pre>\n\n';
         var $appLog = $('#appLog');
         $appLog.html(result + $appLog.html());
     }
