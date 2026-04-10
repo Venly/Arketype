@@ -1,0 +1,22 @@
+name: "Read Package Version"
+description: "Read version from package.json and set it as an environment variable"
+inputs:
+  env_var_name:
+    description: Name of the environment variable to set with the version value
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Read version from package.json
+      shell: bash
+      run: |
+        #!/bin/bash
+        set -x
+        VERSION=$(jq -r '.version' "./package.json")
+        if [[ "$VERSION" == "null" || -z "$VERSION" ]]; then
+          echo "No version field found in package.json"
+          echo "${{ inputs.env_var_name }}=0.0.0" >> $GITHUB_ENV
+        else
+          echo "Version in package.json is $VERSION"
+          echo "${{ inputs.env_var_name }}=$VERSION" >> $GITHUB_ENV
+        fi

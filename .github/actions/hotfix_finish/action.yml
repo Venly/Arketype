@@ -2,7 +2,7 @@ name: "Hotfix Node Applicaton Finish"
 description: "Hotfix Node Applicaton Finish"
 inputs:
   token:
-    description: The VENLY_GITHUB_ACTIONS_TOKEN
+    description: GitHub token for authentication
     required: true
 runs:
   using: "composite"
@@ -11,7 +11,7 @@ runs:
       shell: bash
       run: |
         echo "🏠 Setting HOME environment variable..."
-        echo "HOME=${{ runner.workspace }}" >> $GITHUB_ENV
+        echo "HOME=${{ github.workspace }}" >> $GITHUB_ENV
 
     - name: Setup Git Credentials 🔑
       uses: oleksiyrudenko/gha-git-credentials@v2.1.1
@@ -22,26 +22,6 @@ runs:
         actor: ${{ github.actor }}
         token: ${{ inputs.token }}
 
-    # Determine the production branch name Master Or Main
-    - name: Determine Master Or Main 🌐
-      shell: bash
-      run: |
-        #!/bin/bash
-        set -x
-        echo "🔍 Determining the production branch (Master or Main)..."
-        git fetch -p
-        BRANCHES=$(git branch -r | grep -E 'origin/main|origin/master')
-        echo "Remote branches: $BRANCHES"
-        if [ -z "$BRANCHES" ]; then
-          echo "❌ No 'main' or 'master' branch found."
-        else
-          for BRANCH in $BRANCHES; do
-            BRANCH_NAME=$(echo $BRANCH | cut -d '/' -f 2)
-            echo "production_branch=$BRANCH_NAME" >> $GITHUB_ENV
-            echo "🚀 Production Branch is $BRANCH_NAME"
-          done
-        fi
-
     # Checkout code to production branch
     - name: Checkout production branch
       shell: bash
@@ -49,13 +29,13 @@ runs:
         #!/bin/bash
         set -x
         echo "🔍 Make sure we are on the production Branch 🔍"
-        git switch ${{ env.production_branch }}
+        git switch main
 
-    - name: Setup Node.js ${{ inputs.node_version }} 📦
-      uses: actions/setup-node@v3
+    - name: Setup Node.js 18.x 📦
+      uses: actions/setup-node@v4
       id: node_setup
       with:
-        node-version: 16.x
+        node-version: 18.x
 
     # =====================================================
     # Hotfix
@@ -106,24 +86,10 @@ runs:
         fi
 
     # Read package.json for version
-    - name: ❔ Get npm version for hotfix ❔
-      shell: bash
-      run: |
-        #!/bin/bash
-        set -x
-        echo "📚 Reading the version from package.json for the hotfix..."
-        find . -name 'package.json' | while read -r PACKAGE_JSON_PATH; do
-          if [[ -n "$PACKAGE_JSON_PATH" ]]; then
-            VERSION=$(jq -r '.version' "$PACKAGE_JSON_PATH")
-            if [[ "$VERSION" == "null" || -z "$VERSION" ]]; then
-              echo "No version field found in $PACKAGE_JSON_PATH"
-              echo "hotfix_version="0.0.0"" >> $GITHUB_ENV
-            else
-              echo "Version in $PACKAGE_JSON_PATH is $VERSION"
-              echo "hotfix_version=$VERSION" >> $GITHUB_ENV
-            fi
-          fi
-        done
+    - name: Read hotfix package version
+      uses: ./.github/actions/read_package_version
+      with:
+        env_var_name: hotfix_version
 
     # Merge to Production Branch
     - name: 🔀 Checkout and Merge to Production Branch
@@ -132,7 +98,7 @@ runs:
         #!/bin/bash
         set -x
         echo "🔄 Switching to the production branch and merging the hotfix..."
-        git checkout ${{ env.production_branch }}
+        git checkout main
         # Try to merge and capture the exit status
         set +e  # Disable immediate exit on error
         git merge ${{ env.hotfix_branch }}
@@ -148,11 +114,11 @@ runs:
         fi
 
         # Push the changes to remote repository
-        git push origin ${{ env.production_branch }}
+        git push origin main
 
     # Publish Hotfix
     - name: 🚀 Publish Hotfix
-      uses: softprops/action-gh-release@v0.1.15
+      uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ env.npm_hotfix_version }}
         token: ${{ inputs.token }}
@@ -167,25 +133,10 @@ runs:
         git status
 
     # Read package.json for version
-
-    - name: ❔ Get npm version for develop ❔
-      shell: bash
-      run: |
-        #!/bin/bash
-        set -x
-        echo "📚 Reading the version from package.json for the develop branch..."
-        find . -name 'package.json' | while read -r PACKAGE_JSON_PATH; do
-          if [[ -n "$PACKAGE_JSON_PATH" ]]; then
-            VERSION=$(jq -r '.version' "$PACKAGE_JSON_PATH")
-            if [[ "$VERSION" == "null" || -z "$VERSION" ]]; then
-              echo "No version field found in $PACKAGE_JSON_PATH"
-              echo "develop_version="0.0.0"" >> $GITHUB_ENV
-            else
-              echo "Version in $PACKAGE_JSON_PATH is $VERSION"
-              echo "develop_version=$VERSION" >> $GITHUB_ENV
-            fi
-          fi
-        done
+    - name: Read develop package version
+      uses: ./.github/actions/read_package_version
+      with:
+        env_var_name: develop_version
 
     # Merge Back to develop
     - name: 🔀 Merge To Develop
@@ -201,8 +152,8 @@ runs:
         # Step 2: Commit changes for hotfix version
         git commit -am "Update develop to hotfix version ${{ env.hotfix_version }} to avoid merge conflicts"
 
-        # Step 3: Merge the production branch with
-        MERGE_OUTPUT=$(git merge "${{ env.production_branch }}" 2>&1)
+        # Step 3: Merge the production branch
+        MERGE_OUTPUT=$(git merge "main" 2>&1)
         MERGE_STATUS=$?
         echo "Merge Output: $MERGE_OUTPUT"
         echo "Merge Status: $MERGE_STATUS"
@@ -220,8 +171,8 @@ runs:
         #!/bin/bash
         set -x
         echo "📤 Pushing changes to develop and production branches..."
-        git push origin develop:refs/heads/develop  
-        git push origin ${{ env.production_branch }}:refs/heads/${{ env.production_branch }}
+        git push origin develop:refs/heads/develop
+        git push origin main:refs/heads/main
 
     # Cleanup Release Branch
     - name: 🧹 Delete Hotfix Branch
@@ -232,7 +183,7 @@ runs:
     # =====================================================
     # Hotfix Flow Info
     # =====================================================
-    - name: ℹ️ Display Hotfix Process Inf
+    - name: ℹ️ Display Hotfix Process Info
       shell: bash
       run: |
         echo "🚀 Hotfix Process Details 🚀"

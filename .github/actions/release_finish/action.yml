@@ -2,7 +2,7 @@ name: "Release Node Applicaton Finish"
 description: "Release Node Applicaton Finish"
 inputs:
   token:
-    description: The VENLY_GITHUB_ACTIONS_TOKEN
+    description: GitHub token for authentication
     required: true
 runs:
   using: "composite"
@@ -10,22 +10,6 @@ runs:
     - name: Set HOME environment variable
       shell: bash
       run: echo "HOME=${{ github.workspace }}" >> $GITHUB_ENV
-
-    # Determine the production branch name Master Or Main
-    - name: Determine Master Or Main
-      shell: bash
-      run: |
-        git fetch -p
-        BRANCHES=$(git branch -r | grep -E 'origin/main|origin/master')
-        if [ -z "$BRANCHES" ]; then
-          echo "No 'main' or 'master' branch found."
-        else
-          for BRANCH in $BRANCHES; do
-            BRANCH_NAME=$(echo $BRANCH | cut -d '/' -f 2)
-            echo "production_branch=$BRANCH_NAME" >> $GITHUB_ENV
-            echo "Production Branch is $BRANCH_NAME"
-          done
-        fi
 
     - uses: oleksiyrudenko/gha-git-credentials@v2.1.1
       with:
@@ -35,11 +19,11 @@ runs:
         actor: ${{ github.actor }}
         token: ${{ inputs.token }}
 
-    - name: Use Node.js ${{ inputs.node_version }}
-      uses: actions/setup-node@v3
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v4
       id: node_setup
       with:
-        node-version: ${{ inputs.node_version }}
+        node-version: 18.x
 
     # =====================================================
     # Release
@@ -73,12 +57,12 @@ runs:
         RELEASE_VERSION=$(jq -r '.version' package.json)
         echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
 
-    - name: Merge to master
+    - name: Merge to main
       shell: bash
       run: |
         #!/bin/bash
         set -x
-        git switch ${{ env.production_branch }}
+        git switch main
         git merge ${{ env.release_branch }}
 
     # Merge Back to develop
@@ -98,7 +82,7 @@ runs:
         git commit -am "Update develop to release version to avoid merge conflicts"
 
         # Merge the production branch in develop
-        git merge ${{ env.production_branch }}
+        git merge main
 
         # Update npm version back to the develop version
         npm version $DEVELOP_VERSION --git-tag-version=false
@@ -110,8 +94,8 @@ runs:
       run: |
         #!/bin/bash
         set -x
-        git push --tags origin develop:refs/heads/develop  
-        git push origin ${{ env.production_branch }}:refs/heads/${{ env.production_branch }}
+        git push --tags origin develop:refs/heads/develop
+        git push origin main:refs/heads/main
 
     # Cleanup Release Branch
     - name: Delete branch in specific repository with a specific owner
