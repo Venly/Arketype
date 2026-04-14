@@ -2,7 +2,7 @@ name: "Hotfix Node Applicaton Start"
 description: "Hotfix Node Applicaton Start"
 inputs:
   token:
-    description: The VENLY_GITHUB_ACTIONS_TOKEN
+    description: GitHub token for authentication
     required: true
 runs:
   using: "composite"
@@ -11,7 +11,7 @@ runs:
       shell: bash
       run: |
         echo "🏠 Setting HOME environment variable..."
-        echo "HOME=${{ runner.workspace }}" >> $GITHUB_ENV
+        echo "HOME=${{ github.workspace }}" >> $GITHUB_ENV
 
     - name: Setup Git Credentials 🔑
       uses: oleksiyrudenko/gha-git-credentials@v2.1.1
@@ -22,26 +22,6 @@ runs:
         actor: ${{ github.actor }}
         token: ${{ inputs.token }}
 
-    # Determine the production branch name Master Or Main
-    - name: Determine Master Or Main 🌐
-      shell: bash
-      run: |
-        #!/bin/bash
-        set -x
-        echo "🔍 Determining the production branch (Master or Main)..."
-        git fetch -p
-        BRANCHES=$(git branch -r | grep -E 'origin/main|origin/master')
-        echo "Remote branches: $BRANCHES"
-        if [ -z "$BRANCHES" ]; then
-          echo "❌ No 'main' or 'master' branch found."
-        else
-          for BRANCH in $BRANCHES; do
-            BRANCH_NAME=$(echo $BRANCH | cut -d '/' -f 2)
-            echo "production_branch=$BRANCH_NAME" >> $GITHUB_ENV
-            echo "🚀 Production Branch is $BRANCH_NAME"
-          done
-        fi
-
     # Checkout code to production branch
     - name: Checkout production branch
       shell: bash
@@ -49,13 +29,13 @@ runs:
         #!/bin/bash
         set -x
         echo "🔍 Make sure we are on the production Branch 🔍"
-        git switch ${{ env.production_branch }}
+        git switch main
 
-    - name: Setup Node.js ${{ inputs.node_version }} 📦
-      uses: actions/setup-node@v3
+    - name: Setup Node.js 18.x 📦
+      uses: actions/setup-node@v4
       id: node_setup
       with:
-        node-version: 16.x
+        node-version: 18.x
 
     # =====================================================
     # Hotfix
@@ -72,26 +52,10 @@ runs:
         npm version prepatch --preid=SNAPSHOT --git-tag-version=false
 
     # Read package.json for version
-
-    - name: get-npm-version ❔
-      id: raw_hotfix_version
-      shell: bash
-      run: |
-        #!/bin/bash
-        set -x
-        echo "🔍 Reading package.json for version..."
-        find . -name 'package.json' | while read -r PACKAGE_JSON_PATH; do
-          if [[ -n "$PACKAGE_JSON_PATH" ]]; then
-            VERSION=$(jq -r '.version' "$PACKAGE_JSON_PATH")
-            if [[ "$VERSION" == "null" || -z "$VERSION" ]]; then
-              echo "No version field found in $PACKAGE_JSON_PATH"
-              echo "hotfix_version_raw="0.0.0"" >> $GITHUB_ENV
-            else
-              echo "Version in $PACKAGE_JSON_PATH is $VERSION"
-              echo "hotfix_version_raw=$VERSION" >> $GITHUB_ENV
-            fi
-          fi
-        done
+    - name: Read hotfix package version
+      uses: ./.github/actions/read_package_version
+      with:
+        env_var_name: hotfix_version_raw
 
     # Extract semantic version
     - name: Extract semantic version
@@ -127,25 +91,10 @@ runs:
         git status
 
     # Read package.json for version
-    # Get npm version
-    - name: ❔ Get npm version for develop branch ❔
-      shell: bash
-      run: |
-        #!/bin/bash
-        set -x
-        echo "📚 Reading the version from package.json for the develop branch..."
-        find . -name 'package.json' | while read -r PACKAGE_JSON_PATH; do
-          if [[ -n "$PACKAGE_JSON_PATH" ]]; then
-            VERSION=$(jq -r '.version' "$PACKAGE_JSON_PATH")
-            if [[ "$VERSION" == "null" || -z "$VERSION" ]]; then
-              echo "⚠️ No version field found in $PACKAGE_JSON_PATH"
-              echo "current-version-develop="0.0.0"" >> $GITHUB_ENV
-            else
-              echo "✅ Version in $PACKAGE_JSON_PATH is $VERSION"
-              echo "current-version-develop=$VERSION" >> $GITHUB_ENV
-            fi
-          fi
-        done
+    - name: Read develop package version
+      uses: ./.github/actions/read_package_version
+      with:
+        env_var_name: current-version-develop
 
     # Merge Back to develop
     - name: Merge To Develop Branch 🔄
@@ -179,7 +128,6 @@ runs:
     # Hotfix Flow Info
     # =====================================================
     - name: ℹ️ Display Hotfix Process Info
-      if: ${{ inputs.flow == 'finish' }}
       shell: bash
       run: |
         echo "🚀 Hotfix Process Details 🚀"

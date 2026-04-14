@@ -2,7 +2,7 @@ name: "Release Node Applicaton Start"
 description: "Release Node Applicaton Start"
 inputs:
   token:
-    description: The VENLY_GITHUB_ACTIONS_TOKEN
+    description: GitHub token for authentication
     required: true
 runs:
   using: "composite"
@@ -10,24 +10,6 @@ runs:
     - name: Set HOME environment variable
       shell: bash
       run: echo "HOME=${{ github.workspace }}" >> $GITHUB_ENV
-
-    # Determine the production branch name Master Or Main
-    - name: Determine Master Or Main
-      shell: bash
-      run: |
-        #!/bin/bash
-        set -x
-        git fetch -p
-        BRANCHES=$(git branch -r | grep -E 'origin/main|origin/master')
-        if [ -z "$BRANCHES" ]; then
-          echo "No 'main' or 'master' branch found."
-        else
-          for BRANCH in $BRANCHES; do
-            BRANCH_NAME=$(echo $BRANCH | cut -d '/' -f 2)
-            echo "production_branch=$BRANCH_NAME" >> $GITHUB_ENV
-            echo "Production Branch is $BRANCH_NAME"
-          done
-        fi
 
     - uses: oleksiyrudenko/gha-git-credentials@v2.1.1
       with:
@@ -37,11 +19,11 @@ runs:
         actor: ${{ github.actor }}
         token: ${{ inputs.token }}
 
-    - name: Use Node.js ${{ inputs.node_version }}
-      uses: actions/setup-node@v3
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v4
       id: node_setup
       with:
-        node-version: ${{ inputs.node_version }}
+        node-version: 18.x
     # =====================================================
     # Release
     # =====================================================
@@ -65,24 +47,10 @@ runs:
         fi
 
     # Read package.json for version
-    - name: ❔ get-npm-version ❔
-      id: package-version
-      shell: bash
-      run: |
-        #!/bin/bash
-        set -x
-        find . -name 'package.json' | while read -r PACKAGE_JSON_PATH; do
-          if [[ -n "$PACKAGE_JSON_PATH" ]]; then
-            VERSION=$(jq -r '.version' "$PACKAGE_JSON_PATH")
-            if [[ "$VERSION" == "null" || -z "$VERSION" ]]; then
-              echo "No version field found in $PACKAGE_JSON_PATH"
-              echo "release_version_raw="0.0.0"" >> $GITHUB_ENV
-            else
-              echo "Version in $PACKAGE_JSON_PATH is $VERSION"
-              echo "release_version_raw=$VERSION" >> $GITHUB_ENV
-            fi
-          fi
-        done
+    - name: Read package version
+      uses: ./.github/actions/read_package_version
+      with:
+        env_var_name: release_version_raw
 
     - name: Extract semantic version
       shell: bash

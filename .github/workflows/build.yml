@@ -14,20 +14,10 @@ env:
   AWS_REGION: "eu-west-1"
   CLUSTER_NAME_PREFIX: demo-projects
 permissions:
-  actions: read
-  checks: write
   contents: write
-  deployments: read
+  actions: read
   id-token: write
-  issues: read
-  discussions: read
-  packages: read
-  pages: read
-  pull-requests: read
-  repository-projects: read
-  security-events: read
-  statuses: read
-run-name: 🏗️ Build ${{ github.ref_name	}}
+run-name: 🏗️ Build ${{ github.ref_name }}
 jobs:
   # =====================================================
   # Job: Build
@@ -39,10 +29,18 @@ jobs:
       version_tag: ${{ steps.get_version.outputs.version }}
       branch_tag: ${{ steps.app_info.outputs.branch_tag }}
     steps:
+      - name: 🔑 Generate CI token
+        if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && (startsWith(github.ref, 'refs/heads/develop') || startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/heads/hotfix-') || startsWith(github.ref, 'refs/heads/release-'))
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.CI_BOT_APP_ID }}
+          private-key: ${{ secrets.CI_BOT_PRIVATE_KEY }}
+
       - name: ✅ Checkout
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.VENLY_GITHUB_ACTIONS_TOKEN }}
+          token: ${{ steps.app-token.outputs.token || github.token }}
 
       - name: ℹ️ App Info
         id: app_info
@@ -74,8 +72,6 @@ jobs:
     steps:
       - name: ✅ Checkout
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.VENLY_GITHUB_ACTIONS_TOKEN }}
 
       - name: 🐳 Build and Push Docker Image
         id: build-deploy-docker
@@ -84,8 +80,8 @@ jobs:
           aws_role: ${{ secrets.RESOURCES_DEPLOY_ROLE }}
           branch_tag: ${{ needs.build.outputs.branch_tag }}
           build_args: |
-            VERSION=${{ needs.build.outputs.version_tag }} 
-            DD_GIT_REPOSITORY_URL=git@github.com:${{ github.repository }}.git 
+            VERSION=${{ needs.build.outputs.version_tag }}
+            DD_GIT_REPOSITORY_URL=git@github.com:${{ github.repository }}.git
             DD_GIT_COMMIT_SHA=${{ github.sha }}
           docker_context: ${{ matrix.docker_context }}
           ecr_repo: ${{ matrix.ecr }}
@@ -111,8 +107,6 @@ jobs:
     steps:
       - name: ✅ Checkout
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🚀 Deploy Application
         uses: ./.github/actions/ecs_deploy
@@ -145,8 +139,6 @@ jobs:
     steps:
       - name: ✅ Checkout
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🚀 Deploy Application
         uses: ./.github/actions/ecs_deploy
@@ -173,14 +165,21 @@ jobs:
     outputs:
       runner_name: ${{ runner.name }}
     steps:
+      - name: 🔑 Generate CI token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.CI_BOT_APP_ID }}
+          private-key: ${{ secrets.CI_BOT_PRIVATE_KEY }}
+
       - name: ✅ Checkout
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.VENLY_GITHUB_ACTIONS_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: 🔄 Merge Back To Develop
         id: merge_back
         uses: ./.github/actions/merge_back
         with:
           branch: ${{ github.ref }}
-          token: ${{ secrets.VENLY_GITHUB_ACTIONS_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}

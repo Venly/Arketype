@@ -1,11 +1,11 @@
 name: "Merge Back to Development"
-description: "Build NodeJs container"
+description: "Merge branch back to develop"
 inputs:
   branch:
     description: The branch to Merge
     required: true
   token:
-    description: The VENLY_GITHUB_ACTIONS_TOKEN
+    description: GitHub token for authentication
     required: true
 runs:
   using: "composite"
@@ -17,14 +17,14 @@ runs:
     - uses: oleksiyrudenko/gha-git-credentials@v2.1.1
       with:
         global: false
-        name: ${{ github.actor	}}
+        name: ${{ github.actor }}
         email: ${{ github.actor }}@venly.io
-        actor: ${{ github.actor	}}
+        actor: ${{ github.actor }}
         token: ${{ inputs.token }}
 
     - name: Merge back to develop
       env:
-        GIT_USERNAME: ${{ github.actor	}}
+        GIT_USERNAME: ${{ github.actor }}
         GITHUB_TOKEN: ${{ inputs.token }}
       shell: bash
       run: |

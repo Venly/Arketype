@@ -118,7 +118,7 @@ runs:
         aws ecr put-image --repository-name $repository_name --image-tag $new_tag --image-manifest "$manifest"
 
     - name: 🔑 ConfigureAwsCredentials
-      uses: aws-actions/configure-aws-credentials@v2
+      uses: aws-actions/configure-aws-credentials@v4
       id: credentials
       with:
         aws-region: ${{ inputs.aws_region }}
