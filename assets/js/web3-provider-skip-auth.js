@@ -104,7 +104,7 @@ import {defaultParams} from "../constants/params.js";
         .on('accountsChanged', (res) => {
             app.log(res, 'emit accountsChanged');
         });
-        app.log(window.web3.version, 'web3 version');
+        app.log(Web3.version, 'web3 version');
         window.web3.eth.getChainId().then(network => {
             app.log(network, 'ChainID');
         });
@@ -117,8 +117,8 @@ import {defaultParams} from "../constants/params.js";
         });
     }
 
-    function getWallets(el) {
-        window.web3.eth.requestAccounts(function (err, wallets) {
+    function getWallets() {
+        window.web3.eth.requestAccounts().then(wallets => {
             app.log(wallets, 'Wallets');
             updateWallets(wallets);
         });
@@ -207,12 +207,16 @@ import {defaultParams} from "../constants/params.js";
               const args = JSON.parse('[' + params + ']');
               submit.attr('disabled', true);
   
-              let fn = window.web3;
-              for (let split of method.split('.'))
+              let ctx = window.web3;
+              let fn = ctx;
+              for (let split of method.split('.')) {
+                ctx = fn;
                 fn = fn[split];
-              fn.apply(window.web3.currentProvider, args).then(res => {
-                showModal('Result', JSON.stringify(res, null, 2))
-                app.log(res, method);
+              }
+              fn.apply(ctx, args).then(res => {
+                const serializable = JSON.parse(JSON.stringify(res, (_, v) => typeof v === 'bigint' ? v.toString() : v));
+                showModal('Result', JSON.stringify(serializable, null, 2))
+                app.log(serializable, method);
               }).catch((err) => {
                 showModal('Error', err.message || JSON.stringify(err, null, 2));
                 app.error("error: " + err.message || JSON.stringify(err), method);
