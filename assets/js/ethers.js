@@ -63,9 +63,9 @@ import { defaultParams } from "../constants/ethers-params.js";
         });
     };
 
-    function handleLoaded(provider) {
-        window.provider = new window.ethers.providers.Web3Provider(provider);
-        window.signer = window.provider.getSigner();
+    async function handleLoaded(provider) {
+        window.provider = new window.ethers.BrowserProvider(provider);
+        window.signer = await window.provider.getSigner();
         provider.on('chainChanged', (res) => {
             app.log(res, 'emit chainChanged');
         })
