@@ -17,7 +17,7 @@ window.onload = function() {
         if (privateKey.startsWith("0x")) privateKey = privateKey.slice(2);
         document.getElementById("pkLength").innerHTML = privateKey.length;
         document.getElementById("pkLength").innerHTML = privateKey.length;
-        document.getElementById("hexCheck").innerHTML = ethers.utils.isHexString(`0x${privateKey}`, 32);
+        document.getElementById("hexCheck").innerHTML = ethers.isHexString(`0x${privateKey}`, 32);
         document.getElementById("walletAddress").innerHTML = getWalletAddress(privateKey);
     };
 
