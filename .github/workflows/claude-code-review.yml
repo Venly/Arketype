@@ -1,0 +1,22 @@
+name: Claude Code Review
+
+# Thin caller — delegates to the centrally-maintained engine in
+# Venly/venly-github-workflows. Do not add review logic here; change it centrally.
+
+on:
+  pull_request:
+    types: [opened, review_requested, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: read
+  id-token: write
+
+jobs:
+  review:
+    uses: Venly/venly-github-workflows/.github/workflows/claude-code-review.yml@v1
+    secrets: inherit
+    with:
+      project_type: generic
+      block_on_critical: true

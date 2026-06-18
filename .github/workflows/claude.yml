@@ -1,0 +1,35 @@
+name: Claude Code
+
+# Thin caller — delegates to the centrally-maintained @claude mention bot in
+# Venly/venly-github-workflows. Do not add logic here; change it centrally.
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  issues:
+    types: [opened, assigned]
+  pull_request_review:
+    types: [submitted]
+
+# The reusable workflow's token is capped by these caller permissions. id-token
+# is none by default, so it must be granted here for the action to authenticate.
+permissions:
+  contents: read
+  pull-requests: read
+  issues: read
+  id-token: write
+  actions: read # lets Claude read CI results on PRs
+
+jobs:
+  claude:
+    # Only invoke the engine on an actual @claude mention — avoids spawning a
+    # skipped workflow run on every comment/issue event.
+    if: |
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
+      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
+    uses: Venly/venly-github-workflows/.github/workflows/claude.yml@v1
+    secrets: inherit
